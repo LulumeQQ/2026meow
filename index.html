@@ -3,19 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 減脂追蹤</title>
+    <title>日常貓日誌 🐾 跨日追蹤版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'muji-bg': '#F7F5F0',       /* 燕麥白背景 */
-                        'muji-text': '#5A4F44',     /* 溫和深棕文字 */
-                        'muji-accent': '#E5A97C',   /* 文青淺橘色 */
-                        'muji-green': '#A7B49E',    /* 鼠尾草綠 (達成目標) */
-                        'muji-card': '#FFFFFF',     /* 卡片純白 */
-                        'muji-border': '#EAE5D9'    /* 溫和邊線 */
+                        'soft-bg': '#FAF9F6',
+                        'soft-text': '#5F5A54',
+                        'soft-accent': '#D9B99B',
+                        'soft-green': '#B0C4B1',
+                        'soft-orange': '#E8A77B',
+                        'soft-card': '#FFFFFF',
+                        'soft-border': '#EAE5D9'
                     }
                 }
             }
@@ -23,230 +24,258 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; }
+        body { font-family: 'Noto Sans TC', sans-serif; color: #5F5A54; background-color: #FAF9F6; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        /* 自訂核取方塊樣式 */
-        .task-checkbox:checked + label { text-decoration: line-through; color: #A7B49E; }
+        .task-checkbox:checked + label { text-decoration: line-through; color: #B0C4B1; }
+        .btn-active { background-color: #E8A77B !important; color: white !important; }
+        input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.5; }
     </style>
 </head>
-<body class="bg-muji-bg min-h-screen flex justify-center py-8 px-4">
+<body class="min-h-screen flex justify-center py-6 px-4">
 
-    <div class="max-w-md w-full space-y-5 pb-10">
+    <div class="max-w-md w-full space-y-4 pb-12">
         
-        <div class="bg-muji-card rounded-3xl shadow-sm border border-muji-border p-6 text-center">
-            <div class="text-5xl mb-3">🐈</div>
-            <h1 class="text-xl font-bold tracking-widest text-muji-text">日常貓日誌</h1>
-            <p class="text-xs mt-2 text-gray-400">好好吃飯，好好睡覺</p>
+        <div class="bg-soft-card rounded-[2.5rem] shadow-sm border border-soft-border p-6 text-center">
+            <div class="text-4xl mb-2">🐈</div>
+            <h1 class="text-lg font-bold tracking-widest mb-4">日常貓日誌</h1>
             
-            <div class="mt-5 flex bg-muji-bg rounded-full p-1 border border-muji-border text-sm">
-                <button id="mode-weekday" onclick="setMode('weekday')" class="flex-1 py-2 rounded-full bg-white shadow-sm font-medium text-muji-accent transition-all">平日 (運動日)</button>
-                <button id="mode-rest" onclick="setMode('rest')" class="flex-1 py-2 rounded-full text-gray-400 font-medium transition-all">假日 / 生理期</button>
+            <div class="flex flex-col gap-3">
+                <input type="date" id="current-date" onchange="loadDateData()" class="bg-soft-bg border border-soft-border rounded-full py-2 px-4 text-sm text-center focus:outline-none focus:ring-1 focus:ring-soft-accent">
+                
+                <div class="flex bg-soft-bg rounded-full p-1 border border-soft-border text-[10px]">
+                    <button id="mode-weekday" onclick="setMode('weekday')" class="flex-1 py-2 rounded-full btn-active font-medium transition-all">平日 (運動日)</button>
+                    <button id="mode-rest" onclick="setMode('rest')" class="flex-1 py-2 rounded-full text-gray-400 font-medium transition-all">假日 / 生理期</button>
+                </div>
             </div>
         </div>
 
-        <div class="bg-muji-card rounded-3xl shadow-sm border border-muji-border p-6">
-            <div class="flex justify-between items-end mb-4">
-                <div>
-                    <h2 class="font-bold flex items-center gap-2">💧 水分任務</h2>
-                    <p class="text-xs text-gray-400 mt-1">目標：晚上 9 點前喝足 80%</p>
-                </div>
-                <div class="text-2xl font-bold text-blue-300" id="water-display">0 / 2000 ml</div>
+        <div class="bg-soft-card rounded-[2rem] shadow-sm border border-soft-border p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分任務</h2>
+                <button onclick="resetWater()" class="text-[10px] text-gray-300 hover:text-red-300 transition">重置</button>
             </div>
-            <div class="flex gap-2">
-                <button onclick="addWater(250)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-400 py-3 rounded-xl border border-blue-100 text-sm font-medium transition">+ 250ml 杯</button>
-                <button onclick="addWater(500)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-400 py-3 rounded-xl border border-blue-100 text-sm font-medium transition">+ 500ml 瓶</button>
+            <div class="flex items-end justify-between mb-2">
+                <span class="text-3xl font-bold text-blue-300" id="water-display">0</span>
+                <span class="text-[10px] text-gray-400 mb-1">/ 2000 ml</span>
             </div>
-            <div class="w-full bg-gray-100 rounded-full h-1.5 mt-4">
-                <div class="bg-blue-300 h-1.5 rounded-full transition-all duration-500" id="water-bar" style="width: 0%"></div>
+            <div class="flex gap-2 mb-3">
+                <button onclick="addWater(250)" class="flex-1 bg-blue-50 text-blue-400 py-3 rounded-2xl text-xs font-bold hover:bg-blue-100 transition">+ 250</button>
+                <button onclick="addWater(500)" class="flex-1 bg-blue-50 text-blue-400 py-3 rounded-2xl text-xs font-bold hover:bg-blue-100 transition">+ 500</button>
+            </div>
+            <div class="w-full bg-gray-100 rounded-full h-1">
+                <div id="water-bar" class="bg-blue-300 h-1 rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
         </div>
 
-        <div class="bg-muji-card rounded-3xl shadow-sm border border-muji-border p-6">
-            <h2 class="font-bold flex items-center gap-2 mb-4">🍽️ 飲食追蹤</h2>
+        <div class="bg-soft-card rounded-[2rem] shadow-sm border border-soft-border p-6">
+            <h2 class="font-bold flex items-center gap-2 mb-4 text-sm">🍽️ 飲食追蹤</h2>
             
-            <div class="text-center mb-5">
-                <div class="text-4xl font-bold text-muji-accent" id="total-calories">0</div>
-                <p class="text-xs text-gray-400 mt-1">目標上限：<span id="target-calories">1400</span> 大卡</p>
-                <div class="w-full bg-gray-100 rounded-full h-2 mt-3 overflow-hidden">
-                    <div class="bg-muji-accent h-2 rounded-full transition-all duration-500" id="progress-bar" style="width: 0%"></div>
+            <div class="grid grid-cols-2 gap-4 text-center mb-6">
+                <div class="bg-orange-50/30 p-3 rounded-2xl border border-orange-100">
+                    <div class="text-xl font-bold text-soft-orange" id="total-calories">0</div>
+                    <p class="text-[10px] text-gray-400 uppercase">大卡 (目標 <span id="target-cal">1400</span>)</p>
+                </div>
+                <div class="bg-green-50/30 p-3 rounded-2xl border border-green-100">
+                    <div class="text-xl font-bold text-soft-green" id="total-protein">0</div>
+                    <p class="text-[10px] text-gray-400 uppercase">蛋白質 (目標 100g)</p>
                 </div>
             </div>
 
-            <form id="food-form" class="space-y-3 bg-muji-bg p-4 rounded-2xl border border-muji-border">
-                <div class="grid grid-cols-2 gap-3">
-                    <select id="meal-type" class="bg-white border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-muji-accent">
-                        <option value="早餐">第一餐</option>
-                        <option value="午餐">第二餐</option>
-                        <option value="晚餐">第三餐</option>
-                        <option value="點心">解饞零食</option>
-                    </select>
-                    <input type="number" id="food-calories" required min="1" placeholder="熱量 (大卡)" class="bg-white border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-muji-accent">
+            <form id="food-form" class="space-y-2 mb-4">
+                <input type="text" id="food-name" oninput="autoSuggest()" placeholder="吃了什麼？" class="w-full bg-soft-bg border border-soft-border rounded-xl p-3 text-sm focus:outline-none">
+                
+                <div class="grid grid-cols-2 gap-2">
+                    <input type="number" id="food-calories" placeholder="大卡" class="w-full bg-soft-bg border border-soft-border rounded-xl p-3 text-sm focus:outline-none">
+                    <input type="number" id="food-protein" placeholder="蛋白(g)" class="w-full bg-soft-bg border border-soft-border rounded-xl p-3 text-sm focus:outline-none">
                 </div>
-                <input type="text" id="food-name" required placeholder="吃了什麼？ (例如：2顆水煮蛋)" class="w-full bg-white border border-gray-200 rounded-xl p-2.5 text-sm focus:outline-none focus:border-muji-accent">
-                <button type="submit" class="w-full bg-muji-text text-white py-2.5 rounded-xl text-sm font-bold tracking-wider hover:bg-gray-700 transition">新增紀錄</button>
+                <button type="submit" class="w-full bg-soft-text text-white py-3 rounded-xl text-xs font-bold tracking-widest hover:bg-black transition">新增紀錄喵</button>
             </form>
 
-            <ul id="food-list" class="space-y-2 mt-4 max-h-40 overflow-y-auto no-scrollbar">
-                </ul>
+            <ul id="food-list" class="space-y-2 max-h-48 overflow-y-auto no-scrollbar border-t border-soft-border pt-4"></ul>
         </div>
 
-        <div class="bg-muji-card rounded-3xl shadow-sm border border-muji-border p-6" id="routine-module">
-            <h2 class="font-bold flex items-center gap-2 mb-4">🌙 夜間防護線</h2>
-            <div class="space-y-3">
-                
+        <div class="bg-soft-card rounded-[2rem] shadow-sm border border-soft-border p-6" id="routine-module">
+            <h2 class="font-bold flex items-center gap-2 mb-4 text-sm">🌙 貓咪作息防線</h2>
+            <div class="space-y-4" id="task-container">
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="task-1" class="task-checkbox w-5 h-5 accent-muji-green rounded cursor-pointer">
-                    <label for="task-1" class="text-sm font-medium cursor-pointer transition-colors">21:00 啟動：growwithjo (30-45分)</label>
+                    <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-soft-green">
+                    <label for="t1" class="text-xs font-medium">21:00 開始：growwithjo 運動</label>
                 </div>
-                
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="task-2" class="task-checkbox w-5 h-5 accent-muji-green rounded cursor-pointer">
-                    <label for="task-2" class="text-sm font-medium cursor-pointer transition-colors">22:00 前完成：核心 5 分 + 收操 10 分</label>
+                    <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-soft-green">
+                    <label for="t2" class="text-xs font-medium">22:00 完成核心與收操</label>
                 </div>
-
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="task-3" class="task-checkbox w-5 h-5 accent-muji-green rounded cursor-pointer">
-                    <label for="task-3" class="text-sm font-medium cursor-pointer transition-colors">22:30 數位斷網 (停止滑手機)</label>
+                    <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-soft-green">
+                    <label for="t3" class="text-xs font-medium">22:30 數位斷網</label>
                 </div>
-
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="task-4" class="task-checkbox w-5 h-5 accent-muji-green rounded cursor-pointer">
-                    <label for="task-4" class="text-sm font-medium cursor-pointer transition-colors">23:30 準時就寢</label>
+                    <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-soft-green">
+                    <label for="t4" class="text-xs font-medium">23:30 準時入睡</label>
                 </div>
-
             </div>
         </div>
 
     </div>
 
     <script>
-        // 核心狀態變數
-        let currentMode = 'weekday'; // 'weekday' 或 'rest'
-        let targetCalories = 1400;
-        let totalWater = 0;
-        const TARGET_WATER = 2000;
-        let records = [];
+        const knowledgeBase = {
+            "烤雞胸肉": { cal: 165, pro: 31 }, "烤雞腿肉": { cal: 220, pro: 24 },
+            "水煮蛋": { cal: 75, pro: 7 }, "茶葉蛋": { cal: 75, pro: 7 },
+            "無糖豆漿": { cal: 120, pro: 13 }, "炒青菜": { cal: 80, pro: 2 },
+            "地瓜": { cal: 110, pro: 1 }, "糙米飯": { cal: 140, pro: 3 },
+            "堅果": { cal: 150, pro: 5 }, "小番茄": { cal: 30, pro: 1 }
+        };
 
-        // DOM 元素綁定
-        const form = document.getElementById('food-form');
-        const foodList = document.getElementById('food-list');
-        const totalCaloriesEl = document.getElementById('total-calories');
-        const targetCaloriesEl = document.getElementById('target-calories');
-        const progressBar = document.getElementById('progress-bar');
-        
-        const waterDisplay = document.getElementById('water-display');
-        const waterBar = document.getElementById('water-bar');
-        const routineModule = document.getElementById('routine-module');
+        // 初始化日期為今日
+        const datePicker = document.getElementById('current-date');
+        const today = new Date().toISOString().split('T')[0];
+        datePicker.value = today;
 
-        // 模式切換邏輯
-        function setMode(mode) {
-            currentMode = mode;
-            const btnWeekday = document.getElementById('mode-weekday');
-            const btnRest = document.getElementById('mode-rest');
-            
-            if (mode === 'weekday') {
-                targetCalories = 1400;
-                // 按鈕樣式切換
-                btnWeekday.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-medium text-muji-accent transition-all";
-                btnRest.className = "flex-1 py-2 rounded-full text-gray-400 font-medium transition-all";
-                // 顯示運動任務
-                routineModule.style.display = 'block';
-            } else {
-                targetCalories = 1300;
-                // 按鈕樣式切換
-                btnRest.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-medium text-muji-accent transition-all";
-                btnWeekday.className = "flex-1 py-2 rounded-full text-gray-400 font-medium transition-all";
-                // 隱藏運動任務，專注休息與控食
-                routineModule.style.display = 'none';
-            }
-            targetCaloriesEl.innerText = targetCalories;
-            updateCalorieUI();
+        let db = JSON.parse(localStorage.getItem('cat_diary_db')) || {};
+
+        function getCurrentDate() {
+            return datePicker.value;
         }
 
-        // 水分增加邏輯
-        function addWater(amount) {
-            totalWater += amount;
-            if(totalWater > TARGET_WATER) totalWater = TARGET_WATER;
-            
-            waterDisplay.innerText = `${totalWater} / ${TARGET_WATER} ml`;
-            let percentage = (totalWater / TARGET_WATER) * 100;
-            waterBar.style.width = `${percentage}%`;
+        function initDayData(date) {
+            if (!db[date]) {
+                db[date] = {
+                    mode: 'weekday',
+                    water: 0,
+                    records: [],
+                    tasks: { t1: false, t2: false, t3: false, t4: false }
+                };
+            }
+            return db[date];
+        }
 
-            if(totalWater === TARGET_WATER) {
-                waterDisplay.classList.add('text-muji-green');
-                waterBar.classList.replace('bg-blue-300', 'bg-muji-green');
+        function saveToLocalStorage() {
+            localStorage.setItem('cat_diary_db', JSON.stringify(db));
+        }
+
+        function loadDateData() {
+            const date = getCurrentDate();
+            const data = initDayData(date);
+            
+            // 更新 UI 狀態
+            setModeUI(data.mode);
+            updateUI();
+        }
+
+        function setMode(newMode) {
+            const date = getCurrentDate();
+            db[date].mode = newMode;
+            setModeUI(newMode);
+            saveToLocalStorage();
+            updateUI();
+        }
+
+        function setModeUI(mode) {
+            document.getElementById('mode-weekday').className = (mode === 'weekday') ? 'flex-1 py-2 rounded-full btn-active font-medium transition-all' : 'flex-1 py-2 rounded-full text-gray-400 font-medium transition-all';
+            document.getElementById('mode-rest').className = (mode === 'rest') ? 'flex-1 py-2 rounded-full btn-active font-medium transition-all' : 'flex-1 py-2 rounded-full text-gray-400 font-medium transition-all';
+            document.getElementById('target-cal').innerText = (mode === 'weekday') ? '1400' : '1300';
+            document.getElementById('routine-module').style.opacity = (mode === 'weekday') ? '1' : '0.3';
+        }
+
+        function addWater(ml) {
+            const date = getCurrentDate();
+            db[date].water = Math.min(db[date].water + ml, 2000);
+            saveToLocalStorage();
+            updateUI();
+        }
+
+        function resetWater() {
+            const date = getCurrentDate();
+            db[date].water = 0;
+            saveToLocalStorage();
+            updateUI();
+        }
+
+        function autoSuggest() {
+            const input = document.getElementById('food-name').value;
+            for (let key in knowledgeBase) {
+                if (input.includes(key)) {
+                    document.getElementById('food-calories').value = knowledgeBase[key].cal;
+                    document.getElementById('food-protein').value = knowledgeBase[key].pro;
+                    break;
+                }
             }
         }
 
-        // 飲食表單提交
-        form.addEventListener('submit', function(e) {
+        document.getElementById('food-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const meal = document.getElementById('meal-type').value;
+            const date = getCurrentDate();
             const name = document.getElementById('food-name').value;
-            const calories = parseInt(document.getElementById('food-calories').value);
-            const time = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
-
-            records.push({ id: Date.now(), time, meal, name, calories });
-            updateCalorieUI();
-            form.reset();
+            const cal = parseInt(document.getElementById('food-calories').value) || 0;
+            const pro = parseInt(document.getElementById('food-protein').value) || 0;
+            
+            db[date].records.push({ id: Date.now(), name, cal, pro });
+            saveToLocalStorage();
+            document.getElementById('food-form').reset();
+            updateUI();
         });
 
-        // 刪除飲食紀錄
         function deleteRecord(id) {
-            records = records.filter(record => record.id !== id);
-            updateCalorieUI();
+            const date = getCurrentDate();
+            db[date].records = db[date].records.filter(r => r.id !== id);
+            saveToLocalStorage();
+            updateUI();
         }
 
-        // 更新熱量介面
-        function updateCalorieUI() {
-            foodList.innerHTML = '';
-            const total = records.reduce((sum, record) => sum + record.calories, 0);
-            totalCaloriesEl.innerText = total;
+        function saveTasks() {
+            const date = getCurrentDate();
+            db[date].tasks = {
+                t1: document.getElementById('t1').checked,
+                t2: document.getElementById('t2').checked,
+                t3: document.getElementById('t3').checked,
+                t4: document.getElementById('t4').checked
+            };
+            saveToLocalStorage();
+        }
 
-            let progress = (total / targetCalories) * 100;
-            if (progress > 100) progress = 100;
-            progressBar.style.width = `${progress}%`;
+        function updateUI() {
+            const date = getCurrentDate();
+            const data = db[date];
+
+            // 水分
+            document.getElementById('water-display').innerText = data.water;
+            document.getElementById('water-bar').style.width = `${(data.water / 2000) * 100}%`;
+
+            // 熱量與蛋白質
+            const totalCal = data.records.reduce((s, r) => s + r.cal, 0);
+            const totalPro = data.records.reduce((s, r) => s + r.pro, 0);
+            const target = (data.mode === 'weekday') ? 1400 : 1300;
+
+            document.getElementById('total-calories').innerText = totalCal;
+            document.getElementById('total-protein').innerText = totalPro;
+            document.getElementById('total-calories').className = (totalCal > target) ? 'text-2xl font-bold text-red-400' : 'text-2xl font-bold text-soft-orange';
             
-            // 達標/超標顏色管理
-            if(total > targetCalories) {
-                totalCaloriesEl.classList.add('text-red-400');
-                totalCaloriesEl.classList.remove('text-muji-accent');
-                progressBar.classList.add('bg-red-400');
-                progressBar.classList.remove('bg-muji-accent');
-            } else {
-                totalCaloriesEl.classList.remove('text-red-400');
-                totalCaloriesEl.classList.add('text-muji-accent');
-                progressBar.classList.remove('bg-red-400');
-                progressBar.classList.add('bg-muji-accent');
-            }
+            const progress = Math.min((totalCal / target) * 100, 100);
+            const progressBar = document.createElement('div'); // 虛擬進度條邏輯
 
-            if (records.length === 0) {
-                foodList.innerHTML = '<li class="text-center text-gray-400 text-xs py-4">尚無紀錄</li>';
-                return;
-            }
-
-            records.forEach(record => {
-                const li = document.createElement('li');
-                li.className = "flex justify-between items-center bg-gray-50/50 p-3 rounded-xl border border-gray-100";
-                li.innerHTML = `
+            // 飲食清單
+            const list = document.getElementById('food-list');
+            list.innerHTML = data.records.map(r => `
+                <li class="flex justify-between items-center bg-soft-bg p-3 rounded-2xl text-xs border border-soft-border mb-2">
                     <div class="flex flex-col">
-                        <span class="text-[10px] text-gray-400 mb-0.5">${record.time} · ${record.meal}</span>
-                        <span class="text-sm font-medium">${record.name}</span>
+                        <span class="font-bold">${r.name}</span>
+                        <span class="text-[9px] text-gray-400">${r.cal} kcal / ${r.pro}g 蛋白</span>
                     </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-muji-accent text-sm font-bold">+${record.calories}</span>
-                        <button onclick="deleteRecord(${record.id})" class="text-gray-300 hover:text-red-300">
-                            ✕
-                        </button>
-                    </div>
-                `;
-                foodList.appendChild(li);
-            });
+                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 hover:text-red-300 text-lg">✕</button>
+                </li>
+            `).join('') || '<li class="text-center text-gray-300 text-[10px] py-4">這天還沒吃東西喵～</li>';
+
+            // 任務勾選狀態
+            document.getElementById('t1').checked = data.tasks.t1;
+            document.getElementById('t2').checked = data.tasks.t2;
+            document.getElementById('t3').checked = data.tasks.t3;
+            document.getElementById('t4').checked = data.tasks.t4;
         }
 
-        // 初始化
-        updateCalorieUI();
+        // 啟動載入
+        loadDateData();
     </script>
 </body>
 </html>
