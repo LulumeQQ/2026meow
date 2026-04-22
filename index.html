@@ -3,178 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>橘白貓減脂紀錄</title>
+    <title>日常貓日誌 🐾 減脂追蹤</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'cat-orange': '#D97736', /* 深橘色 */
-                        'cat-light': '#FDFBF7',  /* 乾淨的米白色底 */
-                        'cat-dark': '#4A3B32'    /* 深棕色文字 */
+                        'muji-bg': '#F7F5F0',       /* 燕麥白背景 */
+                        'muji-text': '#5A4F44',     /* 溫和深棕文字 */
+                        'muji-accent': '#E5A97C',   /* 文青淺橘色 */
+                        'muji-green': '#A7B49E',    /* 鼠尾草綠 (達成目標) */
+                        'muji-card': '#FFFFFF',     /* 卡片純白 */
+                        'muji-border': '#EAE5D9'    /* 溫和邊線 */
                     }
                 }
             }
         }
     </script>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, 'LiHei Pro', sans-serif; }
-        /* 隱藏捲軸但保留滾動功能 */
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 自訂核取方塊樣式 */
+        .task-checkbox:checked + label { text-decoration: line-through; color: #A7B49E; }
     </style>
 </head>
-<body class="bg-cat-light text-cat-dark min-h-screen flex justify-center py-10 px-4">
+<body class="bg-muji-bg min-h-screen flex justify-center py-8 px-4">
 
-    <div class="max-w-md w-full bg-white rounded-3xl shadow-lg border-2 border-cat-orange overflow-hidden">
+    <div class="max-w-md w-full space-y-5 pb-10">
         
-        <div class="bg-cat-orange text-white p-6 relative flex flex-col items-center">
-            <div class="text-5xl mb-2">🐈</div>
-            <h1 class="text-2xl font-bold tracking-wider">今日熱量護衛站</h1>
-            <p class="text-sm mt-1 opacity-90">吃飽吃好，但不過量喵！</p>
-        </div>
-
-        <div class="p-6 text-center border-b border-orange-100">
-            <h2 class="text-sm text-gray-500 font-bold mb-1">今日已攝取 (大卡)</h2>
-            <div class="text-4xl font-bold text-cat-orange" id="total-calories">0</div>
-            <p class="text-xs text-gray-400 mt-2">目標上限：<span class="font-bold">1400</span> 大卡</p>
+        <div class="bg-muji-card rounded-3xl shadow-sm border border-muji-border p-6 text-center">
+            <div class="text-5xl mb-3">🐈</div>
+            <h1 class="text-xl font-bold tracking-widest text-muji-text">日常貓日誌</h1>
+            <p class="text-xs mt-2 text-gray-400">好好吃飯，好好睡覺</p>
             
-            <div class="w-full bg-gray-200 rounded-full h-2.5 mt-3">
-                <div class="bg-cat-orange h-2.5 rounded-full transition-all duration-500" id="progress-bar" style="width: 0%"></div>
+            <div class="mt-5 flex bg-muji-bg rounded-full p-1 border border-muji-border text-sm">
+                <button id="mode-weekday" onclick="setMode('weekday')" class="flex-1 py-2 rounded-full bg-white shadow-sm font-medium text-muji-accent transition-all">平日 (運動日)</button>
+                <button id="mode-rest" onclick="setMode('rest')" class="flex-1 py-2 rounded-full text-gray-400 font-medium transition-all">假日 / 生理期</button>
             </div>
         </div>
 
-        <div class="p-6 bg-orange-50/30">
-            <form id="food-form" class="space-y-4">
+        <div class="bg-muji-card rounded-3xl shadow-sm border border-muji-border p-6">
+            <div class="flex justify-between items-end mb-4">
                 <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">餐別 🐾</label>
-                    <select id="meal-type" class="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cat-orange focus:border-transparent bg-white">
-                        <option value="早餐">第一餐 (早餐)</option>
-                        <option value="午餐">第二餐 (午餐)</option>
-                        <option value="晚餐">第三餐 (晚餐)</option>
-                        <option value="點心">解饞零食/點心</option>
-                    </select>
+                    <h2 class="font-bold flex items-center gap-2">💧 水分任務</h2>
+                    <p class="text-xs text-gray-400 mt-1">目標：晚上 9 點前喝足 80%</p>
                 </div>
-                
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">吃了什麼呢？ 🐟</label>
-                    <input type="text" id="food-name" required placeholder="例如：烤雞胸肉、小番茄" class="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cat-orange focus:border-transparent">
-                </div>
-
-                <div>
-                    <label class="block text-sm font-bold text-gray-700 mb-1">熱量估計 (大卡) 🎯</label>
-                    <input type="number" id="food-calories" required min="1" placeholder="例如：120" class="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-cat-orange focus:border-transparent">
-                </div>
-
-                <button type="submit" class="w-full bg-cat-orange hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl transition duration-200 flex justify-center items-center gap-2">
-                    <span>記錄吃下肚啦</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-            </form>
+                <div class="text-2xl font-bold text-blue-300" id="water-display">0 / 2000 ml</div>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="addWater(250)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-400 py-3 rounded-xl border border-blue-100 text-sm font-medium transition">+ 250ml 杯</button>
+                <button onclick="addWater(500)" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-400 py-3 rounded-xl border border-blue-100 text-sm font-medium transition">+ 500ml 瓶</button>
+            </div>
+            <div class="w-full bg-gray-100 rounded-full h-1.5 mt-4">
+                <div class="bg-blue-300 h-1.5 rounded-full transition-all duration-500" id="water-bar" style="width: 0%"></div>
+            </div>
         </div>
 
-        <div class="p-6 h-64 overflow-y-auto no-scrollbar bg-white">
-            <h3 class="font-bold text-gray-700 border-b-2 border-cat-orange inline-block pb-1 mb-4">今日伙食明細</h3>
-            <ul id="food-list" class="space-y-3">
-                </ul>
-        </div>
-
-    </div>
-
-    <script>
-        // 核心邏輯處理
-        const form = document.getElementById('food-form');
-        const foodList = document.getElementById('food-list');
-        const totalCaloriesEl = document.getElementById('total-calories');
-        const progressBar = document.getElementById('progress-bar');
-        
-        const TARGET_CALORIES = 1400;
-        let records = []; // 儲存紀錄的陣列
-
-        // 表單提交事件監聽
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+        <div class="bg-muji-card rounded-3xl shadow-sm border border-muji-border p-6">
+            <h2 class="font-bold flex items-center gap-2 mb-4">🍽️ 飲食追蹤</h2>
             
-            // 取得輸入值
-            const meal = document.getElementById('meal-type').value;
-            const name = document.getElementById('food-name').value;
-            const calories = parseInt(document.getElementById('food-calories').value);
-            const time = new Date().toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit' });
-
-            // 建立新紀錄物件
-            const newRecord = { id: Date.now(), time, meal, name, calories };
-            records.push(newRecord);
-            
-            // 更新 UI 與重置表單
-            updateUI();
-            form.reset();
-        });
-
-        // 刪除紀錄功能
-        function deleteRecord(id) {
-            records = records.filter(record => record.id !== id);
-            updateUI();
-        }
-
-        // 更新介面與計算邏輯
-        function updateUI() {
-            // 清空列表
-            foodList.innerHTML = '';
-            
-            // 計算總和
-            const total = records.reduce((sum, record) => sum + record.calories, 0);
-            totalCaloriesEl.innerText = total;
-
-            // 更新進度條
-            let progress = (total / TARGET_CALORIES) * 100;
-            if (progress > 100) progress = 100;
-            progressBar.style.width = `${progress}%`;
-            
-            // 變色警告：若超過 1400 大卡則變為紅色
-            if(total > TARGET_CALORIES) {
-                totalCaloriesEl.classList.remove('text-cat-orange');
-                totalCaloriesEl.classList.add('text-red-500');
-                progressBar.classList.remove('bg-cat-orange');
-                progressBar.classList.add('bg-red-500');
-            } else {
-                totalCaloriesEl.classList.add('text-cat-orange');
-                totalCaloriesEl.classList.remove('text-red-500');
-                progressBar.classList.add('bg-cat-orange');
-                progressBar.classList.remove('bg-red-500');
-            }
-
-            // 渲染紀錄清單
-            if (records.length === 0) {
-                foodList.innerHTML = '<li class="text-center text-gray-400 text-sm py-4">目前還沒有紀錄，空空如也喵～</li>';
-                return;
-            }
-
-            records.forEach(record => {
-                const li = document.createElement('li');
-                li.className = "flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100 hover:shadow-sm transition-shadow";
-                li.innerHTML = `
-                    <div class="flex flex-col">
-                        <span class="text-xs text-gray-400 mb-1">${record.time} · ${record.meal}</span>
-                        <span class="font-bold text-gray-700">${record.name}</span>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <span class="text-cat-orange font-bold">+${record.calories}</span>
-                        <button onclick="deleteRecord(${record.id})" class="text-gray-300 hover:text-red-400 focus:outline-none" title="刪除紀錄">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                `;
-                foodList.appendChild(li);
-            });
-        }
-
-        // 初始化狀態
-        updateUI();
-    </script>
-</body>
-</html>
+            <div class="text-center mb-5">
+                <div class="text-4xl font-bold text-muji-accent" id="total-calories">0</div>
+                <p class="text-xs text-gray-400 mt-1">目標上限：<span id="target-calories">1400</span> 大卡</p>
+                <div class="w-full bg-gray-100 rounded-full h
