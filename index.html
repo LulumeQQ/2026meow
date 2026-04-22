@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>橘白貓日誌 🐾 智能趨勢版</title>
+    <title>柔和貓日誌 🐾 重量精算版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'cat-bg': '#EFECE7',       /* 較深的燕麥底色 */
-                        'cat-main': '#BA7B4B',     /* 深焦糖橘 */
-                        'cat-green': '#7D8B6F',    /* 深鼠尾草綠 */
-                        'cat-text': '#433D3C',     /* 深炭棕 */
+                        'cat-bg': '#F9F8F6',       /* 更淡的燕麥牛奶底色 */
+                        'cat-main': '#D3A27D',     /* 柔和粉橘 */
+                        'cat-green': '#A6B69E',    /* 淡鼠尾草綠 */
+                        'cat-text': '#6E645C',     /* 淺灰棕文字 */
                         'cat-card': '#FFFFFF',
-                        'cat-border': '#D6CFC7'    /* 加深的邊界 */
+                        'cat-border': '#EAE5DF'    /* 極淡的邊線 */
                     }
                 }
             }
@@ -23,127 +23,145 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; color: #433D3C; background-color: #EFECE7; }
+        body { font-family: 'Noto Sans TC', sans-serif; color: #6E645C; background-color: #F9F8F6; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .active-tab { color: #BA7B4B; border-bottom: 3px solid #BA7B4B; }
-        input[type="date"] { color: #433D3C; font-weight: bold; }
+        .active-tab { color: #D3A27D; border-bottom: 3px solid #D3A27D; }
+        input[type="date"] { color: #6E645C; font-weight: bold; background: transparent; }
+        input::placeholder { color: #C2BDB8; }
     </style>
 </head>
 <body class="min-h-screen flex justify-center py-6 px-4">
 
     <div class="max-w-md w-full space-y-4 pb-24">
         
-        <div class="bg-cat-card rounded-[2rem] shadow-md border border-cat-border p-6 overflow-hidden">
+        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
             <div class="flex justify-between items-center mb-6">
                 <div class="flex items-center gap-2">
-                    <span class="text-3xl">🐈</span>
-                    <h1 class="text-xl font-bold tracking-widest">橘白貓日誌</h1>
+                    <span class="text-3xl">🐾</span>
+                    <h1 class="text-lg font-bold tracking-widest text-cat-text">日常貓日誌</h1>
                 </div>
-                <input type="date" id="current-date" onchange="loadDateData()" class="bg-cat-bg border-none rounded-xl py-1 px-3 text-xs">
+                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs focus:outline-none cursor-pointer">
             </div>
             
             <div class="flex border-b border-cat-border">
-                <button id="tab-log" onclick="switchTab('log')" class="flex-1 py-3 text-sm font-bold active-tab">日常紀錄</button>
-                <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-3 text-sm font-bold text-gray-400">趨勢分析</button>
+                <button id="tab-log" onclick="switchTab('log')" class="flex-1 py-3 text-sm font-bold active-tab transition-all">日常紀錄</button>
+                <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-3 text-sm font-bold text-gray-400 transition-all">數據趨勢</button>
             </div>
         </div>
 
         <div id="content-log" class="tab-content active space-y-4">
             
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
-                    <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-red-500">重置</button>
-                </div>
-                <div class="flex items-end gap-2 mb-3">
-                    <span class="text-4xl font-bold text-blue-400" id="water-display">0</span>
-                    <span class="text-xs text-gray-400 mb-1.5">/ 2000 ml</span>
-                </div>
-                <div class="flex gap-2 mb-4">
-                    <button onclick="addWater(250)" class="flex-1 bg-blue-50 text-blue-500 py-3 rounded-2xl text-xs font-bold border border-blue-100">+ 250</button>
-                    <button onclick="addWater(500)" class="flex-1 bg-blue-50 text-blue-500 py-3 rounded-2xl text-xs font-bold border border-blue-100">+ 500</button>
-                </div>
-                <div class="w-full bg-gray-100 rounded-full h-2">
-                    <div id="water-bar" class="bg-blue-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm">🍽️ 智能伙食紀錄</h2>
+                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm">🍽️ 智能重量精算</h2>
                 
                 <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="bg-orange-50 p-4 rounded-3xl border border-orange-100">
+                    <div class="bg-orange-50/50 p-4 rounded-3xl border border-orange-100/50 text-center">
                         <div class="text-2xl font-bold text-cat-main" id="total-calories">0</div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Kcal 攝取</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">累積大卡</p>
                     </div>
-                    <div class="bg-green-50 p-4 rounded-3xl border border-green-100">
+                    <div class="bg-green-50/50 p-4 rounded-3xl border border-green-100/50 text-center">
                         <div class="text-2xl font-bold text-cat-green" id="total-protein">0</div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Pro 蛋白質(g)</p>
+                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">累積蛋白(g)</p>
                     </div>
                 </div>
 
-                <form id="food-form" class="space-y-2 mb-6">
-                    <input type="text" id="food-name" oninput="autoSuggest()" placeholder="輸入食物 (如：烤雞胸、水煮蛋)" class="w-full bg-cat-bg border border-cat-border rounded-2xl p-4 text-sm focus:outline-none focus:ring-2 focus:ring-cat-main">
+                <form id="food-form" class="space-y-3 mb-6 bg-cat-bg p-4 rounded-2xl border border-cat-border/50">
+                    <div class="grid grid-cols-5 gap-2">
+                        <input type="text" id="food-name" oninput="calculateNutrition()" placeholder="輸入食物 (如: 烤雞胸)" class="col-span-3 w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main transition-colors">
+                        <div class="col-span-2 relative">
+                            <input type="number" id="food-weight" oninput="calculateNutrition()" placeholder="重量" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main transition-colors">
+                            <span class="absolute right-3 top-3 text-[10px] text-gray-400">g/ml</span>
+                        </div>
+                    </div>
                     
                     <div class="grid grid-cols-2 gap-2">
                         <div class="relative">
-                            <input type="number" id="food-calories" placeholder="熱量" class="w-full bg-cat-bg border border-cat-border rounded-2xl p-4 text-sm focus:outline-none">
-                            <span class="absolute right-4 top-4 text-[10px] text-gray-400">kcal</span>
+                            <input type="number" id="food-calories" placeholder="自動計算大卡" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main">
+                            <span class="absolute right-3 top-3 text-[10px] text-gray-400">kcal</span>
                         </div>
                         <div class="relative">
-                            <input type="number" id="food-protein" placeholder="蛋白" class="w-full bg-cat-bg border border-cat-border rounded-2xl p-4 text-sm focus:outline-none">
-                            <span class="absolute right-4 top-4 text-[10px] text-gray-400">g</span>
+                            <input type="number" id="food-protein" placeholder="自動計算蛋白" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main">
+                            <span class="absolute right-3 top-3 text-[10px] text-gray-400">g</span>
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-cat-main text-white py-4 rounded-2xl text-sm font-bold hover:bg-cat-text transition shadow-lg shadow-orange-200">紀錄這餐</button>
+                    
+                    <button type="submit" class="w-full bg-cat-text text-white py-3.5 rounded-xl text-sm font-bold tracking-wider hover:bg-gray-800 transition-colors mt-2">記錄吃下肚</button>
+                    <p class="text-[9px] text-center text-gray-400 mt-2">※ 內建資料庫將依據您輸入的重量，自動換算熱量與蛋白質</p>
                 </form>
 
-                <ul id="food-list" class="space-y-3 max-h-60 overflow-y-auto no-scrollbar border-t border-cat-border pt-4"></ul>
+                <ul id="food-list" class="space-y-2 max-h-60 overflow-y-auto no-scrollbar"></ul>
+            </div>
+
+            <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
+                    <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-cat-main transition-colors">清空重置</button>
+                </div>
+                <div class="flex items-end gap-2 mb-3">
+                    <span class="text-3xl font-bold text-[#8DB4CB]" id="water-display">0</span>
+                    <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
+                </div>
+                <div class="flex gap-2 mb-4">
+                    <button onclick="addWater(250)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2.5 rounded-xl text-xs font-bold border border-[#E1EDF4] hover:bg-[#E1EDF4] transition-colors">+ 250</button>
+                    <button onclick="addWater(500)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2.5 rounded-xl text-xs font-bold border border-[#E1EDF4] hover:bg-[#E1EDF4] transition-colors">+ 500</button>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-1.5">
+                    <div id="water-bar" class="bg-[#8DB4CB] h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
             </div>
         </div>
 
         <div id="content-stats" class="tab-content space-y-4">
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold text-sm mb-6 flex items-center gap-2">📈 每週熱量趨勢 (Kcal)</h2>
-                <div id="chart-cal-container" class="w-full h-40 bg-gray-50 rounded-xl relative flex items-end justify-between px-4 pb-6">
+                <h2 class="font-bold text-sm mb-6 flex items-center gap-2 text-cat-text">📈 7日熱量趨勢 (Kcal)</h2>
+                <div id="chart-cal-container" class="w-full h-40 bg-cat-bg rounded-xl relative flex items-end justify-between px-4 pb-6 border border-cat-border/50">
                     </div>
-                <div class="flex justify-between text-[10px] text-gray-400 mt-2 px-1" id="chart-dates"></div>
+                <div class="flex justify-between text-[9px] text-gray-400 mt-2 px-1" id="chart-dates-cal"></div>
             </div>
 
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold text-sm mb-6 flex items-center gap-2">🌿 蛋白質達成率 (g)</h2>
-                <div id="chart-pro-container" class="w-full h-40 bg-gray-50 rounded-xl relative flex items-end justify-between px-4 pb-6">
+                <h2 class="font-bold text-sm mb-6 flex items-center gap-2 text-cat-text">🌿 7日蛋白質達成率 (g)</h2>
+                <div id="chart-pro-container" class="w-full h-40 bg-cat-bg rounded-xl relative flex items-end justify-between px-4 pb-6 border border-cat-border/50">
                     </div>
-                <p class="text-[10px] text-center text-gray-400 mt-4 italic">※ 虛線為每日 100g 建議目標</p>
+                <div class="flex justify-between text-[9px] text-gray-400 mt-2 px-1" id="chart-dates-pro"></div>
+                <p class="text-[9px] text-center text-gray-400 mt-4">※ 虛線為每日 100g 建議目標</p>
             </div>
         </div>
 
     </div>
 
     <script>
-        // 營養資料庫 (精準數值)
-        const nutritionDB = {
-            "烤雞胸肉": { c: 165, p: 31 }, "清蒸雞胸肉": { c: 110, p: 24 }, "烤雞腿肉": { c: 220, p: 24 },
-            "水煮蛋": { c: 75, p: 7 }, "茶葉蛋": { c: 75, p: 7 }, "荷包蛋": { c: 95, p: 7 },
-            "無糖豆漿": { c: 120, p: 13 }, "低脂鮮乳": { c: 100, p: 6 }, "希臘優格": { c: 90, p: 10 },
-            "炒青菜": { c: 85, p: 2 }, "燙青菜": { c: 35, p: 1 }, "花椰菜": { c: 30, p: 3 },
-            "地瓜": { c: 110, p: 1 }, "糙米飯": { c: 140, p: 3 }, "香蕉": { c: 90, p: 1 },
-            "堅果": { c: 155, p: 5 }, "小番茄": { c: 30, p: 1 }, "嫩豆腐": { c: 50, p: 5 },
-            "義大利麵": { c: 160, p: 6 }, "舒肥雞": { c: 120, p: 25 }, "鮭魚": { c: 200, p: 20 }
+        // 龐大的內建資料庫 (基準單位：每 100g 或 100ml)
+        const nutritionDB_Per100g = {
+            // 肉類與海鮮
+            "雞胸肉": { c: 110, p: 23 }, "烤雞胸": { c: 165, p: 31 }, "雞腿肉": { c: 140, p: 19 }, "烤雞腿": { c: 220, p: 24 },
+            "里肌肉": { c: 150, p: 22 }, "豬五花": { c: 360, p: 14 }, "牛腱": { c: 130, p: 28 }, "牛排": { c: 250, p: 26 },
+            "鮭魚": { c: 208, p: 20 }, "鱈魚": { c: 80, p: 17 }, "蝦子": { c: 90, p: 20 }, "鮪魚罐頭": { c: 110, p: 25 },
+            // 蛋與豆類
+            "水煮蛋": { c: 140, p: 13 }, "茶葉蛋": { c: 140, p: 13 }, "荷包蛋": { c: 190, p: 13 }, // 一顆蛋約50g
+            "無糖豆漿": { c: 35, p: 3.5 }, "傳統豆腐": { c: 88, p: 8.5 }, "嫩豆腐": { c: 50, p: 5 }, "毛豆": { c: 125, p: 11 },
+            // 主食類 (碳水化合物)
+            "白飯": { c: 183, p: 3 }, "糙米飯": { c: 110, p: 3 }, "地瓜": { c: 86, p: 1.6 }, "馬鈴薯": { c: 77, p: 2 },
+            "燕麥片": { c: 389, p: 16 }, "義大利麵": { c: 150, p: 5 }, "吐司": { c: 290, p: 9 }, "烏龍麵": { c: 120, p: 3 },
+            // 蔬菜類
+            "高麗菜": { c: 25, p: 1.3 }, "青江菜": { c: 16, p: 1.5 }, "花椰菜": { c: 30, p: 3 }, "空心菜": { c: 22, p: 2 },
+            "炒青菜": { c: 80, p: 2 }, "燙青菜": { c: 35, p: 1 }, "小黃瓜": { c: 15, p: 1 }, "番茄": { c: 18, p: 1 },
+            // 水果與點心零食
+            "香蕉": { c: 89, p: 1 }, "蘋果": { c: 52, p: 0.3 }, "芭樂": { c: 38, p: 1 }, "小番茄": { c: 30, p: 1 },
+            "堅果": { c: 600, p: 15 }, "洋芋片": { c: 530, p: 6 }, "巧克力": { c: 540, p: 7 }, "蛋糕": { c: 300, p: 4 },
+            "無糖優格": { c: 60, p: 4 }, "希臘優格": { c: 90, p: 10 }, "鮮奶": { c: 65, p: 3 }
         };
 
         const datePicker = document.getElementById('current-date');
         const today = new Date().toISOString().split('T')[0];
         datePicker.value = today;
 
-        let db = JSON.parse(localStorage.getItem('cat_v3_db')) || {};
+        let db = JSON.parse(localStorage.getItem('cat_v4_db')) || {};
 
         function initDayData(date) {
-            if (!db[date]) {
-                db[date] = { water: 0, records: [] };
-            }
+            if (!db[date]) { db[date] = { water: 0, records: [] }; }
             return db[date];
         }
 
@@ -155,10 +173,8 @@
         function switchTab(tab) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('button[id^="tab-"]').forEach(b => b.classList.remove('active-tab', 'text-cat-main'));
-            
             document.getElementById(`content-${tab}`).classList.add('active');
             document.getElementById(`tab-${tab}`).classList.add('active-tab', 'text-cat-main');
-            
             if(tab === 'stats') renderCharts();
         }
 
@@ -175,14 +191,27 @@
             updateUI();
         }
 
-        function autoSuggest() {
-            const val = document.getElementById('food-name').value;
-            for (let key in nutritionDB) {
-                if (val.includes(key)) {
-                    document.getElementById('food-calories').value = nutritionDB[key].c;
-                    document.getElementById('food-protein').value = nutritionDB[key].p;
+        // 重量與營養自動換算核心邏輯
+        function calculateNutrition() {
+            const nameInput = document.getElementById('food-name').value;
+            const weightInput = parseFloat(document.getElementById('food-weight').value);
+            
+            // 尋找資料庫中最匹配的食物
+            let matchedFood = null;
+            for (let key in nutritionDB_Per100g) {
+                if (nameInput.includes(key)) {
+                    matchedFood = nutritionDB_Per100g[key];
                     break;
                 }
+            }
+
+            // 如果有找到食物，且使用者有輸入重量，則自動換算
+            if (matchedFood && !isNaN(weightInput) && weightInput > 0) {
+                const calculatedCal = Math.round((matchedFood.c * weightInput) / 100);
+                const calculatedPro = Math.round((matchedFood.p * weightInput) / 100 * 10) / 10; // 保留一位小數
+                
+                document.getElementById('food-calories').value = calculatedCal;
+                document.getElementById('food-protein').value = calculatedPro;
             }
         }
 
@@ -190,10 +219,11 @@
             e.preventDefault();
             const date = datePicker.value;
             const name = document.getElementById('food-name').value;
-            const cal = parseInt(document.getElementById('food-calories').value) || 0;
-            const pro = parseInt(document.getElementById('food-protein').value) || 0;
+            const weight = document.getElementById('food-weight').value || "-";
+            const cal = parseFloat(document.getElementById('food-calories').value) || 0;
+            const pro = parseFloat(document.getElementById('food-protein').value) || 0;
             
-            db[date].records.push({ id: Date.now(), name, cal, pro });
+            db[date].records.push({ id: Date.now(), name, weight, cal, pro });
             save();
             document.getElementById('food-form').reset();
             updateUI();
@@ -205,29 +235,29 @@
             updateUI();
         }
 
-        function save() { localStorage.setItem('cat_v3_db', JSON.stringify(db)); }
+        function save() { localStorage.setItem('cat_v4_db', JSON.stringify(db)); }
 
         function updateUI() {
             const data = db[datePicker.value];
             document.getElementById('water-display').innerText = data.water || 0;
             document.getElementById('water-bar').style.width = `${((data.water || 0) / 2000) * 100}%`;
 
-            const totalCal = (data.records || []).reduce((s, r) => s + r.cal, 0);
-            const totalPro = (data.records || []).reduce((s, r) => s + r.pro, 0);
+            const totalCal = Math.round((data.records || []).reduce((s, r) => s + r.cal, 0));
+            const totalPro = Math.round((data.records || []).reduce((s, r) => s + r.pro, 0) * 10) / 10;
             
             document.getElementById('total-calories').innerText = totalCal;
             document.getElementById('total-protein').innerText = totalPro;
 
             const list = document.getElementById('food-list');
             list.innerHTML = (data.records || []).map(r => `
-                <li class="flex justify-between items-center bg-cat-bg p-4 rounded-2xl border border-cat-border">
-                    <div>
-                        <div class="text-sm font-bold">${r.name}</div>
-                        <div class="text-[10px] text-gray-500 font-medium">${r.cal} kcal / ${r.pro}g 蛋白</div>
+                <li class="flex justify-between items-center bg-white p-4 rounded-2xl border border-cat-border/50 mb-2">
+                    <div class="flex flex-col">
+                        <span class="text-sm font-bold">${r.name} <span class="text-[10px] text-gray-400 font-normal">(${r.weight} g/ml)</span></span>
+                        <span class="text-[10px] text-gray-400 font-medium mt-0.5">${r.cal} kcal / ${r.pro}g 蛋白</span>
                     </div>
-                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 hover:text-red-400 text-xl">✕</button>
+                    <button onclick="deleteRecord(${r.id})" class="text-cat-border hover:text-red-300 text-lg transition-colors">✕</button>
                 </li>
-            `).join('') || '<li class="text-center text-gray-400 text-xs py-10">尚無食物紀錄喵～</li>';
+            `).join('') || '<li class="text-center text-gray-300 text-[10px] py-10">目前尚無紀錄喵～</li>';
         }
 
         function renderCharts() {
@@ -241,11 +271,12 @@
             const calData = last7Days.map(date => (db[date]?.records || []).reduce((s,r) => s+r.cal, 0));
             const proData = last7Days.map(date => (db[date]?.records || []).reduce((s,r) => s+r.pro, 0));
 
-            document.getElementById('chart-dates').innerHTML = last7Days.map(d => `<span>${d.slice(8)}日</span>`).join('');
+            const datesHTML = last7Days.map(d => `<span>${d.slice(5).replace('-','/')}</span>`).join('');
+            document.getElementById('chart-dates-cal').innerHTML = datesHTML;
+            document.getElementById('chart-dates-pro').innerHTML = datesHTML;
 
-            // Draw SVG Line Charts
-            drawSVGLine('chart-cal-container', calData, 2000, '#BA7B4B');
-            drawSVGLine('chart-pro-container', proData, 120, '#7D8B6F', true);
+            drawSVGLine('chart-cal-container', calData, 2000, '#D3A27D');
+            drawSVGLine('chart-pro-container', proData, 120, '#A6B69E', true);
         }
 
         function drawSVGLine(containerId, data, maxVal, color, drawGoal = false) {
@@ -260,13 +291,13 @@
                 return `${x},${y}`;
             }).join(' ');
 
-            let goalLine = drawGoal ? `<line x1="0" y1="${h - (100/maxVal*h)}" x2="${w}" y2="${h - (100/maxVal*h)}" stroke="#ccc" stroke-dasharray="4" />` : '';
+            let goalLine = drawGoal ? `<line x1="0" y1="${h - (100/maxVal*h)}" x2="${w}" y2="${h - (100/maxVal*h)}" stroke="#EAE5DF" stroke-dasharray="4" />` : '';
 
             container.innerHTML = `
                 <svg width="${w}" height="${h}" class="overflow-visible">
                     ${goalLine}
                     <polyline points="${points}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                    ${data.map((val, i) => `<circle cx="${i * step}" cy="${h - (Math.min(val, maxVal) / maxVal * h)}" r="4" fill="${color}" />`).join('')}
+                    ${data.map((val, i) => `<circle cx="${i * step}" cy="${h - (Math.min(val, maxVal) / maxVal * h)}" r="4" fill="${color}" stroke="#fff" stroke-width="2" />`).join('')}
                 </svg>
             `;
         }
