@@ -10,6 +10,7 @@
         body { font-family: 'Noto Sans TC', sans-serif; color: #6B5E54; background-color: #FAF9F7; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .active-tab { color: #E8B490; border-bottom: 2px solid #E8B490; }
+        #famart-modal { background: rgba(0,0,0,0.4); }
     </style>
 </head>
 <body class="min-h-screen flex justify-center py-6 px-4">
@@ -29,8 +30,11 @@
                 
                 <div class="relative">
                     <input type="text" id="food-name" required placeholder="吃了什麼？(點擊右側搜尋營養)" class="w-full bg-gray-50 border-none rounded-xl p-3 pr-10 text-sm focus:ring-1 focus:ring-orange-200">
-                    <button type="button" onclick="searchFood()" id="search-btn" class="absolute right-2 top-2 p-1 text-gray-400 hover:text-orange-400 transition-colors" title="搜尋營養成分">
+                    <button type="button" onclick="searchFood()" id="search-btn" class="absolute right-9 top-2 p-1 text-gray-400 hover:text-orange-400 transition-colors" title="搜尋營養成分 (OpenFoodFacts)">
                         🔍
+                    </button>
+                    <button type="button" onclick="searchFamilyMart()" id="famart-btn" class="absolute right-2 top-2 p-1 text-gray-400 hover:text-green-500 transition-colors" title="搜尋全家商品">
+                        🏪
                     </button>
                 </div>
 
@@ -71,6 +75,19 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- 全家商品搜尋 Modal -->
+    <div id="famart-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex items-center gap-2">
+                <span class="text-lg">🏪</span>
+                <input type="text" id="famart-search" placeholder="搜尋全家商品名稱..." class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-green-200">
+                <button onclick="closeFamilyMart()" class="text-gray-400 hover:text-gray-600 px-2">✕</button>
+            </div>
+            <div id="famart-status" class="text-center text-xs text-gray-400 py-2"></div>
+            <ul id="famart-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
+        </div>
     </div>
 
     <script>
@@ -120,6 +137,136 @@
                 alert('搜尋失敗，請手動輸入數值。');
             } finally {
                 btn.innerText = '🔍';
+            }
+        }
+
+        // ===== 全家便利商店 商品查詢 =====
+        const FAMART_BASE = 'https://foodsafety.family.com.tw/Web_FFD_2022/ws/';
+        // 透過 CORS Proxy（瀏覽器直接呼叫全家 API 會被 CORS 擋下）
+        const CORS_PROXY = 'https://corsproxy.io/?url=';
+        let famartProducts = null; // 扁平化後的商品索引
+        let famartLoading = false;
+
+        async function famartPost(endpoint, body) {
+            const url = CORS_PROXY + encodeURIComponent(FAMART_BASE + endpoint);
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body || {})
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        }
+
+        async function loadFamartProducts(force = false) {
+            if (famartProducts && !force) return famartProducts;
+            const cached = localStorage.getItem('famart_products_v1');
+            if (cached && !force) {
+                try {
+                    const obj = JSON.parse(cached);
+                    // 24 小時內有效
+                    if (Date.now() - obj.ts < 86400000) {
+                        famartProducts = obj.list;
+                        return famartProducts;
+                    }
+                } catch (e) {}
+            }
+            const data = await famartPost('QueryFsProductListByFilter', { KEYWORD: '', MEMBER: 'N' });
+            if (data.RESULT_CODE !== '00') throw new Error(data.RESULT_DESC || '取得失敗');
+            const flat = [];
+            (data.LIST || []).forEach(cat => {
+                (cat.ITEM || []).forEach(it => {
+                    flat.push({
+                        cmno: it.CMNO,
+                        name: it.PRODNAME,
+                        note: it.NOTE || '',
+                        category: cat.CATEGORY_NAME
+                    });
+                });
+            });
+            famartProducts = flat;
+            localStorage.setItem('famart_products_v1', JSON.stringify({ ts: Date.now(), list: flat }));
+            return flat;
+        }
+
+        function openFamilyMart() {
+            document.getElementById('famart-modal').classList.remove('hidden');
+            document.getElementById('famart-modal').classList.add('flex');
+            const input = document.getElementById('famart-search');
+            input.value = document.getElementById('food-name').value || '';
+            setTimeout(() => input.focus(), 50);
+            renderFamartList();
+        }
+
+        function closeFamilyMart() {
+            document.getElementById('famart-modal').classList.add('hidden');
+            document.getElementById('famart-modal').classList.remove('flex');
+        }
+
+        async function searchFamilyMart() {
+            openFamilyMart();
+            if (famartProducts) return;
+            const status = document.getElementById('famart-status');
+            if (famartLoading) return;
+            famartLoading = true;
+            status.innerText = '⏳ 載入全家商品中（首次需數秒）...';
+            try {
+                await loadFamartProducts();
+                status.innerText = `共 ${famartProducts.length} 項商品（資料快取 24 小時）`;
+                renderFamartList();
+            } catch (e) {
+                console.error(e);
+                status.innerText = '❌ 載入失敗：' + e.message;
+            } finally {
+                famartLoading = false;
+            }
+        }
+
+        function renderFamartList() {
+            const list = document.getElementById('famart-list');
+            if (!famartProducts) { list.innerHTML = ''; return; }
+            const kw = document.getElementById('famart-search').value.trim().toLowerCase();
+            let items = famartProducts;
+            if (kw) items = items.filter(p => p.name.toLowerCase().includes(kw));
+            items = items.slice(0, 200);
+            if (!items.length) { list.innerHTML = '<li class="text-center text-gray-400 text-xs py-4">沒有相符的商品</li>'; return; }
+            list.innerHTML = items.map(p => `
+                <li>
+                    <button type="button" onclick="pickFamart('${p.cmno}')" class="w-full text-left bg-gray-50 hover:bg-green-50 rounded-xl p-3 transition-colors">
+                        <div class="font-bold text-xs">${p.name}</div>
+                        <div class="text-[10px] text-gray-400 mt-1">${p.category} · ${p.note}</div>
+                    </button>
+                </li>
+            `).join('');
+        }
+
+        document.addEventListener('input', (e) => {
+            if (e.target && e.target.id === 'famart-search') renderFamartList();
+        });
+
+        async function pickFamart(cmno) {
+            const status = document.getElementById('famart-status');
+            status.innerText = '⏳ 取得營養資訊中...';
+            try {
+                const data = await famartPost('QueryFsProductByItem', { CMNO: cmno });
+                if (data.RESULT_CODE !== '00' || !data.LIST || !data.LIST.length) {
+                    throw new Error(data.RESULT_DESC || '查無資料');
+                }
+                const item = data.LIST[0];
+                const nut = (item.NUTRIENTS && item.NUTRIENTS[0]) || {};
+                // 從 NOTE 解析每份熱量，例如「每份熱量174大卡; 每份規格105公克;(本包裝含1份);」
+                const calMatch = (item.NOTE || '').match(/熱量\s*([\d.]+)\s*大卡/);
+                const portionMatch = (item.NOTE || '').match(/含\s*([\d.]+)\s*份/);
+                const cal = calMatch ? parseFloat(calMatch[1]) : 0;
+                const protein = nut.PROTEIN != null ? parseFloat(nut.PROTEIN) : 0;
+                const portions = portionMatch ? parseFloat(portionMatch[1]) : 1;
+                document.getElementById('food-name').value = item.PRODNAME;
+                document.getElementById('food-calories').value = Math.round(cal * portions);
+                document.getElementById('food-protein').value = Math.round(protein * portions * 10) / 10;
+                closeFamilyMart();
+            } catch (e) {
+                console.error(e);
+                status.innerText = '❌ 取得失敗：' + e.message;
             }
         }
 
