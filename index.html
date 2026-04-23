@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 曲線全開完整版</title>
+    <title>日常貓日誌 🐾 綜合曲線版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; background-color: #FAF8F5; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .task-checkbox:checked + label { text-decoration: line-through; color: #A7B49E; }
         
         /* 智能按鈕狀態：預設白色，透過 JS 添加 is-active 改變顏色 */
         .food-btn { background-color: #FFFFFF; border: 1px solid #F0EBE1; color: #6B5E54; transition: all 0.2s ease; }
@@ -55,11 +54,15 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between items-center mt-4 bg-[#FAF8F5] rounded-2xl p-3 border border-[#F0EBE1]">
-                    <div class="flex items-center gap-2">
-                        <input type="checkbox" id="check-exercise" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#E8B490]">
-                        <label for="check-exercise" class="text-xs font-bold text-[#6B5E54]">🏃 運動</label>
+                <div class="grid grid-cols-2 gap-3 mt-4 bg-[#FAF8F5] rounded-2xl p-3 border border-[#F0EBE1]">
+                    <div class="flex items-center gap-2 col-span-2">
+                        <input type="checkbox" id="check-exercise" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#818CF8]">
+                        <label for="check-exercise" class="text-xs font-bold text-[#818CF8]">🏃 運動</label>
                         <input type="time" id="input-exercise-time" onchange="saveDailyStatus()" class="bg-white border border-[#F0EBE1] rounded-lg px-2 py-1 text-[10px] focus:outline-none text-gray-500 font-bold ml-1">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="check-snack" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FBBF24]">
+                        <label for="check-snack" class="text-xs font-bold text-[#FBBF24]">🍪 吃零食</label>
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="check-period" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FCA5A5]">
@@ -190,28 +193,6 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
-                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🌙 夜間防護線</h2>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                        <label for="t1" class="text-sm font-bold cursor-pointer w-full">21:00 開始：growwithjo</label>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                        <label for="t2" class="text-sm font-bold cursor-pointer w-full">22:00 完成核心與收操</label>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                        <label for="t3" class="text-sm font-bold cursor-pointer w-full">22:30 數位斷網</label>
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                        <label for="t4" class="text-sm font-bold cursor-pointer w-full">23:30 準時入睡</label>
-                    </div>
-                </div>
-            </div>
-
         </div>
 
         <div id="view-stats" class="view-content space-y-4">
@@ -222,16 +203,23 @@
                 </div>
                 
                 <h3 class="text-[10px] font-black text-gray-500 mb-2">🔥 過去 7 天熱量趨勢 (大卡)</h3>
-                <div id="chart-cal-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
+                <div id="chart-cal-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
                 <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">🥩 過去 7 天蛋白趨勢 (g)</h3>
-                <div id="chart-pro-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
+                <div id="chart-pro-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
+                
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">💧 過去 7 天水分進度 (ml)</h3>
+                <div id="chart-water-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">🏃‍♀️ 過去 7 天運動時間 (24小時制)</h3>
-                <div id="chart-ex-time-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
-
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">🩸 過去 7 天生理期狀態 (0=無, 1=有)</h3>
-                <div id="chart-period-7" class="w-full h-20 bg-[#FAF8F5] rounded-xl mb-1 relative overflow-hidden border border-[#F0EBE1]"></div>
+                <div class="mt-6 border-t border-[#F0EBE1] pt-4">
+                    <h3 class="text-[10px] font-black text-gray-500 mb-1">🏃‍♀️運動(時) / 🩸生理期 / 🍪零食 綜合狀態</h3>
+                    <div class="flex gap-3 mb-2">
+                        <span class="text-[8px] font-bold text-[#818CF8]">➖ 運動時間(0-24)</span>
+                        <span class="text-[8px] font-bold text-red-400">● 生理期(觸發)</span>
+                        <span class="text-[8px] font-bold text-[#FBBF24]">● 吃零食(觸發)</span>
+                    </div>
+                    <div id="chart-combined-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-1 relative overflow-hidden border border-[#F0EBE1]"></div>
+                </div>
                 
                 <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-4 font-bold" id="chart-dates-labels"></div>
             </div>
@@ -256,8 +244,8 @@
         }
 
         function initDayData(date) {
-            if (!db[date]) db[date] = { water: 0, records: [], exercise: false, exerciseTime: '', period: false, tasks: {t1:false, t2:false, t3:false, t4:false} };
-            if (db[date].tasks === undefined) db[date].tasks = {t1:false, t2:false, t3:false, t4:false};
+            if (!db[date]) db[date] = { water: 0, records: [], exercise: false, exerciseTime: '', period: false, snack: false };
+            if (db[date].snack === undefined) db[date].snack = false;
             return db[date];
         }
 
@@ -273,6 +261,7 @@
             db[d].exercise = document.getElementById('check-exercise').checked;
             db[d].exerciseTime = document.getElementById('input-exercise-time').value;
             db[d].period = document.getElementById('check-period').checked;
+            db[d].snack = document.getElementById('check-snack').checked;
             save(); updateUI();
         }
 
@@ -300,19 +289,8 @@
             save(); updateUI();
         }
 
-        function addWater(ml) { db[datePicker.value].water = Math.min((db[datePicker.value].water || 0) + ml, 2000); save(); updateUI(); }
+        function addWater(ml) { db[datePicker.value].water = Math.min((db[datePicker.value].water || 0) + ml, 3000); save(); updateUI(); }
         function resetWater() { db[datePicker.value].water = 0; save(); updateUI(); }
-
-        function saveTasks() {
-            const d = datePicker.value;
-            db[d].tasks = { 
-                t1: document.getElementById('t1').checked, 
-                t2: document.getElementById('t2').checked, 
-                t3: document.getElementById('t3').checked, 
-                t4: document.getElementById('t4').checked 
-            };
-            save();
-        }
 
         function updateUI() {
             const data = db[datePicker.value];
@@ -320,6 +298,7 @@
             document.getElementById('check-exercise').checked = data.exercise;
             document.getElementById('input-exercise-time').value = data.exerciseTime;
             document.getElementById('check-period').checked = data.period;
+            document.getElementById('check-snack').checked = data.snack;
             
             let target = (data.exercise && !data.period) ? 1400 : 1300;
             document.getElementById('target-cal').innerText = target;
@@ -337,12 +316,6 @@
                     <button onclick="deleteRecord(${r.id})" class="text-gray-300 px-2 font-bold hover:text-red-400 transition-colors">✕</button>
                 </li>`).join('') || '<li class="text-center text-gray-300 text-[10px] py-2">點擊圖示紀錄喵～</li>';
             
-            // 任務防線
-            document.getElementById('t1').checked = data.tasks?.t1 || false;
-            document.getElementById('t2').checked = data.tasks?.t2 || false;
-            document.getElementById('t3').checked = data.tasks?.t3 || false;
-            document.getElementById('t4').checked = data.tasks?.t4 || false;
-
             // ===== 智能按鈕狀態更新 =====
             const addedNames = (data.records || []).map(r => r.name);
             document.querySelectorAll('.food-btn').forEach(btn => {
@@ -354,12 +327,11 @@
             });
         }
 
-        // 帶有標尺的 SVG 繪圖函數
-        function drawLineChart(id, dataArray, maxVal, color, yLabels, isStep = false) {
+        // 單一曲線繪圖
+        function drawLineChart(id, dataArray, maxVal, color, yLabels) {
             const container = document.getElementById(id);
             if (!container) return;
             
-            // 設定邊距，左側留 25px 給數字標尺
             const pTop = 15, pBottom = 15, pRight = 10, pLeft = 25; 
             const w = container.clientWidth;
             const h = container.clientHeight;
@@ -367,7 +339,6 @@
             const drawH = h - pTop - pBottom;
             const step = drawW / (dataArray.length - 1);
 
-            // 繪製背景格線與 Y 軸數字
             let gridHTML = '';
             yLabels.forEach(val => {
                 const y = pTop + drawH - (val / maxVal * drawH);
@@ -375,15 +346,12 @@
                 gridHTML += `<text x="2" y="${y}" font-size="8" fill="#9CA3AF" font-weight="bold" alignment-baseline="middle">${val}</text>`;
             });
 
-            // 繪製數據連線
             const pts = dataArray.map((v, i) => {
                 const y = pTop + drawH - (Math.min(v, maxVal) / maxVal * drawH);
                 return `${pLeft + (i * step)},${y}`;
             }).join(' ');
 
-            // 繪製數據圓點
             const circles = dataArray.map((v, i) => {
-                if(v === 0 && !isStep) return ''; // 非階梯圖隱藏 0 的點
                 const y = pTop + drawH - (Math.min(v, maxVal) / maxVal * drawH);
                 return `<circle cx="${pLeft + (i * step)}" cy="${y}" r="3" fill="${color}" stroke="#fff" stroke-width="1.5" />`;
             }).join('');
@@ -395,6 +363,50 @@
             </svg>`;
         }
 
+        // 綜合曲線繪圖 (多線程)
+        function drawMultiLineChart(id, datasets, yLabels) {
+            const container = document.getElementById(id);
+            if (!container) return;
+            
+            const pTop = 15, pBottom = 15, pRight = 10, pLeft = 25; 
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            const drawW = w - pLeft - pRight;
+            const drawH = h - pTop - pBottom;
+            const step = drawW / (datasets[0].data.length - 1);
+
+            let gridHTML = '';
+            yLabels.forEach(val => {
+                const y = pTop + drawH - (val / 24 * drawH); // 以 24 為統一標尺
+                gridHTML += `<line x1="${pLeft}" y1="${y}" x2="${w-pRight}" y2="${y}" stroke="#F0EBE1" stroke-dasharray="2,2" />`;
+                gridHTML += `<text x="2" y="${y}" font-size="8" fill="#9CA3AF" font-weight="bold" alignment-baseline="middle">${val}</text>`;
+            });
+
+            let contentHTML = '';
+            datasets.forEach(ds => {
+                const pts = ds.data.map((v, i) => {
+                    const y = pTop + drawH - (Math.min(v, ds.max) / ds.max * drawH);
+                    return `${pLeft + (i * step)},${y}`;
+                }).join(' ');
+
+                const circles = ds.data.map((v, i) => {
+                    if(v === 0 && ds.isBoolean) return ''; // Boolean 為 0 時不畫點，畫面更乾淨
+                    const y = pTop + drawH - (Math.min(v, ds.max) / ds.max * drawH);
+                    return `<circle cx="${pLeft + (i * step)}" cy="${y}" r="${ds.isBoolean ? 4 : 3}" fill="${ds.color}" stroke="#fff" stroke-width="1.5" />`;
+                }).join('');
+
+                if(!ds.isBoolean) {
+                    contentHTML += `<polyline points="${pts}" fill="none" stroke="${ds.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />`;
+                }
+                contentHTML += circles;
+            });
+
+            container.innerHTML = `<svg width="${w}" height="${h}" class="overflow-visible">
+                ${gridHTML}
+                ${contentHTML}
+            </svg>`;
+        }
+
         function renderStats() {
             const baseDate = new Date(statsDatePicker.value);
             const days7 = [];
@@ -402,20 +414,28 @@
             
             const cal7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.cal, 0));
             const pro7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.pro, 0));
+            const water7 = days7.map(d => db[d]?.water || 0);
+            
             const exTime7 = days7.map(d => {
                 if(!db[d]?.exercise || !db[d]?.exerciseTime) return 0;
                 const [hh, mm] = db[d].exerciseTime.split(':').map(Number);
                 return hh + (mm/60);
             });
-            const period7 = days7.map(d => db[d]?.period ? 1 : 0);
+            const period7 = days7.map(d => db[d]?.period ? 24 : 0); // 映射到 24 方便共用 Y 軸
+            const snack7 = days7.map(d => db[d]?.snack ? 24 : 0); // 映射到 24 方便共用 Y 軸
             
             document.getElementById('chart-dates-labels').innerHTML = days7.map(d => `<span>${d.slice(5).replace('-','/')}</span>`).join('');
             
-            // 呼叫繪圖，並傳入要標示的 Y 軸數值陣列
             drawLineChart('chart-cal-7', cal7, 2000, '#E8B490', [0, 1000, 2000]);
             drawLineChart('chart-pro-7', pro7, 120, '#B8C5B0', [0, 60, 120]);
-            drawLineChart('chart-ex-time-7', exTime7, 24, '#818CF8', [0, 12, 24]);
-            drawLineChart('chart-period-7', period7, 1, '#FCA5A5', [0, 1], true);
+            drawLineChart('chart-water-7', water7, 2000, '#8DB4CB', [0, 1000, 2000]);
+            
+            // 綜合繪圖
+            drawMultiLineChart('chart-combined-7', [
+                { data: exTime7, max: 24, color: '#818CF8', isBoolean: false },
+                { data: period7, max: 24, color: '#FCA5A5', isBoolean: true },
+                { data: snack7, max: 24, color: '#FBBF24', isBoolean: true }
+            ], [0, 12, 24]);
         }
         
         loadDateData();
