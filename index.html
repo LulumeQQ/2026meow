@@ -326,12 +326,25 @@
             const kw = toCN(kwRaw); // 轉為簡體才能搜到資料
             status.innerText = `⏳ 搜尋中：${kw}`;
             list.innerHTML = '';
-            try {
-                const target = 'https://www.fatsecret.cn/热量营养/search?q=' + encodeURIComponent(kw);
-                const res = await fetch(CORS_PROXY + encodeURIComponent(target));
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const html = await res.text();
-                const items = parseFatSecretHtml(html);
+            const target = 'https://www.fatsecret.cn/热量营养/search?q=' + encodeURIComponent(kw);
+            // 多個 CORS proxy 依序嘗試，某些連不到 fatsecret.cn 就換下一個
+            const proxies = [
+                'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(target),
+                'https://corsproxy.io/?url=' + encodeURIComponent(target),
+                'https://api.allorigins.win/raw?url=' + encodeURIComponent(target)
+            ];
+            let html = null, lastErr = null;
+            for (const p of proxies) {
+                try {
+                    const res = await fetch(p);
+                    if (!res.ok) { lastErr = 'HTTP ' + res.status; continue; }
+                    const text = await res.text();
+                    if (text && text.length > 1000 && text.includes('prominent')) { html = text; break; }
+                    lastErr = '回應內容異常';
+                } catch (e) { lastErr = e.message; }
+            }
+            if (!html) { status.innerText = '❌ 搜尋失敗：' + (lastErr || '所有 proxy 都不可用'); return; }
+            const items = parseFatSecretHtml(html);
                 if (!items.length) { status.innerText = '找不到結果'; return; }
                 status.innerText = `找到 ${items.length} 筆結果`;
                 list.innerHTML = items.map((it, i) => `
@@ -351,29 +364,24 @@
                         closeFatSecret();
                     });
                 });
-            } catch (e) {
-                console.error(e);
-                status.innerText = '❌ 搜尋失敗：' + e.message;
-            }
         }
 
         function parseFatSecretHtml(html) {
             const results = [];
             const doc = new DOMParser().parseFromString(html, 'text/html');
-            // 每個結果是一個 <a class="prominent"> 名稱 + <div class="smallText"> 營養數據
+            // 結果結構：<a class="prominent">名稱</a><div class="smallText greyText greyLink">每100克 - 卡路里:164千卡 | 脂肪:... | 碳水物:... | 蛋白质:30.76克 ...</div>
             const anchors = doc.querySelectorAll('a.prominent');
             anchors.forEach(a => {
                 const name = a.textContent.trim();
                 if (!name) return;
-                // 往後找到同一區塊內的描述文字
-                let parent = a.closest('table, tr, td, div') || a.parentElement;
-                let text = parent ? parent.textContent : '';
-                // 限縮範圍：取名稱之後的那段
-                const idx = text.indexOf(name);
-                if (idx >= 0) text = text.slice(idx + name.length, idx + name.length + 400);
+                // 找同一 td/parent 內的 .smallText
+                const wrap = a.closest('td') || a.parentElement;
+                if (!wrap) return;
+                const small = wrap.querySelector('.smallText');
+                const text = (small ? small.textContent : '').replace(/\s+/g, ' ').trim();
                 const calM = text.match(/卡路里\s*[:：]\s*([\d.]+)\s*千卡/);
                 const proM = text.match(/蛋白质\s*[:：]\s*([\d.]+)\s*克/);
-                const servM = text.match(/(每[^|]+?)\s*-\s*卡路里/);
+                const servM = text.match(/^(每[^-|]+?)\s*-\s*卡路里/);
                 if (calM && proM) {
                     results.push({
                         name,
