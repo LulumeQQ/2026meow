@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 極簡指令版</title>
+    <title>日常貓日誌 🐾 AI內核無限版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -30,6 +30,18 @@
         .active-tab { color: #E8B490; border-bottom: 3px solid #E8B490; }
         input[type="date"] { color: #6B5E54; font-weight: bold; background: transparent; }
         .task-checkbox:checked + label { text-decoration: line-through; color: #B8C5B0; }
+        
+        /* Loading 動畫 */
+        .loader {
+            border: 3px solid #F2EEE7;
+            border-top: 3px solid #E8B490;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="min-h-screen flex justify-center py-6 px-4">
@@ -50,37 +62,36 @@
         </div>
 
         <div class="flex border-b border-cat-border bg-cat-card rounded-t-[2rem] px-4 pt-1">
-            <button id="tab-log" onclick="switchTab('log')" class="flex-1 py-3 text-sm font-bold active-tab transition-all">AI 快速分析</button>
+            <button id="tab-log" onclick="switchTab('log')" class="flex-1 py-3 text-sm font-bold active-tab transition-all">無限資料庫</button>
             <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-3 text-sm font-bold text-gray-400 transition-all">趨勢圖表</button>
         </div>
 
         <div id="content-log" class="tab-content active space-y-4">
             
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold flex items-center gap-2 mb-3 text-sm text-cat-main">📸 讓 Gemini 幫你算</h2>
-                <p class="text-[10px] text-gray-400 mb-4 leading-relaxed">點擊後將自動複製提問詞並前往 Gemini。請直接在輸入框「長按貼上」並附上照片喵！</p>
+                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-cat-main">🔍 輸入名稱，AI 直接查</h2>
                 
-                <button onclick="copyAndOpenGemini()" class="w-full bg-[#FFF9F5] text-cat-main py-4 rounded-2xl text-sm font-bold border border-[#FBE3D5] hover:bg-[#FBE3D5] transition-all flex justify-center items-center gap-2 shadow-sm">
-                    <span>✨ 複製指令並開啟 Gemini</span>
-                </button>
-            </div>
+                <form id="food-form" class="space-y-3 mb-6 bg-cat-bg p-4 rounded-2xl relative">
+                    
+                    <div class="flex gap-2">
+                        <input type="text" id="food-name" required placeholder="如: 全家 義式烤雞胸" autocomplete="off" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main shadow-sm">
+                        <button type="button" onclick="fetchFromGemini()" id="search-btn" class="bg-[#FFF9F5] text-cat-main px-4 rounded-xl text-sm font-bold border border-[#FBE3D5] hover:bg-[#FBE3D5] transition-colors whitespace-nowrap">
+                            智能查詢
+                        </button>
+                    </div>
 
-            <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-cat-green">✍️ 填入 AI 給您的數據</h2>
-                
-                <form id="food-form" class="space-y-3 mb-6 bg-cat-bg p-4 rounded-2xl">
-                    <input type="text" id="food-name" required placeholder="這餐吃了什麼？" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main">
-                    <div class="grid grid-cols-2 gap-3">
+                    <div class="grid grid-cols-2 gap-3 mt-2">
                         <div class="relative">
-                            <input type="number" id="food-calories" required placeholder="熱量" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none">
+                            <input type="number" id="food-calories" required placeholder="熱量" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none shadow-sm">
                             <span class="absolute right-3 top-3 text-[10px] text-gray-300">kcal</span>
                         </div>
                         <div class="relative">
-                            <input type="number" id="food-protein" required placeholder="蛋白" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none">
+                            <input type="number" id="food-protein" required placeholder="蛋白" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none shadow-sm">
                             <span class="absolute right-3 top-3 text-[10px] text-gray-300">g</span>
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-cat-text text-white py-3 rounded-xl text-sm font-bold hover:bg-black transition-colors">儲存紀錄</button>
+                    
+                    <button type="submit" class="w-full bg-cat-text text-white py-3 rounded-xl text-sm font-bold hover:bg-black transition-colors shadow-sm mt-2">儲存紀錄</button>
                 </form>
 
                 <div class="grid grid-cols-2 gap-3 text-center mb-4">
@@ -146,46 +157,68 @@
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cat_v11_db')) || {};
+        // ==========================================
+        // ⚠️ 請在這裡貼上您從 Google AI Studio 申請的 API 金鑰
+        // ==========================================
+        const API_KEY = "AIzaSyDLca_2wBzv3wTlkzlVFr5CEBJykdhyLhs";
+
+        let db = JSON.parse(localStorage.getItem('cat_v13_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
 
-        // --- iPhone 專用：同步解決複製與跳轉衝突 ---
-        function copyAndOpenGemini() {
-            const prompt = `1. 估算照片中食物的總熱量與蛋白質\n2. 複製查到的食物名稱`;
+        // --- 核心：直接呼叫 Gemini API 獲取營養素 ---
+        async function fetchFromGemini() {
+            const foodName = document.getElementById('food-name').value.trim();
+            if (!foodName) {
+                alert("請先輸入食物名稱喵！");
+                return;
+            }
 
-            // 步驟一：建立一個實體的文字框，並在畫面上維持隱形
-            const textArea = document.createElement("textarea");
-            textArea.value = prompt;
-            textArea.style.position = "fixed";
-            textArea.style.top = "50%";
-            textArea.style.left = "50%";
-            textArea.style.opacity = "0"; // 設為透明以躲避視覺，但維持在 DOM 內讓 iOS 可以選取
-            
-            // 步驟二：強制加入畫面並選取
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.setSelectionRange(0, 99999); // 專為 iOS Safari 設計的全選指令
+            if (API_KEY === "AIzaSyDLca_2wBzv3wTlkzlVFr5CEBJykdhyLhs") {
+                alert("請先用文字編輯器打開 HTML，在第 280 行填入您的 Google API 金鑰才能使用無限查詢功能喔！");
+                return;
+            }
 
-            // 步驟三：同步執行複製
+            const btn = document.getElementById('search-btn');
+            btn.innerHTML = '<div class="loader"></div> 查詢中';
+            btn.disabled = true;
+
+            // 嚴格規定 AI 只回傳 JSON 格式
+            const prompt = `你是一個營養資料庫 API。請查詢或合理估算「${foodName}」的預估熱量(大卡)和蛋白質(克)。如果使用者沒有提供重量，請以一般超商常見單份包裝或餐廳一般份量為準。請嚴格只回傳 JSON 格式，不要包含任何 markdown 標籤(如 \`\`\`json)、不要解釋、不要有其他文字。格式範例：{"cal": 180, "pro": 5.5}`;
+
             try {
-                document.execCommand('copy');
-            } catch (err) {
-                console.error("複製失敗", err);
-            }
-            
-            // 清理隱形文字框
-            document.body.removeChild(textArea);
+                // 呼叫 Gemini 1.5 Flash (速度最快)
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }]
+                    })
+                });
 
-            // 步驟四：在同一個執行序中立刻開啟新視窗，確保不被 iOS 擋下
-            window.open('https://gemini.google.com/', '_blank');
+                const data = await response.json();
+                let textResult = data.candidates[0].content.parts[0].text;
+                
+                // 清理可能出現的 markdown 標籤並解析 JSON
+                textResult = textResult.replace(/```json/g, '').replace(/```/g, '').trim();
+                const nutrition = JSON.parse(textResult);
+
+                // 自動填入輸入框
+                document.getElementById('food-calories').value = Math.round(nutrition.cal);
+                document.getElementById('food-protein').value = Math.round(nutrition.pro * 10) / 10;
+                
+            } catch (error) {
+                console.error("API 查詢失敗", error);
+                alert("查詢失敗，可能是名稱太冷門，或是 API 連線有問題。請手動輸入喵！");
+            } finally {
+                btn.innerHTML = '智能查詢';
+                btn.disabled = false;
+            }
         }
-        // ----------------------------------------
 
+        // --- 以下為既有介面邏輯 ---
         function initDayData(date) {
-            if (!db[date]) { 
-                db[date] = { mode: 'weekday', water: 0, records: [], tasks: { t1: false, t2: false, t3: false, t4: false } }; 
-            }
+            if (!db[date]) { db[date] = { mode: 'weekday', water: 0, records: [], tasks: { t1: false, t2: false, t3: false, t4: false } }; }
             return db[date];
         }
 
@@ -218,7 +251,7 @@
             }
         }
 
-        function save() { localStorage.setItem('cat_v11_db', JSON.stringify(db)); }
+        function save() { localStorage.setItem('cat_v13_db', JSON.stringify(db)); }
 
         document.getElementById('food-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -232,12 +265,7 @@
             updateUI();
         });
 
-        function deleteRecord(id) {
-            db[datePicker.value].records = db[datePicker.value].records.filter(r => r.id !== id);
-            save();
-            updateUI();
-        }
-
+        function deleteRecord(id) { db[datePicker.value].records = db[datePicker.value].records.filter(r => r.id !== id); save(); updateUI(); }
         function addWater(ml) { db[datePicker.value].water = Math.min((db[datePicker.value].water || 0) + ml, 2000); save(); updateUI(); }
         function resetWater() { db[datePicker.value].water = 0; save(); updateUI(); }
         function saveTasks() {
@@ -269,7 +297,7 @@
                     <div class="flex flex-col text-left"><span class="text-sm font-bold text-cat-text">${r.name}</span><span class="text-[9px] text-gray-400">${r.cal} kcal / ${r.pro}g 蛋白</span></div>
                     <button onclick="deleteRecord(${r.id})" class="text-gray-300">✕</button>
                 </li>
-            `).join('') || '<li class="text-center text-gray-300 text-[10px] py-4">等待 AI 分析結果...</li>';
+            `).join('') || '<li class="text-center text-gray-300 text-[10px] py-4">今天還沒紀錄喵～</li>';
             document.getElementById('t1').checked = data.tasks?.t1 || false;
             document.getElementById('t2').checked = data.tasks?.t2 || false;
             document.getElementById('t3').checked = data.tasks?.t3 || false;
