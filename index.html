@@ -44,6 +44,15 @@
                     </button>
                 </div>
 
+                <div class="flex gap-2">
+                    <button type="button" onclick="openFatSecretApp()" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-medium rounded-xl py-2 transition-colors">
+                        📱 開 FatSecret App
+                    </button>
+                    <button type="button" onclick="openFsPaste()" class="flex-1 bg-purple-50 hover:bg-purple-100 text-purple-600 text-xs font-medium rounded-xl py-2 transition-colors">
+                        📋 貼上 App 資料
+                    </button>
+                </div>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div class="relative">
                         <input type="number" id="food-amount" value="1" step="any" min="0" placeholder="份量" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
@@ -127,6 +136,29 @@
             </div>
             <div id="fs-status" class="text-center text-xs text-gray-400 py-2">輸入關鍵字按「搜尋」或 Enter</div>
             <ul id="fs-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
+        </div>
+    </div>
+
+    <!-- FatSecret App 貼上資料 Modal -->
+    <div id="fs-paste-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this)closeFsPaste()">
+        <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex items-center gap-2">
+                <span class="text-lg">📋</span>
+                <span class="flex-1 text-sm font-bold">貼上 FatSecret App 資料</span>
+                <button type="button" onclick="closeFsPaste()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
+            </div>
+            <div class="p-4 space-y-3 overflow-y-auto">
+                <div class="text-[11px] text-gray-500 leading-relaxed bg-purple-50 rounded-xl p-3">
+                    在 FatSecret App 中找到食物 → 長按或選取營養資訊文字 → 複製 → 回來這裡貼上。<br>
+                    自動辨識：<b>卡路里 / 蛋白質 / 份量</b>
+                </div>
+                <textarea id="fs-paste-text" rows="6" placeholder="範例：&#10;鸡胸肉 - Myprotein&#10;每100克&#10;卡路里 164 千卡&#10;蛋白质 30.76 克" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-1 focus:ring-purple-300 focus:border-purple-300"></textarea>
+                <div class="flex gap-2">
+                    <button type="button" onclick="fsPasteFromClipboard()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium rounded-xl py-2">📥 從剪貼簿讀取</button>
+                    <button type="button" onclick="fsParsePaste()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white text-xs font-bold rounded-xl py-2">✓ 解析並帶入</button>
+                </div>
+                <div id="fs-paste-status" class="text-center text-xs text-gray-400"></div>
+            </div>
         </div>
     </div>
 
@@ -353,6 +385,7 @@
             if (e.key === 'Escape') {
                 closeFamilyMart();
                 closeFatSecret();
+                closeFsPaste();
             }
         });
 
@@ -374,6 +407,99 @@
             openFatSecret();
             if (document.getElementById('fs-search').value.trim()) fsDoSearch();
         }
+
+        // ===== 開啟 FatSecret App（深連結，3 秒後 fallback 到行動版網頁）=====
+        function openFatSecretApp() {
+            const kwRaw = (document.getElementById('food-name').value || '').trim();
+            const kw = kwRaw ? toCN(kwRaw) : '';
+            // FatSecret App 公開的 URL Scheme（iOS/Android 均支援，搜尋 deep link 不保證有效，所以同時備好網頁 fallback）
+            const appUrl = kw ? `fatsecret://search?q=${encodeURIComponent(kw)}` : 'fatsecret://';
+            const webUrl = kw
+                ? `https://m.fatsecret.cn/热量营养/search?q=${encodeURIComponent(kw)}`
+                : 'https://m.fatsecret.cn/';
+            // 嘗試開 App
+            const start = Date.now();
+            const fallback = setTimeout(() => {
+                // 如果使用者沒切走（仍在頁面）→ 開行動版網頁
+                if (Date.now() - start < 3500 && !document.hidden) {
+                    window.open(webUrl, '_blank');
+                }
+            }, 1500);
+            // 監測 visibilitychange：成功開 App 會切走，取消 fallback
+            const onHide = () => { if (document.hidden) { clearTimeout(fallback); document.removeEventListener('visibilitychange', onHide); } };
+            document.addEventListener('visibilitychange', onHide);
+            // 用 location.href 觸發 scheme（比 iframe 在 iOS 上更可靠）
+            window.location.href = appUrl;
+        }
+
+        // ===== 貼上 App 資料 Modal =====
+        function openFsPaste() {
+            const m = document.getElementById('fs-paste-modal');
+            m.classList.remove('hidden'); m.classList.add('flex');
+            const ta = document.getElementById('fs-paste-text');
+            // 預設帶入目前食物名稱方便看
+            const name = (document.getElementById('food-name').value || '').trim();
+            if (name && !ta.value) ta.value = name + '\n';
+            setTimeout(() => ta.focus(), 50);
+            document.getElementById('fs-paste-status').innerText = '';
+        }
+        function closeFsPaste() {
+            const m = document.getElementById('fs-paste-modal');
+            m.classList.add('hidden'); m.classList.remove('flex');
+        }
+        async function fsPasteFromClipboard() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('fs-paste-text').value = text;
+                document.getElementById('fs-paste-status').innerText = '✓ 已貼上，按「解析並帶入」';
+            } catch (e) {
+                document.getElementById('fs-paste-status').innerText = '⚠️ 無法讀剪貼簿，請手動貼上';
+            }
+        }
+        function fsParsePaste() {
+            const raw = document.getElementById('fs-paste-text').value || '';
+            const status = document.getElementById('fs-paste-status');
+            // 統一成簡體比較好抓 + 全形數字轉半形
+            const text = toCN(raw)
+                .replace(/[，]/g, ',')
+                .replace(/[：]/g, ':')
+                .replace(/\u3000/g, ' ');
+            // 抓卡路里：「卡路里 164 千卡」「热量 164 大卡」「164 kcal」
+            const calM = text.match(/(?:卡路里|热量|能量)\s*[:：]?\s*([\d.]+)\s*(?:千卡|大卡|kcal)/i)
+                      || text.match(/([\d.]+)\s*(?:千卡|大卡|kcal)/i);
+            // 抓蛋白質：「蛋白质 30.76 克」「蛋白 30g」
+            const proM = text.match(/蛋白[质質]?\s*[:：]?\s*([\d.]+)\s*(?:克|g)/i);
+            if (!calM || !proM) {
+                status.innerText = '❌ 找不到熱量或蛋白質，請確認文字格式';
+                return;
+            }
+            // 抓份量：「每 100 克」「每 1 份」「每份」「每100g」
+            const servM = text.match(/每\s*([\d.]+)\s*(克|g|毫升|ml)/i)
+                       || text.match(/每\s*([\d.]+)\s*份/);
+            let unit = '份', amount = 1;
+            if (servM) {
+                const u = (servM[2] || '').toLowerCase();
+                if (u === '克' || u === 'g') { unit = '克'; amount = parseFloat(servM[1]); }
+                else if (u === '毫升' || u === 'ml') { unit = '毫升'; amount = parseFloat(servM[1]); }
+                else { unit = '份'; amount = parseFloat(servM[1]); }
+            } else if (/每份/.test(text)) {
+                unit = '份'; amount = 1;
+            }
+            // 名稱：取第一行非空白
+            const firstLine = (raw.split(/\r?\n/).find(l => l.trim()) || '').trim();
+            const cal = parseFloat(calM[1]);
+            const protein = parseFloat(proM[1]);
+            setSearchResult({
+                name: firstLine ? toTW(firstLine) : null,
+                perUnitCal: cal / amount,
+                perUnitProtein: protein / amount,
+                defaultAmount: amount,
+                unit: unit
+            });
+            status.innerText = `✓ 已帶入：${cal} kcal / ${protein} g（每 ${amount} ${unit}）`;
+            setTimeout(closeFsPaste, 800);
+        }
+
         document.addEventListener('keydown', (e) => {
             if (e.target && e.target.id === 'fs-search' && e.key === 'Enter') {
                 e.preventDefault(); fsDoSearch();
