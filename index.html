@@ -82,12 +82,12 @@
     </div>
 
     <!-- 全家商品搜尋 Modal -->
-    <div id="famart-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4">
+    <div id="famart-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this)closeFamilyMart()">
         <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
             <div class="p-4 border-b border-gray-100 flex items-center gap-2">
                 <span class="text-lg">🏪</span>
                 <input type="text" id="famart-search" placeholder="搜尋全家商品名稱..." class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-green-200">
-                <button onclick="closeFamilyMart()" class="text-gray-400 hover:text-gray-600 px-2">✕</button>
+                <button type="button" onclick="closeFamilyMart()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
             </div>
             <div id="famart-status" class="text-center text-xs text-gray-400 py-2"></div>
             <ul id="famart-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
@@ -95,13 +95,13 @@
     </div>
 
     <!-- FatSecret 搜尋 Modal -->
-    <div id="fs-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)">
+    <div id="fs-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this)closeFatSecret()">
         <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
             <div class="p-4 border-b border-gray-100 flex items-center gap-2">
                 <span class="text-lg">🍲</span>
-                <input type="text" id="fs-search" placeholder="搜尋食品名稱（FatSecret）" class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-blue-200">
-                <button onclick="fsDoSearch()" class="text-blue-400 text-xs px-2">搜尋</button>
-                <button onclick="closeFatSecret()" class="text-gray-400 hover:text-gray-600 px-2">✕</button>
+                <input type="text" id="fs-search" placeholder="搜尋食品名稱（可輸入繁體）" class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-blue-200">
+                <button type="button" onclick="fsDoSearch()" class="text-blue-400 text-xs px-2 font-bold">搜尋</button>
+                <button type="button" onclick="closeFatSecret()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
             </div>
             <div id="fs-status" class="text-center text-xs text-gray-400 py-2">輸入關鍵字按「搜尋」或 Enter</div>
             <ul id="fs-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
@@ -264,12 +264,35 @@
 
         // ===== 簡轉繁（OpenCC）=====
         let s2tConverter = (s) => s;
-        try {
-            if (window.OpenCC) {
-                s2tConverter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-            }
-        } catch (e) { console.warn('OpenCC 載入失敗', e); }
+        let t2sConverter = (s) => s;
+        function initOpenCC() {
+            try {
+                if (window.OpenCC) {
+                    s2tConverter = OpenCC.Converter({ from: 'cn', to: 'tw' });
+                    t2sConverter = OpenCC.Converter({ from: 'tw', to: 'cn' });
+                    return true;
+                }
+            } catch (e) { console.warn('OpenCC 初始化失敗', e); }
+            return false;
+        }
+        initOpenCC();
+        // 若 CDN 載入延遲，多試幾次
+        if (!window.OpenCC) {
+            let tries = 0;
+            const t = setInterval(() => {
+                if (initOpenCC() || ++tries > 20) clearInterval(t);
+            }, 200);
+        }
         const toTW = (s) => { try { return s2tConverter(s || ''); } catch (e) { return s || ''; } };
+        const toCN = (s) => { try { return t2sConverter(s || ''); } catch (e) { return s || ''; } };
+
+        // ESC 關閉 modal
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeFamilyMart();
+                closeFatSecret();
+            }
+        });
 
         // ===== FatSecret 搜尋 =====
         function openFatSecret() {
@@ -300,10 +323,8 @@
             const status = document.getElementById('fs-status');
             const list = document.getElementById('fs-list');
             if (!kwRaw) { status.innerText = '請輸入關鍵字'; return; }
-            // FatSecret 是簡體中文站，需要將關鍵字轉為簡體送出
-            let kw = kwRaw;
-            try { if (window.OpenCC) kw = OpenCC.Converter({ from: 'tw', to: 'cn' })(kwRaw); } catch (e) {}
-            status.innerText = '⏳ 搜尋中...';
+            const kw = toCN(kwRaw); // 轉為簡體才能搜到資料
+            status.innerText = `⏳ 搜尋中：${kw}`;
             list.innerHTML = '';
             try {
                 const target = 'https://www.fatsecret.cn/热量营养/search?q=' + encodeURIComponent(kw);
