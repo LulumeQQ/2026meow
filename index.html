@@ -72,20 +72,28 @@
                             <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥤</div><div class="text-[9px] font-bold">滿配(400cc)</div>
                             </button>
+                            <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">💧</div><div class="text-[9px] font-bold">半配(+水)</div>
+                            </button>
+                            <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
+                            </button>
+                            
                             <button onclick="quickAdd('中式飯糰', 450, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">中式飯糰</div>
-                            </button>
-                            <button onclick="quickAdd('小包子', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥯</div><div class="text-[9px] font-bold">小包子</div>
-                            </button>
-                            <button onclick="quickAdd('三明治', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">三明治</div>
+                                <div class="text-xl mb-1">🌯</div><div class="text-[9px] font-bold">中式飯糰</div>
                             </button>
                             <button onclick="quickAdd('全家飯糰', 190, 5)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">超商飯糰</div>
                             </button>
-                            <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
+                            <button onclick="quickAdd('豬肉蛋堡', 400, 15)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍔</div><div class="text-[9px] font-bold">豬肉蛋堡</div>
+                            </button>
+                            
+                            <button onclick="quickAdd('三明治', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">三明治</div>
+                            </button>
+                            <button onclick="quickAdd('小包子', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥯</div><div class="text-[9px] font-bold">小包子</div>
                             </button>
                         </div>
                     </div>
@@ -142,12 +150,19 @@
                     </div>
                     
                     <div class="mt-4 bg-[#FAF8F5] p-3 rounded-2xl border border-[#F0EBE1]">
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">✏️ 手動微調輸入</h3>
                         <div class="flex flex-col gap-2">
-                            <input type="text" id="manual-name" placeholder="輸入其他食物名稱..." class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                            <input type="text" id="manual-name" placeholder="輸入其他食物名稱..." class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E8B490]">
                             <div class="flex gap-2">
-                                <input type="number" id="manual-cal" placeholder="熱量" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
-                                <input type="number" id="manual-pro" placeholder="蛋白" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
-                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 text-xs font-bold shadow-sm active:bg-[#d9a27e] transition-colors">加入</button>
+                                <div class="relative flex-1">
+                                    <input type="number" id="manual-cal" placeholder="熱量" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                                    <span class="absolute right-3 top-2 text-[10px] text-gray-400">大卡</span>
+                                </div>
+                                <div class="relative flex-1">
+                                    <input type="number" id="manual-pro" placeholder="蛋白" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                                    <span class="absolute right-3 top-2 text-[10px] text-gray-400">g</span>
+                                </div>
+                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 py-2 text-xs font-bold shadow-sm active:bg-[#d9a27e] transition-colors">加入</button>
                             </div>
                         </div>
                     </div>
@@ -201,16 +216,16 @@
                     <input type="date" id="stats-date" onchange="renderStats()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
                 </div>
                 
-                <h3 class="text-[10px] font-black text-gray-400 mb-2 uppercase">KCAL 7D Trend</h3>
-                <div id="chart-cal-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-6 relative px-2 flex items-end border border-[#F0EBE1]"></div>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2">🔥 過去 7 天熱量趨勢 (大卡)</h3>
+                <div id="chart-cal-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative px-2 flex items-end border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-400 mb-2 uppercase">PRO(g) 7D Trend</h3>
-                <div id="chart-pro-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-6 relative px-2 flex items-end border border-[#F0EBE1]"></div>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-4">🥩 過去 7 天蛋白趨勢 (g)</h3>
+                <div id="chart-pro-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative px-2 flex items-end border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-400 mb-2 uppercase">Exercise Time (24H)</h3>
-                <div id="chart-ex-time-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-6 relative px-2 flex items-end border border-[#F0EBE1]"></div>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-4">🏃‍♀️ 過去 7 天運動時間 (24小時制)</h3>
+                <div id="chart-ex-time-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative px-2 flex items-end border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-400 mb-2 uppercase">Period Cycle (0/1)</h3>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-4">🩸 過去 7 天生理期狀態</h3>
                 <div id="chart-period-7" class="w-full h-16 bg-[#FAF8F5] rounded-xl mb-1 relative px-2 flex items-end border border-[#F0EBE1]"></div>
                 <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-1 font-bold" id="chart-dates-labels"></div>
             </div>
@@ -267,7 +282,8 @@
             const pro = parseFloat(document.getElementById('manual-pro').value) || 0;
             if (!name) return;
             db[datePicker.value].records.push({ id: Date.now(), name, cal, pro });
-            save(); document.getElementById('manual-name').value = ''; 
+            save(); 
+            document.getElementById('manual-name').value = ''; 
             document.getElementById('manual-cal').value = ''; 
             document.getElementById('manual-pro').value = ''; 
             updateUI();
