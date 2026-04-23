@@ -56,8 +56,133 @@
                 <div class="grid grid-cols-2 gap-3 mt-4 bg-[#FAF8F5] rounded-2xl p-3 border border-[#F0EBE1]">
                     <div class="flex items-center gap-2 col-span-2">
                         <input type="checkbox" id="check-exercise" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#818CF8]">
-                        <label for="check-exercise" class="text-xs font-bold text-[#818CF8]">🏃 運動</label>
-                        <input type="time" id="input-exercise-time" onchange="saveDailyStatus()" class="bg-white border border-[#F0EBE1] rounded-lg px-2 py-1 text-[10px] focus:outline-none text-gray-500 font-bold ml-1">
+                        <label for="check-exercise" class="text-xs font-bold text-[#818CF8]">🔥 運動</label> <input type="time" id="input-exercise-time" onchange="saveDailyStatus()" class="bg-white border border-[#F0EBE1] rounded-lg px-2 py-1 text-[10px] focus:outline-none text-gray-500 font-bold ml-1">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="check-snack" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FBBF24]">
+                        <label for="check-snack" class="text-xs font-bold text-[#FBBF24]">🍪 吃零食</label>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="check-period" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FCA5A5]">
+                        <label for="check-period" class="text-xs font-bold text-red-400">🩸 生理期</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-5">
+                <div class="space-y-5">
+                    
+                    <div>
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">☕ 核心飲品與早餐</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" data-name="滿配豆漿粉飲" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍵</div><div class="text-[9px] font-bold">滿配(400cc)</div>
+                            </button>
+                            <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" data-name="減半豆漿粉飲" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">💧</div><div class="text-[9px] font-bold">半配(+水)</div>
+                            </button>
+                            <button onclick="quickAdd('茶葉蛋', 75, 7)" data-name="茶葉蛋" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
+                            </button>
+                            
+                            <button onclick="quickAdd('中式飯糰', 450, 12)" data-name="中式飯糰" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🌯</div><div class="text-[9px] font-bold">中式飯糰</div>
+                            </button>
+                            <button onclick="quickAdd('全家飯糰', 190, 5)" data-name="全家飯糰" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">超商飯糰</div>
+                            </button>
+                            <button onclick="quickAdd('豬肉蛋堡', 400, 15)" data-name="豬肉蛋堡" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍔</div><div class="text-[9px] font-bold">豬肉蛋堡</div>
+                            </button>
+                            
+                            <button onclick="quickAdd('三明治', 300, 12)" data-name="三明治" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">三明治</div>
+                            </button>
+                            <button onclick="quickAdd('小包子', 300, 12)" data-name="小包子" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥯</div><div class="text-[9px] font-bold">小包子</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍳 自煮備餐區 (午/晚)</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" data-name="Costco雞胸(150g)" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">Costco雞胸</div>
+                            </button>
+                            <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" data-name="鱸魚湯/烤雞腿" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🐟</div><div class="text-[9px] font-bold">魚/雞腿肉</div>
+                            </button>
+                            <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" data-name="蝦仁蛋/豆干肉絲" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍤</div><div class="text-[9px] font-bold">蝦蛋/豆干肉</div>
+                            </button>這個啞鈴的 Emoji 圖案在某些裝置（如 Windows 與部分舊版 Android）上確實可能會呈現的人物軀幹或是手部的元素。
+
+客觀來說，要代表運動而不使用人物元素，最佳的替代符號是代表努力與動能的**「火（🔥）」**。
+
+我已經將原本的啞鈴（🏋️）替換為**「🔥」**。🔥🔥「火」是健身與減脂系統中公認的目標符號（代表「燃燒」Calories），它百分之百與人類身體元素無關，且同時與生理期（🩸）及零食（🍪）的可愛風格一致。
+
+請複製以下最終修正版程式碼：
+
+```html
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日常貓日誌 🐾 綜合曲線版</title>
+    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <style>
+        @import url('[https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap](https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap)');
+        body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; background-color: #FAF8F5; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .food-btn { background-color: #FFFFFF; border: 1px solid #F0EBE1; color: #6B5E54; transition: all 0.2s ease; }
+        .food-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        
+        .food-btn[data-cat="orange"].is-active { background-color: #FFF9F5; border-color: #E8B490; color: #E8B490; }
+        .food-btn[data-cat="green"].is-active { background-color: #F4F7F2; border-color: #B8C5B0; color: #6e8a5c; }
+        .food-btn[data-cat="red"].is-active { background-color: #FEF2F2; border-color: #FCA5A5; color: #EF4444; }
+        .food-btn[data-cat="purple"].is-active { background-color: #F5F3FF; border-color: #C4B5FD; color: #7C3AED; }
+
+        .tap-btn { background-color: #FFFFFF; border: 1px solid #F0EBE1; color: #6B5E54; transition: all 0.1s ease; }
+        .tap-btn:active { transform: scale(0.95); }
+
+        .view-content { display: none; }
+        .view-content.active { display: block; }
+    </style>
+</head>
+<body class="min-h-screen flex justify-center py-6 px-4">
+
+    <div class="max-w-md w-full space-y-4 pb-12">
+        
+        <div class="flex bg-white rounded-full p-1 border border-[#F0EBE1] shadow-sm mb-4">
+            <button id="tab-record" onclick="switchTab('record')" class="flex-1 py-2 rounded-full font-bold text-[#E8B490] bg-[#FFF9F5] shadow-sm transition-all">日常紀錄</button>
+            <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-2 rounded-full font-bold text-gray-400 bg-transparent transition-all">趨勢曲線</button>
+        </div>
+
+        <div id="view-record" class="view-content active space-y-4">
+            
+            <div class="bg-white rounded-[2.5rem] shadow-sm border border-[#F0EBE1] p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-3xl">🐈</span>
+                    <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mt-2">
+                    <div class="bg-[#FFF9F5] p-4 rounded-3xl border border-[#FBE3D5] text-center">
+                        <div class="text-3xl font-black text-[#E8B490]" id="total-calories">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">KCAL (目標 <span id="target-cal">1300</span>)</p>
+                    </div>
+                    <div class="bg-[#F4F7F2] p-4 rounded-3xl border border-[#E1E8DE] text-center">
+                        <div class="text-3xl font-black text-[#B8C5B0]" id="total-protein">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">PRO(g) (目標 100)</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 mt-4 bg-[#FAF8F5] rounded-2xl p-3 border border-[#F0EBE1]">
+                    <div class="flex items-center gap-2 col-span-2">
+                        <input type="checkbox" id="check-exercise" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#818CF8]">
+                        <label for="check-exercise" class="text-xs font-bold text-[#818CF8]">🔥 運動</label> <input type="time" id="input-exercise-time" onchange="saveDailyStatus()" class="bg-white border border-[#F0EBE1] rounded-lg px-2 py-1 text-[10px] focus:outline-none text-gray-500 font-bold ml-1">
                     </div>
                     <div class="flex items-center gap-2">
                         <input type="checkbox" id="check-snack" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FBBF24]">
@@ -211,8 +336,7 @@
                 <div id="chart-water-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
                 <div class="mt-6 border-t border-[#F0EBE1] pt-4">
-                    <h3 class="text-[10px] font-black text-gray-500 mb-1">🏃‍♀️運動(時) / 🩸生理期 / 🍪零食 綜合狀態</h3>
-                    <div class="flex gap-3 mb-2">
+                    <h3 class="text-[10px] font-black text-gray-500 mb-1">🔥運動(時) / 🩸生理期 / 🍪零食 綜合狀態</h3> <div class="flex gap-3 mb-2">
                         <span class="text-[8px] font-bold text-[#818CF8]">➖ 運動時間(0-24)</span>
                         <span class="text-[8px] font-bold text-red-400">● 生理期</span>
                         <span class="text-[8px] font-bold text-[#FBBF24]">● 零食</span>
