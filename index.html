@@ -3,121 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 211餐盤版</title>
+    <title>日常貓日誌 🐾 專屬模組版</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'cat-bg': '#FAF9F7',       
-                        'cat-main': '#E8B490',     
-                        'cat-green': '#B8C5B0',    
-                        'cat-text': '#6B5E54',     
-                        'cat-card': '#FFFFFF',
-                        'cat-border': '#F2EEE7'    
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; color: #6B5E54; background-color: #FAF9F7; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; background-color: #FAF8F5; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .task-checkbox:checked + label { text-decoration: line-through; color: #B8C5B0; }
+        .task-checkbox:checked + label { text-decoration: line-through; color: #A7B49E; }
         
-        /* 211 按鈕點擊後的狀態 */
-        .btn-veg.active { background-color: #e6f2e6; border-color: #B8C5B0; color: #5c8a5c; }
-        .btn-pro.active { background-color: #fff0e6; border-color: #E8B490; color: #d97736; }
-        .btn-car.active { background-color: #fdf5e6; border-color: #f0d5a8; color: #c49a45; }
+        /* 快捷按鈕點擊動畫 */
+        .tap-btn { transition: transform 0.1s, box-shadow 0.1s; }
+        .tap-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
     </style>
 </head>
 <body class="min-h-screen flex justify-center py-6 px-4">
 
     <div class="max-w-md w-full space-y-4 pb-12">
         
-        <div class="bg-cat-card rounded-[2.5rem] shadow-sm border border-cat-border p-6 text-center">
+        <div class="bg-white rounded-[2.5rem] shadow-sm border border-[#F0EBE1] p-6">
             <div class="flex justify-between items-center mb-4">
                 <span class="text-3xl">🐈</span>
-                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs focus:outline-none cursor-pointer bg-cat-bg px-4 py-1.5 rounded-full font-bold">
+                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
             </div>
-            <h1 class="text-lg font-bold tracking-widest text-cat-text mb-2">日常貓日誌</h1>
-            <p class="text-[10px] text-gray-400">放下數字焦慮，專注在餐盤的視覺比例喵！</p>
-        </div>
-
-        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-bold flex items-center gap-2 text-sm text-cat-text">🍽️ 211 餐盤打卡</h2>
-                <div class="text-[9px] text-gray-400 bg-cat-bg px-2 py-1 rounded-md">蔬菜半盤 / 蛋白質1拳 / 碳水1拳</div>
+            
+            <div class="grid grid-cols-2 gap-4 mt-2">
+                <div class="bg-[#FFF9F5] p-4 rounded-3xl border border-[#FBE3D5] text-center">
+                    <div class="text-3xl font-black text-[#E8B490]" id="total-calories">0</div>
+                    <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">KCAL (目標 <span id="target-cal">1400</span>)</p>
+                </div>
+                <div class="bg-[#F4F7F2] p-4 rounded-3xl border border-[#E1E8DE] text-center">
+                    <div class="text-3xl font-black text-[#B8C5B0]" id="total-protein">0</div>
+                    <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">PRO(g) (目標 100)</p>
+                </div>
             </div>
-
-            <div class="space-y-4">
-                <div class="bg-cat-bg p-4 rounded-2xl border border-cat-border/50">
-                    <h3 class="text-xs font-bold mb-3 text-gray-500">☀️ 早餐</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="toggleMeal('breakfast', 'veg')" id="breakfast-veg" class="btn-veg py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥦 蔬菜 (1/2)</button>
-                        <button onclick="toggleMeal('breakfast', 'pro')" id="breakfast-pro" class="btn-pro py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥩 蛋白 (1/4)</button>
-                        <button onclick="toggleMeal('breakfast', 'car')" id="breakfast-car" class="btn-car py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🍠 碳水 (1/4)</button>
-                    </div>
-                </div>
-
-                <div class="bg-cat-bg p-4 rounded-2xl border border-cat-border/50">
-                    <h3 class="text-xs font-bold mb-3 text-gray-500">🌞 午餐</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="toggleMeal('lunch', 'veg')" id="lunch-veg" class="btn-veg py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥦 蔬菜 (1/2)</button>
-                        <button onclick="toggleMeal('lunch', 'pro')" id="lunch-pro" class="btn-pro py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥩 蛋白 (1/4)</button>
-                        <button onclick="toggleMeal('lunch', 'car')" id="lunch-car" class="btn-car py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🍠 碳水 (1/4)</button>
-                    </div>
-                </div>
-
-                <div class="bg-cat-bg p-4 rounded-2xl border border-cat-border/50">
-                    <h3 class="text-xs font-bold mb-3 text-gray-500">🌙 晚餐</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="toggleMeal('dinner', 'veg')" id="dinner-veg" class="btn-veg py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥦 蔬菜 (1/2)</button>
-                        <button onclick="toggleMeal('dinner', 'pro')" id="dinner-pro" class="btn-pro py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥩 蛋白 (1/4)</button>
-                        <button onclick="toggleMeal('dinner', 'car')" id="dinner-car" class="btn-car py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🍠 碳水 (1/4)</button>
-                    </div>
-                </div>
+            
+            <div class="flex bg-[#FAF8F5] rounded-full p-1 border border-[#F0EBE1] mt-4 text-[10px]">
+                <button id="mode-weekday" onclick="setMode('weekday')" class="flex-1 py-2 rounded-full font-bold transition-all">平日 (運動日)</button>
+                <button id="mode-rest" onclick="setMode('rest')" class="flex-1 py-2 rounded-full font-bold text-gray-400 transition-all">假日 / 生理期</button>
             </div>
         </div>
 
-        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
+        <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-5">
+            <h2 class="font-bold text-sm text-[#E8B490] mb-4 flex items-center gap-2">👆 專屬模組直接點</h2>
+            
+            <div class="space-y-5">
+                <div>
+                    <h3 class="text-[10px] text-gray-400 font-bold mb-2">☕ 核心飲品與早餐</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" class="tap-btn bg-[#FFF9F5] border border-[#FBE3D5] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🥤</div><div class="text-[9px] font-bold text-[#E8B490]">滿配(400cc)</div>
+                        </button>
+                        <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" class="tap-btn bg-[#FFF9F5] border border-[#FBE3D5] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">💧</div><div class="text-[9px] font-bold text-[#E8B490]">減半(+水)</div>
+                        </button>
+                        <button onclick="quickAdd('全家飯糰', 190, 5)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">全家飯糰</div>
+                        </button>
+                        <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
+                        </button>
+                        <button onclick="quickAdd('鮪魚吐司(無醬)', 300, 12)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">鮪魚吐司</div>
+                        </button>
+                        <button onclick="quickAdd('豬肉蛋堡', 400, 15)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🍔</div><div class="text-[9px] font-bold">豬肉蛋堡</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍳 自煮備餐區 (午/晚)</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" class="tap-btn bg-[#F4F7F2] border border-[#E1E8DE] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold text-[#8DB4CB]">Costco雞胸</div>
+                        </button>
+                        <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🐟</div><div class="text-[9px] font-bold">魚/雞腿肉</div>
+                        </button>
+                        <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🍤</div><div class="text-[9px] font-bold">蝦蛋/豆干肉</div>
+                        </button>
+                        <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🍠</div><div class="text-[9px] font-bold">飯/瓜類</div>
+                        </button>
+                        <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🥦</div><div class="text-[9px] font-bold">青菜/花菜米</div>
+                        </button>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-[10px] text-gray-400 font-bold mb-2">🚨 外食實戰區 (黃紅燈)</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="quickAdd('健康餐盒', 450, 25)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🍱</div><div class="text-[9px] font-bold">健康餐盒</div>
+                        </button>
+                        <button onclick="quickAdd('極麵道鍋燒(不喝湯)', 700, 25)" class="tap-btn bg-red-50 border border-red-100 rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🍜</div><div class="text-[9px] font-bold text-red-400">極麵道(不湯)</div>
+                        </button>
+                        <button onclick="quickAdd('好呷打拋/一般便當', 700, 25)" class="tap-btn bg-red-50 border border-red-100 rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">🍛</div><div class="text-[9px] font-bold text-red-400">好呷/便當</div>
+                        </button>
+                        <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" class="tap-btn bg-red-50 border border-red-100 rounded-2xl p-2 text-center shadow-sm">
+                            <div class="text-xl mb-1">💥</div><div class="text-[9px] font-bold text-red-400">炒飯/排餐</div>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mt-2 flex gap-2">
+                    <input type="text" id="manual-name" placeholder="其他食物..." class="flex-1 bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                    <input type="number" id="manual-cal" placeholder="大卡" class="w-16 bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-2 py-2 text-xs focus:outline-none">
+                    <input type="number" id="manual-pro" placeholder="蛋白" class="w-16 bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-2 py-2 text-xs focus:outline-none">
+                    <button onclick="manualAdd()" class="bg-gray-200 text-gray-600 rounded-xl px-3 text-xs font-bold">+</button>
+                </div>
+            </div>
+            
+            <ul id="food-list" class="mt-4 space-y-2 max-h-32 overflow-y-auto no-scrollbar border-t border-[#F0EBE1] pt-4"></ul>
+        </div>
+
+        <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
-                <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-red-400">重置</button>
+                <button onclick="resetWater()" class="text-[10px] text-gray-400">重置</button>
             </div>
             <div class="flex items-end gap-2 mb-3">
-                <span class="text-3xl font-bold text-[#8DB4CB]" id="water-display">0</span>
+                <span class="text-3xl font-black text-[#8DB4CB]" id="water-display">0</span>
                 <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
             </div>
-            <div class="flex gap-2 mb-4">
-                <button onclick="addWater(250)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2.5 rounded-xl text-xs font-bold border border-[#E1EDF4]">+ 250</button>
-                <button onclick="addWater(500)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2.5 rounded-xl text-xs font-bold border border-[#E1EDF4]">+ 500</button>
-            </div>
-            <div class="w-full bg-gray-100 rounded-full h-1.5">
-                <div id="water-bar" class="bg-[#8DB4CB] h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+            <div class="flex gap-2">
+                <button onclick="addWater(250)" class="tap-btn flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-3 rounded-xl text-xs font-bold">+ 250</button>
+                <button onclick="addWater(500)" class="tap-btn flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-3 rounded-xl text-xs font-bold">+ 500</button>
             </div>
         </div>
 
-        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-            <h2 class="font-bold flex items-center gap-2 mb-4 text-sm">🌙 夜間作息防線</h2>
+        <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6" id="routine-module">
+            <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🌙 夜間防護線</h2>
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                    <label for="t1" class="text-xs font-medium cursor-pointer w-full">21:00 開始：growwithjo</label>
+                    <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                    <label for="t1" class="text-sm font-bold cursor-pointer w-full">21:00 開始：growwithjo</label>
                 </div>
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                    <label for="t2" class="text-xs font-medium cursor-pointer w-full">22:00 完成核心與收操</label>
+                    <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                    <label for="t2" class="text-sm font-bold cursor-pointer w-full">22:00 完成核心與收操</label>
                 </div>
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                    <label for="t3" class="text-xs font-medium cursor-pointer w-full">22:30 數位斷網</label>
+                    <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                    <label for="t3" class="text-sm font-bold cursor-pointer w-full">22:30 數位斷網</label>
                 </div>
                 <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                    <label for="t4" class="text-xs font-medium cursor-pointer w-full">23:30 準時入睡</label>
+                    <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                    <label for="t4" class="text-sm font-bold cursor-pointer w-full">23:30 準時入睡</label>
                 </div>
             </div>
         </div>
@@ -125,98 +161,125 @@
     </div>
 
     <script>
-        // 資料庫結構更新為 211 紀錄
-        let db = JSON.parse(localStorage.getItem('cat_v211_db')) || {};
+        let db = JSON.parse(localStorage.getItem('cat_pos_custom_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
 
         function initDayData(date) {
             if (!db[date]) { 
-                db[date] = { 
-                    water: 0, 
-                    meals: {
-                        breakfast: { veg: false, pro: false, car: false },
-                        lunch: { veg: false, pro: false, car: false },
-                        dinner: { veg: false, pro: false, car: false }
-                    },
-                    tasks: { t1: false, t2: false, t3: false, t4: false } 
-                }; 
+                db[date] = { mode: 'weekday', water: 0, records: [], tasks: { t1: false, t2: false, t3: false, t4: false } }; 
             }
             return db[date];
         }
 
         function loadDateData() {
             initDayData(datePicker.value);
+            setModeUI(db[datePicker.value].mode);
             updateUI();
         }
 
-        function save() { localStorage.setItem('cat_v211_db', JSON.stringify(db)); }
+        function save() { localStorage.setItem('cat_pos_custom_db', JSON.stringify(db)); }
 
-        // 211 打卡邏輯
-        function toggleMeal(mealType, category) {
+        function setMode(mode) {
+            db[datePicker.value].mode = mode;
+            setModeUI(mode);
+            save();
+            updateUI();
+        }
+
+        function setModeUI(mode) {
+            const btnW = document.getElementById('mode-weekday');
+            const btnR = document.getElementById('mode-rest');
+            if (mode === 'weekday') {
+                btnW.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-[#E8B490] transition-all";
+                btnR.className = "flex-1 py-2 rounded-full font-bold text-gray-400 transition-all";
+                document.getElementById('routine-module').style.display = 'block';
+                document.getElementById('target-cal').innerText = '1400';
+            } else {
+                btnR.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-[#E8B490] transition-all";
+                btnW.className = "flex-1 py-2 rounded-full font-bold text-gray-400 transition-all";
+                document.getElementById('routine-module').style.display = 'none';
+                document.getElementById('target-cal').innerText = '1300';
+            }
+        }
+
+        // --- 核心：一鍵快速點餐 ---
+        function quickAdd(name, cal, pro) {
             const date = datePicker.value;
-            db[date].meals[mealType][category] = !db[date].meals[mealType][category];
+            db[date].records.push({ id: Date.now(), name, cal, pro });
             save();
             updateUI();
+            
+            // 手機震動回饋
+            if (navigator.vibrate) navigator.vibrate(50);
         }
 
-        // 水分邏輯
-        function addWater(ml) {
+        function manualAdd() {
+            const name = document.getElementById('manual-name').value;
+            const cal = parseFloat(document.getElementById('manual-cal').value) || 0;
+            const pro = parseFloat(document.getElementById('manual-pro').value) || 0;
+            if (!name) return;
+            
             const date = datePicker.value;
-            db[date].water = Math.min((db[date].water || 0) + ml, 2000);
+            db[date].records.push({ id: Date.now(), name, cal, pro });
+            save();
+            document.getElementById('manual-name').value = '';
+            document.getElementById('manual-cal').value = '';
+            document.getElementById('manual-pro').value = '';
+            updateUI();
+        }
+
+        function deleteRecord(id) {
+            db[datePicker.value].records = db[datePicker.value].records.filter(r => r.id !== id);
             save();
             updateUI();
         }
 
-        function resetWater() {
-            db[datePicker.value].water = 0;
-            save();
-            updateUI();
-        }
-
-        // 任務邏輯
+        function addWater(ml) { db[datePicker.value].water = Math.min((db[datePicker.value].water || 0) + ml, 2000); save(); updateUI(); }
+        function resetWater() { db[datePicker.value].water = 0; save(); updateUI(); }
+        
         function saveTasks() {
-            const date = datePicker.value;
-            db[date].tasks = {
-                t1: document.getElementById('t1').checked,
-                t2: document.getElementById('t2').checked,
-                t3: document.getElementById('t3').checked,
-                t4: document.getElementById('t4').checked
+            const d = datePicker.value;
+            db[d].tasks = { 
+                t1: document.getElementById('t1').checked, 
+                t2: document.getElementById('t2').checked, 
+                t3: document.getElementById('t3').checked, 
+                t4: document.getElementById('t4').checked 
             };
             save();
         }
 
-        // 介面更新
         function updateUI() {
             const data = db[datePicker.value];
-            
-            // 更新水分
             document.getElementById('water-display').innerText = data.water || 0;
-            document.getElementById('water-bar').style.width = `${((data.water || 0) / 2000) * 100}%`;
-
-            // 更新 211 按鈕狀態
-            const meals = ['breakfast', 'lunch', 'dinner'];
-            const categories = ['veg', 'pro', 'car'];
             
-            meals.forEach(meal => {
-                categories.forEach(cat => {
-                    const btn = document.getElementById(`${meal}-${cat}`);
-                    if (data.meals[meal][cat]) {
-                        btn.classList.add('active');
-                    } else {
-                        btn.classList.remove('active');
-                    }
-                });
-            });
+            const totalCal = Math.round((data.records || []).reduce((s, r) => s + r.cal, 0));
+            const totalPro = Math.round((data.records || []).reduce((s, r) => s + r.pro, 0) * 10) / 10;
+            const target = data.mode === 'weekday' ? 1400 : 1300;
+            
+            document.getElementById('total-calories').innerText = totalCal;
+            document.getElementById('total-protein').innerText = totalPro;
+            
+            // 超標警示
+            document.getElementById('total-calories').className = totalCal > target ? 'text-3xl font-black text-red-400' : 'text-3xl font-black text-[#E8B490]';
 
-            // 更新任務勾選
+            const list = document.getElementById('food-list');
+            list.innerHTML = (data.records || []).map(r => `
+                <li class="flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#F0EBE1]">
+                    <div class="flex flex-col">
+                        <span class="text-xs font-bold text-[#6B5E54]">${r.name}</span>
+                        <span class="text-[10px] text-gray-400">${r.cal} kcal / ${r.pro}g 蛋白</span>
+                    </div>
+                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 hover:text-red-300 font-bold px-2">✕</button>
+                </li>
+            `).join('') || '<li class="text-center text-gray-300 text-[10px] py-2">點擊上方圖示紀錄喵～</li>';
+
             document.getElementById('t1').checked = data.tasks?.t1 || false;
             document.getElementById('t2').checked = data.tasks?.t2 || false;
             document.getElementById('t3').checked = data.tasks?.t3 || false;
             document.getElementById('t4').checked = data.tasks?.t4 || false;
         }
 
-        // 啟動
         loadDateData();
     </script>
 </body>
