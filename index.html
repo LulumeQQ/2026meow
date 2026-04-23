@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 曲線全開版</title>
+    <title>日常貓日誌 🐾 曲線全開完整版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
@@ -65,26 +65,48 @@
 
             <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-5">
                 <div class="space-y-5">
+                    
                     <div>
                         <h3 class="text-[10px] text-gray-400 font-bold mb-2">☕ 核心飲品與早餐</h3>
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" class="tap-btn cat-orange rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥤</div><div class="text-[9px] font-bold">滿配(400cc)</div>
                             </button>
-                            <button onclick="quickAdd('中式飯糰', 450, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('中式飯糰', 450, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">中式飯糰</div>
                             </button>
-                            <button onclick="quickAdd('小包子', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('小包子', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥯</div><div class="text-[9px] font-bold">小包子</div>
                             </button>
-                            <button onclick="quickAdd('三明治', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('三明治', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">三明治</div>
                             </button>
-                            <button onclick="quickAdd('全家飯糰', 190, 5)" class="tap-btn cat-orange rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('全家飯糰', 190, 5)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">超商飯糰</div>
                             </button>
-                            <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn cat-orange rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍳 自煮備餐區 (午/晚)</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">Costco雞胸</div>
+                            </button>
+                            <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🐟</div><div class="text-[9px] font-bold">魚/雞腿肉</div>
+                            </button>
+                            <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍤</div><div class="text-[9px] font-bold">蝦蛋/豆干肉</div>
+                            </button>
+                            <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍠</div><div class="text-[9px] font-bold">飯/瓜類</div>
+                            </button>
+                            <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥦</div><div class="text-[9px] font-bold">青菜/花菜米</div>
                             </button>
                         </div>
                     </div>
@@ -92,16 +114,16 @@
                     <div>
                         <h3 class="text-[10px] text-gray-400 font-bold mb-2">🚨 外食實戰區</h3>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="quickAdd('健康餐盒', 450, 25)" class="tap-btn cat-green rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('健康餐盒', 450, 25)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍱</div><div class="text-[9px] font-bold">健康餐盒</div>
                             </button>
-                            <button onclick="quickAdd('外食麵食', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('外食麵食', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍜</div><div class="text-[9px] font-bold">外食麵食</div>
                             </button>
-                            <button onclick="quickAdd('一般便當', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('一般便當', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍛</div><div class="text-[9px] font-bold">一般便當</div>
                             </button>
-                            <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" class="tap-btn cat-red rounded-2xl p-2 text-center">
+                            <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">💥</div><div class="text-[9px] font-bold">炒飯/排餐</div>
                             </button>
                         </div>
@@ -110,10 +132,10 @@
                     <div>
                         <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍰 爆卡救援區 (難以計算熱量時)</h3>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="quickAdd('高級餐廳/大餐', 1000, 30)" class="tap-btn cat-purple rounded-2xl p-2 text-center border-dashed border-2">
+                            <button onclick="quickAdd('高級餐廳/大餐', 1000, 30)" class="tap-btn cat-purple rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
                                 <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">大餐(高估)</div>
                             </button>
-                            <button onclick="quickAdd('甜點/蛋糕/午茶', 450, 5)" class="tap-btn cat-purple rounded-2xl p-2 text-center border-dashed border-2">
+                            <button onclick="quickAdd('甜點/蛋糕/午茶', 450, 5)" class="tap-btn cat-purple rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
                                 <div class="text-xl mb-1">🍰</div><div class="text-[9px] font-bold">甜點(高估)</div>
                             </button>
                         </div>
@@ -125,7 +147,7 @@
                             <div class="flex gap-2">
                                 <input type="number" id="manual-cal" placeholder="熱量" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
                                 <input type="number" id="manual-pro" placeholder="蛋白" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
-                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 text-xs font-bold">加入</button>
+                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 text-xs font-bold shadow-sm active:bg-[#d9a27e] transition-colors">加入</button>
                             </div>
                         </div>
                     </div>
@@ -134,10 +156,42 @@
             </div>
             
             <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
-                <div class="flex justify-between items-center mb-4"><h2 class="font-bold text-sm">💧 水分進度</h2><button onclick="resetWater()" class="text-[10px] text-gray-400">重置</button></div>
-                <div class="flex items-end gap-2 mb-3"><span class="text-3xl font-black text-[#8DB4CB]" id="water-display">0</span><span class="text-xs text-gray-400">/ 2000 ml</span></div>
-                <div class="flex gap-2"><button onclick="addWater(250)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold">+ 250</button><button onclick="addWater(500)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold">+ 500</button></div>
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
+                    <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-red-400 transition-colors">重置</button>
+                </div>
+                <div class="flex items-end gap-2 mb-3">
+                    <span class="text-3xl font-black text-[#8DB4CB]" id="water-display">0</span>
+                    <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="addWater(250)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 250</button>
+                    <button onclick="addWater(500)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 500</button>
+                </div>
             </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
+                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🌙 夜間防護線</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t1" class="text-sm font-bold cursor-pointer w-full">21:00 開始：growwithjo</label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t2" class="text-sm font-bold cursor-pointer w-full">22:00 完成核心與收操</label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t3" class="text-sm font-bold cursor-pointer w-full">22:30 數位斷網</label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t4" class="text-sm font-bold cursor-pointer w-full">23:30 準時入睡</label>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <div id="view-stats" class="view-content space-y-4">
@@ -181,7 +235,8 @@
         }
 
         function initDayData(date) {
-            if (!db[date]) db[date] = { water: 0, records: [], exercise: false, exerciseTime: '', period: false };
+            if (!db[date]) db[date] = { water: 0, records: [], exercise: false, exerciseTime: '', period: false, tasks: {t1:false, t2:false, t3:false, t4:false} };
+            if (db[date].tasks === undefined) db[date].tasks = {t1:false, t2:false, t3:false, t4:false};
             return db[date];
         }
 
@@ -212,7 +267,10 @@
             const pro = parseFloat(document.getElementById('manual-pro').value) || 0;
             if (!name) return;
             db[datePicker.value].records.push({ id: Date.now(), name, cal, pro });
-            save(); document.getElementById('manual-name').value = ''; updateUI();
+            save(); document.getElementById('manual-name').value = ''; 
+            document.getElementById('manual-cal').value = ''; 
+            document.getElementById('manual-pro').value = ''; 
+            updateUI();
         }
 
         function deleteRecord(id) {
@@ -222,6 +280,17 @@
 
         function addWater(ml) { db[datePicker.value].water = Math.min((db[datePicker.value].water || 0) + ml, 2000); save(); updateUI(); }
         function resetWater() { db[datePicker.value].water = 0; save(); updateUI(); }
+
+        function saveTasks() {
+            const d = datePicker.value;
+            db[d].tasks = { 
+                t1: document.getElementById('t1').checked, 
+                t2: document.getElementById('t2').checked, 
+                t3: document.getElementById('t3').checked, 
+                t4: document.getElementById('t4').checked 
+            };
+            save();
+        }
 
         function updateUI() {
             const data = db[datePicker.value];
@@ -238,9 +307,14 @@
             document.getElementById('total-calories').className = totalCal > target ? 'text-3xl font-black text-red-400' : 'text-3xl font-black text-[#E8B490]';
             document.getElementById('food-list').innerHTML = data.records.map(r => `
                 <li class="flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#F0EBE1] text-xs">
-                    <div><b>${r.name}</b><br><small>${r.cal} kcal / ${r.pro}g</small></div>
-                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 px-2">✕</button>
+                    <div><b>${r.name}</b><br><small class="text-gray-400">${r.cal} kcal / ${r.pro}g</small></div>
+                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 px-2 font-bold hover:text-red-400 transition-colors">✕</button>
                 </li>`).join('') || '<li class="text-center text-gray-300 text-[10px] py-2">點擊圖示紀錄喵～</li>';
+            
+            document.getElementById('t1').checked = data.tasks?.t1 || false;
+            document.getElementById('t2').checked = data.tasks?.t2 || false;
+            document.getElementById('t3').checked = data.tasks?.t3 || false;
+            document.getElementById('t4').checked = data.tasks?.t4 || false;
         }
 
         function drawLineChart(id, dataArray, maxVal, color, isStep = false) {
@@ -257,7 +331,7 @@
                 const y = p + h - (Math.min(v, maxVal) / maxVal * h);
                 return `<circle cx="${p + (i * step)}" cy="${y}" r="3" fill="${color}" stroke="#fff" />`;
             }).join('');
-            container.innerHTML = `<svg width="${container.clientWidth}" height="${container.clientHeight}"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />${circles}</svg>`;
+            container.innerHTML = `<svg width="${container.clientWidth}" height="${container.clientHeight}" class="overflow-visible"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />${circles}</svg>`;
         }
 
         function renderStats() {
@@ -277,10 +351,6 @@
             drawLineChart('chart-pro-7', pro7, 120, '#B8C5B0');
             drawLineChart('chart-ex-time-7', exTime7, 24, '#818CF8');
             drawLineChart('chart-period-7', period7, 1, '#FCA5A5', true);
-            let exCount = 0, pCount = 0;
-            Object.keys(db).forEach(k => { if(db[k].exercise) exCount++; if(db[k].period) pCount++; });
-            document.getElementById('stat-month-ex').innerText = exCount;
-            document.getElementById('stat-month-period').innerText = pCount;
         }
         loadDateData();
     </script>
