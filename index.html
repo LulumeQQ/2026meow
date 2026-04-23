@@ -29,9 +29,12 @@
             <form id="food-form" class="space-y-3">
                 
                 <div class="relative">
-                    <input type="text" id="food-name" required placeholder="吃了什麼？(點擊右側搜尋營養)" class="w-full bg-gray-50 border-none rounded-xl p-3 pr-10 text-sm focus:ring-1 focus:ring-orange-200">
-                    <button type="button" onclick="searchFood()" id="search-btn" class="absolute right-9 top-2 p-1 text-gray-400 hover:text-orange-400 transition-colors" title="搜尋營養成分 (OpenFoodFacts)">
+                    <input type="text" id="food-name" required placeholder="吃了什麼？(點擊右側搜尋營養)" class="w-full bg-gray-50 border-none rounded-xl p-3 pr-20 text-sm focus:ring-1 focus:ring-orange-200">
+                    <button type="button" onclick="searchFood()" id="search-btn" class="absolute right-16 top-2 p-1 text-gray-400 hover:text-orange-400 transition-colors" title="搜尋營養成分 (OpenFoodFacts)">
                         🔍
+                    </button>
+                    <button type="button" onclick="searchFatSecret()" id="fs-btn" class="absolute right-9 top-2 p-1 text-gray-400 hover:text-blue-500 transition-colors" title="搜尋 FatSecret 中文食品庫">
+                        🍲
                     </button>
                     <button type="button" onclick="searchFamilyMart()" id="famart-btn" class="absolute right-2 top-2 p-1 text-gray-400 hover:text-green-500 transition-colors" title="搜尋全家商品">
                         🏪
@@ -87,6 +90,20 @@
             </div>
             <div id="famart-status" class="text-center text-xs text-gray-400 py-2"></div>
             <ul id="famart-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
+        </div>
+    </div>
+
+    <!-- FatSecret 搜尋 Modal -->
+    <div id="fs-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)">
+        <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
+            <div class="p-4 border-b border-gray-100 flex items-center gap-2">
+                <span class="text-lg">🍲</span>
+                <input type="text" id="fs-search" placeholder="搜尋食品名稱（FatSecret）" class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-blue-200">
+                <button onclick="fsDoSearch()" class="text-blue-400 text-xs px-2">搜尋</button>
+                <button onclick="closeFatSecret()" class="text-gray-400 hover:text-gray-600 px-2">✕</button>
+            </div>
+            <div id="fs-status" class="text-center text-xs text-gray-400 py-2">輸入關鍵字按「搜尋」或 Enter</div>
+            <ul id="fs-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
         </div>
     </div>
 
@@ -243,6 +260,97 @@
         document.addEventListener('input', (e) => {
             if (e.target && e.target.id === 'famart-search') renderFamartList();
         });
+
+        // ===== FatSecret 搜尋 =====
+        function openFatSecret() {
+            const m = document.getElementById('fs-modal');
+            m.classList.remove('hidden');
+            m.classList.add('flex');
+            const input = document.getElementById('fs-search');
+            input.value = document.getElementById('food-name').value || '';
+            setTimeout(() => input.focus(), 50);
+        }
+        function closeFatSecret() {
+            const m = document.getElementById('fs-modal');
+            m.classList.add('hidden');
+            m.classList.remove('flex');
+        }
+        function searchFatSecret() {
+            openFatSecret();
+            if (document.getElementById('fs-search').value.trim()) fsDoSearch();
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.target && e.target.id === 'fs-search' && e.key === 'Enter') {
+                e.preventDefault(); fsDoSearch();
+            }
+        });
+
+        async function fsDoSearch() {
+            const kw = document.getElementById('fs-search').value.trim();
+            const status = document.getElementById('fs-status');
+            const list = document.getElementById('fs-list');
+            if (!kw) { status.innerText = '請輸入關鍵字'; return; }
+            status.innerText = '⏳ 搜尋中...';
+            list.innerHTML = '';
+            try {
+                const target = 'https://www.fatsecret.cn/热量营养/search?q=' + encodeURIComponent(kw);
+                const res = await fetch(CORS_PROXY + encodeURIComponent(target));
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const html = await res.text();
+                const items = parseFatSecretHtml(html);
+                if (!items.length) { status.innerText = '找不到結果'; return; }
+                status.innerText = `找到 ${items.length} 筆結果`;
+                list.innerHTML = items.map((it, i) => `
+                    <li>
+                        <button type="button" data-fs-idx="${i}" class="fs-pick w-full text-left bg-gray-50 hover:bg-blue-50 rounded-xl p-3 transition-colors">
+                            <div class="font-bold text-xs">${it.name}</div>
+                            <div class="text-[10px] text-gray-500 mt-1">${it.serving} · 熱量 ${it.cal} kcal · 蛋白質 ${it.protein} g</div>
+                        </button>
+                    </li>
+                `).join('');
+                list.querySelectorAll('.fs-pick').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const it = items[+btn.dataset.fsIdx];
+                        document.getElementById('food-name').value = it.name;
+                        document.getElementById('food-calories').value = Math.round(it.cal);
+                        document.getElementById('food-protein').value = Math.round(it.protein * 10) / 10;
+                        closeFatSecret();
+                    });
+                });
+            } catch (e) {
+                console.error(e);
+                status.innerText = '❌ 搜尋失敗：' + e.message;
+            }
+        }
+
+        function parseFatSecretHtml(html) {
+            const results = [];
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            // 每個結果是一個 <a class="prominent"> 名稱 + <div class="smallText"> 營養數據
+            const anchors = doc.querySelectorAll('a.prominent');
+            anchors.forEach(a => {
+                const name = a.textContent.trim();
+                if (!name) return;
+                // 往後找到同一區塊內的描述文字
+                let parent = a.closest('table, tr, td, div') || a.parentElement;
+                let text = parent ? parent.textContent : '';
+                // 限縮範圍：取名稱之後的那段
+                const idx = text.indexOf(name);
+                if (idx >= 0) text = text.slice(idx + name.length, idx + name.length + 400);
+                const calM = text.match(/卡路里\s*[:：]\s*([\d.]+)\s*千卡/);
+                const proM = text.match(/蛋白质\s*[:：]\s*([\d.]+)\s*克/);
+                const servM = text.match(/(每[^|]+?)\s*-\s*卡路里/);
+                if (calM && proM) {
+                    results.push({
+                        name,
+                        cal: parseFloat(calM[1]),
+                        protein: parseFloat(proM[1]),
+                        serving: servM ? servM[1].trim() : '每份'
+                    });
+                }
+            });
+            return results;
+        }
 
         async function pickFamart(cmno) {
             const status = document.getElementById('famart-status');
