@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 專屬模組版</title>
+    <title>日常貓日誌 🐾 統計升級版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
@@ -11,206 +11,316 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .task-checkbox:checked + label { text-decoration: line-through; color: #A7B49E; }
         
-        /* 快捷按鈕點擊動畫 */
-        .tap-btn { transition: transform 0.1s, box-shadow 0.1s; }
-        .tap-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); }
+        /* 快捷按鈕動畫 */
+        .tap-btn { 
+            background-color: #FFFFFF; 
+            border: 1px solid #F0EBE1; 
+            color: #6B5E54;
+            transition: all 0.1s ease; 
+        }
+        .tap-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        .tap-btn.cat-orange:active { background-color: #FFF9F5; border-color: #E8B490; color: #E8B490; }
+        .tap-btn.cat-green:active { background-color: #F4F7F2; border-color: #B8C5B0; color: #6e8a5c; }
+        .tap-btn.cat-red:active { background-color: #FEF2F2; border-color: #FCA5A5; color: #EF4444; }
+
+        /* 分頁切換顯示 */
+        .view-content { display: none; }
+        .view-content.active { display: block; }
     </style>
 </head>
 <body class="min-h-screen flex justify-center py-6 px-4">
 
     <div class="max-w-md w-full space-y-4 pb-12">
         
-        <div class="bg-white rounded-[2.5rem] shadow-sm border border-[#F0EBE1] p-6">
-            <div class="flex justify-between items-center mb-4">
-                <span class="text-3xl">🐈</span>
-                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
-            </div>
-            
-            <div class="grid grid-cols-2 gap-4 mt-2">
-                <div class="bg-[#FFF9F5] p-4 rounded-3xl border border-[#FBE3D5] text-center">
-                    <div class="text-3xl font-black text-[#E8B490]" id="total-calories">0</div>
-                    <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">KCAL (目標 <span id="target-cal">1400</span>)</p>
-                </div>
-                <div class="bg-[#F4F7F2] p-4 rounded-3xl border border-[#E1E8DE] text-center">
-                    <div class="text-3xl font-black text-[#B8C5B0]" id="total-protein">0</div>
-                    <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">PRO(g) (目標 100)</p>
-                </div>
-            </div>
-            
-            <div class="flex bg-[#FAF8F5] rounded-full p-1 border border-[#F0EBE1] mt-4 text-[10px]">
-                <button id="mode-weekday" onclick="setMode('weekday')" class="flex-1 py-2 rounded-full font-bold transition-all">平日 (運動日)</button>
-                <button id="mode-rest" onclick="setMode('rest')" class="flex-1 py-2 rounded-full font-bold text-gray-400 transition-all">假日 / 生理期</button>
-            </div>
+        <div class="flex bg-white rounded-full p-1 border border-[#F0EBE1] shadow-sm mb-4">
+            <button id="tab-record" onclick="switchTab('record')" class="flex-1 py-2 rounded-full font-bold text-[#E8B490] bg-[#FFF9F5] transition-all">日常紀錄</button>
+            <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-2 rounded-full font-bold text-gray-400 bg-transparent transition-all">數據統計</button>
         </div>
 
-        <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-5">
-            <h2 class="font-bold text-sm text-[#E8B490] mb-4 flex items-center gap-2">👆 專屬模組直接點</h2>
+        <div id="view-record" class="view-content active space-y-4">
             
-            <div class="space-y-5">
-                <div>
-                    <h3 class="text-[10px] text-gray-400 font-bold mb-2">☕ 核心飲品與早餐</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" class="tap-btn bg-[#FFF9F5] border border-[#FBE3D5] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🥤</div><div class="text-[9px] font-bold text-[#E8B490]">滿配(400cc)</div>
-                        </button>
-                        <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" class="tap-btn bg-[#FFF9F5] border border-[#FBE3D5] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">💧</div><div class="text-[9px] font-bold text-[#E8B490]">減半(+水)</div>
-                        </button>
-                        <button onclick="quickAdd('全家飯糰', 190, 5)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">全家飯糰</div>
-                        </button>
-                        <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
-                        </button>
-                        <button onclick="quickAdd('鮪魚吐司(無醬)', 300, 12)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">鮪魚吐司</div>
-                        </button>
-                        <button onclick="quickAdd('豬肉蛋堡', 400, 15)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🍔</div><div class="text-[9px] font-bold">豬肉蛋堡</div>
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍳 自煮備餐區 (午/晚)</h3>
-                    <div class="grid grid-cols-3 gap-2">
-                        <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" class="tap-btn bg-[#F4F7F2] border border-[#E1E8DE] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold text-[#8DB4CB]">Costco雞胸</div>
-                        </button>
-                        <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🐟</div><div class="text-[9px] font-bold">魚/雞腿肉</div>
-                        </button>
-                        <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🍤</div><div class="text-[9px] font-bold">蝦蛋/豆干肉</div>
-                        </button>
-                        <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🍠</div><div class="text-[9px] font-bold">飯/瓜類</div>
-                        </button>
-                        <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🥦</div><div class="text-[9px] font-bold">青菜/花菜米</div>
-                        </button>
-                    </div>
-                </div>
-
-                <div>
-                    <h3 class="text-[10px] text-gray-400 font-bold mb-2">🚨 外食實戰區 (黃紅燈)</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button onclick="quickAdd('健康餐盒', 450, 25)" class="tap-btn bg-white border border-[#F0EBE1] rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🍱</div><div class="text-[9px] font-bold">健康餐盒</div>
-                        </button>
-                        <button onclick="quickAdd('極麵道鍋燒(不喝湯)', 700, 25)" class="tap-btn bg-red-50 border border-red-100 rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🍜</div><div class="text-[9px] font-bold text-red-400">極麵道(不湯)</div>
-                        </button>
-                        <button onclick="quickAdd('好呷打拋/一般便當', 700, 25)" class="tap-btn bg-red-50 border border-red-100 rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">🍛</div><div class="text-[9px] font-bold text-red-400">好呷/便當</div>
-                        </button>
-                        <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" class="tap-btn bg-red-50 border border-red-100 rounded-2xl p-2 text-center shadow-sm">
-                            <div class="text-xl mb-1">💥</div><div class="text-[9px] font-bold text-red-400">炒飯/排餐</div>
-                        </button>
-                    </div>
+            <div class="bg-white rounded-[2.5rem] shadow-sm border border-[#F0EBE1] p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-3xl">🐈</span>
+                    <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
                 </div>
                 
-                <div class="mt-2 flex gap-2">
-                    <input type="text" id="manual-name" placeholder="其他食物..." class="flex-1 bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
-                    <input type="number" id="manual-cal" placeholder="大卡" class="w-16 bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-2 py-2 text-xs focus:outline-none">
-                    <input type="number" id="manual-pro" placeholder="蛋白" class="w-16 bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-2 py-2 text-xs focus:outline-none">
-                    <button onclick="manualAdd()" class="bg-gray-200 text-gray-600 rounded-xl px-3 text-xs font-bold">+</button>
+                <div class="grid grid-cols-2 gap-4 mt-2">
+                    <div class="bg-[#FFF9F5] p-4 rounded-3xl border border-[#FBE3D5] text-center">
+                        <div class="text-3xl font-black text-[#E8B490]" id="total-calories">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">KCAL (目標 <span id="target-cal">1300</span>)</p>
+                    </div>
+                    <div class="bg-[#F4F7F2] p-4 rounded-3xl border border-[#E1E8DE] text-center">
+                        <div class="text-3xl font-black text-[#B8C5B0]" id="total-protein">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">PRO(g) (目標 100)</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-5">
+                <div class="space-y-5">
+                    <div>
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">☕ 核心飲品與早餐</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥤</div><div class="text-[9px] font-bold">滿配(400cc)</div>
+                            </button>
+                            <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">💧</div><div class="text-[9px] font-bold">減半(+水)</div>
+                            </button>
+                            <button onclick="quickAdd('全家飯糰', 190, 5)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">全家飯糰</div>
+                            </button>
+                            <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
+                            </button>
+                            <button onclick="quickAdd('鮪魚吐司(無醬)', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">鮪魚吐司</div>
+                            </button>
+                            <button onclick="quickAdd('豬肉蛋堡', 400, 15)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍔</div><div class="text-[9px] font-bold">豬肉蛋堡</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍳 自煮備餐區 (午/晚)</h3>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">Costco雞胸</div>
+                            </button>
+                            <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🐟</div><div class="text-[9px] font-bold">魚/雞腿肉</div>
+                            </button>
+                            <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍤</div><div class="text-[9px] font-bold">蝦蛋/豆干肉</div>
+                            </button>
+                            <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍠</div><div class="text-[9px] font-bold">飯/瓜類</div>
+                            </button>
+                            <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🥦</div><div class="text-[9px] font-bold">青菜/花菜米</div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">🚨 外食實戰區 (黃紅燈)</h3>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="quickAdd('健康餐盒', 450, 25)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍱</div><div class="text-[9px] font-bold">健康餐盒</div>
+                            </button>
+                            <button onclick="quickAdd('極麵道鍋燒(不喝湯)', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍜</div><div class="text-[9px] font-bold">極麵道(不湯)</div>
+                            </button>
+                            <button onclick="quickAdd('好呷打拋/一般便當', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">🍛</div><div class="text-[9px] font-bold">好呷/便當</div>
+                            </button>
+                            <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
+                                <div class="text-xl mb-1">💥</div><div class="text-[9px] font-bold">炒飯/排餐</div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 bg-[#FAF8F5] p-3 rounded-2xl border border-[#F0EBE1]">
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">✏️ 手動微調輸入</h3>
+                        <div class="flex flex-col gap-2">
+                            <input type="text" id="manual-name" placeholder="輸入其他食物名稱..." class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E8B490]">
+                            <div class="flex gap-2">
+                                <div class="relative flex-1">
+                                    <input type="number" id="manual-cal" placeholder="熱量" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                                    <span class="absolute right-3 top-2 text-[10px] text-gray-400">大卡</span>
+                                </div>
+                                <div class="relative flex-1">
+                                    <input type="number" id="manual-pro" placeholder="蛋白" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                                    <span class="absolute right-3 top-2 text-[10px] text-gray-400">g</span>
+                                </div>
+                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 py-2 text-xs font-bold shadow-sm active:bg-[#d9a27e] transition-colors">加入</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <ul id="food-list" class="mt-4 space-y-2 max-h-32 overflow-y-auto no-scrollbar border-t border-[#F0EBE1] pt-4"></ul>
+            </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
+                    <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-red-400 transition-colors">重置</button>
+                </div>
+                <div class="flex items-end gap-2 mb-3">
+                    <span class="text-3xl font-black text-[#8DB4CB]" id="water-display">0</span>
+                    <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="addWater(250)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 250</button>
+                    <button onclick="addWater(500)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 500</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
+                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🏃‍♀️ 身體與活動狀態</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <input type="checkbox" id="check-exercise" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#E8B490]">
+                            <label for="check-exercise" class="text-sm font-bold cursor-pointer text-[#6B5E54]">今日有運動</label>
+                        </div>
+                        <input type="time" id="input-exercise-time" onchange="saveDailyStatus()" class="bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none text-gray-500 font-bold">
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="check-period" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FCA5A5]">
+                        <label for="check-period" class="text-sm font-bold cursor-pointer text-red-400">🩸 生理期 (多休息喵)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
+                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🌙 夜間防護線</h2>
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t1" class="text-sm font-bold cursor-pointer w-full">21:00 開始：growwithjo</label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t2" class="text-sm font-bold cursor-pointer w-full">22:00 完成核心與收操</label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t3" class="text-sm font-bold cursor-pointer w-full">22:30 數位斷網</label>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
+                        <label for="t4" class="text-sm font-bold cursor-pointer w-full">23:30 準時入睡</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-stats" class="view-content space-y-4">
+            
+            <div class="bg-white rounded-[2.5rem] shadow-sm border border-[#F0EBE1] p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-lg font-black text-[#E8B490]">📊 區間結算</h2>
+                    <input type="date" id="stats-date" onchange="renderStats()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
+                </div>
+                
+                <h3 class="text-xs font-bold text-gray-400 mb-3 border-b border-[#F0EBE1] pb-2">當週 (以此日往前推 7 天)</h3>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
+                        <div class="text-2xl font-black text-[#E8B490]" id="stat-week-cal">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均熱量 (kcal)</p>
+                    </div>
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
+                        <div class="text-2xl font-black text-[#B8C5B0]" id="stat-week-pro">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均蛋白 (g)</p>
+                    </div>
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
+                        <div class="text-lg font-black text-[#6B5E54]">🏃 <span id="stat-week-ex">0</span> 天</div>
+                    </div>
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
+                        <div class="text-lg font-black text-red-400">🩸 <span id="stat-week-period">0</span> 天</div>
+                    </div>
+                </div>
+
+                <h3 class="text-xs font-bold text-gray-400 mb-3 border-b border-[#F0EBE1] pb-2">當月 (與此日同月份)</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
+                        <div class="text-2xl font-black text-[#E8B490]" id="stat-month-cal">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均熱量 (kcal)</p>
+                    </div>
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
+                        <div class="text-2xl font-black text-[#B8C5B0]" id="stat-month-pro">0</div>
+                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均蛋白 (g)</p>
+                    </div>
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
+                        <div class="text-lg font-black text-[#6B5E54]">🏃 <span id="stat-month-ex">0</span> 天</div>
+                    </div>
+                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
+                        <div class="text-lg font-black text-red-400">🩸 <span id="stat-month-period">0</span> 天</div>
+                    </div>
                 </div>
             </div>
             
-            <ul id="food-list" class="mt-4 space-y-2 max-h-32 overflow-y-auto no-scrollbar border-t border-[#F0EBE1] pt-4"></ul>
         </div>
-
-        <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
-                <button onclick="resetWater()" class="text-[10px] text-gray-400">重置</button>
-            </div>
-            <div class="flex items-end gap-2 mb-3">
-                <span class="text-3xl font-black text-[#8DB4CB]" id="water-display">0</span>
-                <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="addWater(250)" class="tap-btn flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-3 rounded-xl text-xs font-bold">+ 250</button>
-                <button onclick="addWater(500)" class="tap-btn flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-3 rounded-xl text-xs font-bold">+ 500</button>
-            </div>
-        </div>
-
-        <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6" id="routine-module">
-            <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🌙 夜間防護線</h2>
-            <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                    <label for="t1" class="text-sm font-bold cursor-pointer w-full">21:00 開始：growwithjo</label>
-                </div>
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                    <label for="t2" class="text-sm font-bold cursor-pointer w-full">22:00 完成核心與收操</label>
-                </div>
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                    <label for="t3" class="text-sm font-bold cursor-pointer w-full">22:30 數位斷網</label>
-                </div>
-                <div class="flex items-center gap-3">
-                    <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-5 h-5 accent-[#B8C5B0]">
-                    <label for="t4" class="text-sm font-bold cursor-pointer w-full">23:30 準時入睡</label>
-                </div>
-            </div>
-        </div>
-
     </div>
 
     <script>
+        // 資料庫初始化
         let db = JSON.parse(localStorage.getItem('cat_pos_custom_db')) || {};
+        
         const datePicker = document.getElementById('current-date');
-        datePicker.value = new Date().toISOString().split('T')[0];
+        const statsDatePicker = document.getElementById('stats-date');
+        
+        const todayStr = new Date().toISOString().split('T')[0];
+        datePicker.value = todayStr;
+        statsDatePicker.value = todayStr;
 
+        // --- 分頁切換邏輯 ---
+        function switchTab(tabName) {
+            document.getElementById('view-record').classList.remove('active');
+            document.getElementById('view-stats').classList.remove('active');
+            
+            const btnRecord = document.getElementById('tab-record');
+            const btnStats = document.getElementById('tab-stats');
+            
+            btnRecord.className = "flex-1 py-2 rounded-full font-bold text-gray-400 bg-transparent transition-all";
+            btnStats.className = "flex-1 py-2 rounded-full font-bold text-gray-400 bg-transparent transition-all";
+
+            if (tabName === 'record') {
+                document.getElementById('view-record').classList.add('active');
+                btnRecord.className = "flex-1 py-2 rounded-full font-bold text-[#E8B490] bg-[#FFF9F5] shadow-sm transition-all";
+                loadDateData();
+            } else {
+                document.getElementById('view-stats').classList.add('active');
+                btnStats.className = "flex-1 py-2 rounded-full font-bold text-[#E8B490] bg-[#FFF9F5] shadow-sm transition-all";
+                renderStats();
+            }
+        }
+
+        // --- 日常紀錄資料處理 ---
         function initDayData(date) {
             if (!db[date]) { 
-                db[date] = { mode: 'weekday', water: 0, records: [], tasks: { t1: false, t2: false, t3: false, t4: false } }; 
+                db[date] = { 
+                    water: 0, 
+                    records: [], 
+                    tasks: { t1: false, t2: false, t3: false, t4: false },
+                    exercise: false,
+                    exerciseTime: '',
+                    period: false
+                }; 
             }
+            // 確保舊資料也有新屬性
+            if(db[date].exercise === undefined) db[date].exercise = false;
+            if(db[date].exerciseTime === undefined) db[date].exerciseTime = '';
+            if(db[date].period === undefined) db[date].period = false;
+            
             return db[date];
         }
 
         function loadDateData() {
             initDayData(datePicker.value);
-            setModeUI(db[datePicker.value].mode);
             updateUI();
         }
 
         function save() { localStorage.setItem('cat_pos_custom_db', JSON.stringify(db)); }
 
-        function setMode(mode) {
-            db[datePicker.value].mode = mode;
-            setModeUI(mode);
+        // --- 活動狀態與紀錄 ---
+        function saveDailyStatus() {
+            const d = datePicker.value;
+            db[d].exercise = document.getElementById('check-exercise').checked;
+            db[d].exerciseTime = document.getElementById('input-exercise-time').value;
+            db[d].period = document.getElementById('check-period').checked;
             save();
-            updateUI();
+            updateUI(); // 重新計算目標熱量
         }
 
-        function setModeUI(mode) {
-            const btnW = document.getElementById('mode-weekday');
-            const btnR = document.getElementById('mode-rest');
-            if (mode === 'weekday') {
-                btnW.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-[#E8B490] transition-all";
-                btnR.className = "flex-1 py-2 rounded-full font-bold text-gray-400 transition-all";
-                document.getElementById('routine-module').style.display = 'block';
-                document.getElementById('target-cal').innerText = '1400';
-            } else {
-                btnR.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-[#E8B490] transition-all";
-                btnW.className = "flex-1 py-2 rounded-full font-bold text-gray-400 transition-all";
-                document.getElementById('routine-module').style.display = 'none';
-                document.getElementById('target-cal').innerText = '1300';
-            }
-        }
-
-        // --- 核心：一鍵快速點餐 ---
         function quickAdd(name, cal, pro) {
             const date = datePicker.value;
             db[date].records.push({ id: Date.now(), name, cal, pro });
             save();
             updateUI();
-            
-            // 手機震動回饋
             if (navigator.vibrate) navigator.vibrate(50);
         }
 
@@ -253,14 +363,22 @@
             const data = db[datePicker.value];
             document.getElementById('water-display').innerText = data.water || 0;
             
+            // 活動狀態 UI 更新
+            document.getElementById('check-exercise').checked = data.exercise;
+            document.getElementById('input-exercise-time').value = data.exerciseTime;
+            document.getElementById('check-period').checked = data.period;
+
+            // 動態目標熱量判定 (預設1300，有運動1400，生理期強制1300休息)
+            let target = 1300;
+            if (data.exercise) target = 1400;
+            if (data.period) target = 1300; 
+            document.getElementById('target-cal').innerText = target;
+            
             const totalCal = Math.round((data.records || []).reduce((s, r) => s + r.cal, 0));
             const totalPro = Math.round((data.records || []).reduce((s, r) => s + r.pro, 0) * 10) / 10;
-            const target = data.mode === 'weekday' ? 1400 : 1300;
             
             document.getElementById('total-calories').innerText = totalCal;
             document.getElementById('total-protein').innerText = totalPro;
-            
-            // 超標警示
             document.getElementById('total-calories').className = totalCal > target ? 'text-3xl font-black text-red-400' : 'text-3xl font-black text-[#E8B490]';
 
             const list = document.getElementById('food-list');
@@ -270,7 +388,7 @@
                         <span class="text-xs font-bold text-[#6B5E54]">${r.name}</span>
                         <span class="text-[10px] text-gray-400">${r.cal} kcal / ${r.pro}g 蛋白</span>
                     </div>
-                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 hover:text-red-300 font-bold px-2">✕</button>
+                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 hover:text-red-300 font-bold px-2 transition-colors">✕</button>
                 </li>
             `).join('') || '<li class="text-center text-gray-300 text-[10px] py-2">點擊上方圖示紀錄喵～</li>';
 
@@ -280,6 +398,65 @@
             document.getElementById('t4').checked = data.tasks?.t4 || false;
         }
 
+        // --- 統計分頁運算邏輯 ---
+        function renderStats() {
+            const baseDateStr = statsDatePicker.value;
+            if(!baseDateStr) return;
+            const baseDate = new Date(baseDateStr);
+
+            // 運算變數
+            let weekCalTotal = 0, weekProTotal = 0, weekExDays = 0, weekPeriodDays = 0, weekValidDays = 0;
+            let monthCalTotal = 0, monthProTotal = 0, monthExDays = 0, monthPeriodDays = 0, monthValidDays = 0;
+
+            const targetMonthPrefix = baseDateStr.substring(0, 7); // YYYY-MM
+
+            // 掃描資料庫
+            Object.keys(db).forEach(dateKey => {
+                const dayData = db[dateKey];
+                const rCal = (dayData.records || []).reduce((s, r) => s + r.cal, 0);
+                const rPro = (dayData.records || []).reduce((s, r) => s + r.pro, 0);
+                
+                // 檢查是否在當週 (過去 7 天內，含當天)
+                const dDate = new Date(dateKey);
+                const diffTime = baseDate.getTime() - dDate.getTime();
+                const diffDays = diffTime / (1000 * 3600 * 24);
+                
+                if (diffDays >= 0 && diffDays < 7) {
+                    if(dayData.records && dayData.records.length > 0) {
+                        weekCalTotal += rCal;
+                        weekProTotal += rPro;
+                        weekValidDays++;
+                    }
+                    if(dayData.exercise) weekExDays++;
+                    if(dayData.period) weekPeriodDays++;
+                }
+
+                // 檢查是否在當月
+                if (dateKey.startsWith(targetMonthPrefix)) {
+                    if(dayData.records && dayData.records.length > 0) {
+                        monthCalTotal += rCal;
+                        monthProTotal += rPro;
+                        monthValidDays++;
+                    }
+                    if(dayData.exercise) monthExDays++;
+                    if(dayData.period) monthPeriodDays++;
+                }
+            });
+
+            // 渲染當週
+            document.getElementById('stat-week-cal').innerText = weekValidDays > 0 ? Math.round(weekCalTotal / weekValidDays) : 0;
+            document.getElementById('stat-week-pro').innerText = weekValidDays > 0 ? Math.round((weekProTotal / weekValidDays)*10)/10 : 0;
+            document.getElementById('stat-week-ex').innerText = weekExDays;
+            document.getElementById('stat-week-period').innerText = weekPeriodDays;
+
+            // 渲染當月
+            document.getElementById('stat-month-cal').innerText = monthValidDays > 0 ? Math.round(monthCalTotal / monthValidDays) : 0;
+            document.getElementById('stat-month-pro').innerText = monthValidDays > 0 ? Math.round((monthProTotal / monthValidDays)*10)/10 : 0;
+            document.getElementById('stat-month-ex').innerText = monthExDays;
+            document.getElementById('stat-month-period').innerText = monthPeriodDays;
+        }
+
+        // 初始載入
         loadDateData();
     </script>
 </body>
