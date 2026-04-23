@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 緊湊精煉版</title>
+    <title>日常貓日誌 🐾 穩定排版版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; background-color: #FAF8F5; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* 智能按鈕狀態 */
         .food-btn { background-color: #FFFFFF; border: 1px solid #F0EBE1; color: #6B5E54; transition: all 0.2s ease; }
         .food-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
         
@@ -138,12 +137,17 @@
                     </div>
 
                     <div class="mt-4 bg-[#FAF8F5] p-3 rounded-2xl border border-[#F0EBE1]">
+                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">✏️ 手動微調輸入</h3>
                         <div class="flex flex-col gap-2">
-                            <input type="text" id="manual-name" placeholder="其他食物..." class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none">
+                            <input type="text" id="manual-name" placeholder="輸入其他食物名稱..." class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E8B490]">
                             <div class="flex gap-2">
-                                <input type="number" id="manual-cal" placeholder="Kcal" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none">
-                                <input type="number" id="manual-pro" placeholder="Pro" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none">
-                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 text-xs font-bold active:bg-[#d9a27e]">加入</button>
+                                <div class="flex-1">
+                                    <input type="number" id="manual-cal" placeholder="大卡" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                                </div>
+                                <div class="flex-1">
+                                    <input type="number" id="manual-pro" placeholder="蛋白" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
+                                </div>
+                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-5 py-2 text-xs font-bold shadow-sm active:bg-[#d9a27e] transition-colors shrink-0">加入</button>
                             </div>
                         </div>
                     </div>
@@ -187,6 +191,11 @@
 
                 <div class="mt-6 border-t border-[#F0EBE1] pt-4">
                     <h3 class="text-[10px] font-black text-gray-500 mb-1 uppercase tracking-widest">綜合狀態 (運動/生理/零食)</h3>
+                    <div class="flex gap-3 mb-2">
+                        <span class="text-[8px] font-bold text-[#818CF8]">➖ 運動時間</span>
+                        <span class="text-[8px] font-bold text-red-400">● 生理期</span>
+                        <span class="text-[8px] font-bold text-[#FBBF24]">● 零食</span>
+                    </div>
                     <div id="chart-combined-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-1 relative overflow-hidden border border-[#F0EBE1]"></div>
                 </div>
                 
