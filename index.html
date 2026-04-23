@@ -11,12 +11,17 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .task-checkbox:checked + label { text-decoration: line-through; color: #A7B49E; }
         
+        /* 智能按鈕狀態：預設白色，透過 JS 添加 is-active 改變顏色 */
+        .food-btn { background-color: #FFFFFF; border: 1px solid #F0EBE1; color: #6B5E54; transition: all 0.2s ease; }
+        .food-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
+        
+        .food-btn[data-cat="orange"].is-active { background-color: #FFF9F5; border-color: #E8B490; color: #E8B490; }
+        .food-btn[data-cat="green"].is-active { background-color: #F4F7F2; border-color: #B8C5B0; color: #6e8a5c; }
+        .food-btn[data-cat="red"].is-active { background-color: #FEF2F2; border-color: #FCA5A5; color: #EF4444; }
+        .food-btn[data-cat="purple"].is-active { background-color: #F5F3FF; border-color: #C4B5FD; color: #7C3AED; }
+
         .tap-btn { background-color: #FFFFFF; border: 1px solid #F0EBE1; color: #6B5E54; transition: all 0.1s ease; }
-        .tap-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
-        .tap-btn.cat-orange:active { background-color: #FFF9F5; border-color: #E8B490; color: #E8B490; }
-        .tap-btn.cat-green:active { background-color: #F4F7F2; border-color: #B8C5B0; color: #6e8a5c; }
-        .tap-btn.cat-red:active { background-color: #FEF2F2; border-color: #FCA5A5; color: #EF4444; }
-        .tap-btn.cat-purple:active { background-color: #F5F3FF; border-color: #C4B5FD; color: #7C3AED; }
+        .tap-btn:active { transform: scale(0.95); }
 
         .view-content { display: none; }
         .view-content.active { display: block; }
@@ -69,30 +74,30 @@
                     <div>
                         <h3 class="text-[10px] text-gray-400 font-bold mb-2">☕ 核心飲品與早餐</h3>
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" data-name="滿配豆漿粉飲" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥤</div><div class="text-[9px] font-bold">滿配(400cc)</div>
                             </button>
-                            <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" data-name="減半豆漿粉飲" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">💧</div><div class="text-[9px] font-bold">半配(+水)</div>
                             </button>
-                            <button onclick="quickAdd('茶葉蛋', 75, 7)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('茶葉蛋', 75, 7)" data-name="茶葉蛋" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
                             </button>
                             
-                            <button onclick="quickAdd('中式飯糰', 450, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('中式飯糰', 450, 12)" data-name="中式飯糰" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🌯</div><div class="text-[9px] font-bold">中式飯糰</div>
                             </button>
-                            <button onclick="quickAdd('全家飯糰', 190, 5)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('全家飯糰', 190, 5)" data-name="全家飯糰" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">超商飯糰</div>
                             </button>
-                            <button onclick="quickAdd('豬肉蛋堡', 400, 15)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('豬肉蛋堡', 400, 15)" data-name="豬肉蛋堡" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍔</div><div class="text-[9px] font-bold">豬肉蛋堡</div>
                             </button>
                             
-                            <button onclick="quickAdd('三明治', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('三明治', 300, 12)" data-name="三明治" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">三明治</div>
                             </button>
-                            <button onclick="quickAdd('小包子', 300, 12)" class="tap-btn cat-orange rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('小包子', 300, 12)" data-name="小包子" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥯</div><div class="text-[9px] font-bold">小包子</div>
                             </button>
                         </div>
@@ -101,19 +106,19 @@
                     <div>
                         <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍳 自煮備餐區 (午/晚)</h3>
                         <div class="grid grid-cols-3 gap-2">
-                            <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" data-name="Costco雞胸(150g)" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">Costco雞胸</div>
                             </button>
-                            <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" data-name="鱸魚湯/烤雞腿" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🐟</div><div class="text-[9px] font-bold">魚/雞腿肉</div>
                             </button>
-                            <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" data-name="蝦仁蛋/豆干肉絲" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍤</div><div class="text-[9px] font-bold">蝦蛋/豆干肉</div>
                             </button>
-                            <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" data-name="半碗飯/地瓜/南瓜" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍠</div><div class="text-[9px] font-bold">飯/瓜類</div>
                             </button>
-                            <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" data-name="炒青菜/花椰菜米" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🥦</div><div class="text-[9px] font-bold">青菜/花菜米</div>
                             </button>
                         </div>
@@ -122,16 +127,16 @@
                     <div>
                         <h3 class="text-[10px] text-gray-400 font-bold mb-2">🚨 外食實戰區</h3>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="quickAdd('健康餐盒', 450, 25)" class="tap-btn cat-green rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('健康餐盒', 450, 25)" data-name="健康餐盒" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍱</div><div class="text-[9px] font-bold">健康餐盒</div>
                             </button>
-                            <button onclick="quickAdd('外食麵食', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('外食麵食', 700, 25)" data-name="外食麵食" data-cat="red" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍜</div><div class="text-[9px] font-bold">外食麵食</div>
                             </button>
-                            <button onclick="quickAdd('一般便當', 700, 25)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('一般便當', 700, 25)" data-name="一般便當" data-cat="red" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">🍛</div><div class="text-[9px] font-bold">一般便當</div>
                             </button>
-                            <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" class="tap-btn cat-red rounded-2xl p-2 text-center shadow-sm">
+                            <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" data-name="雞排炒飯/排餐" data-cat="red" class="food-btn rounded-2xl p-2 text-center shadow-sm">
                                 <div class="text-xl mb-1">💥</div><div class="text-[9px] font-bold">炒飯/排餐</div>
                             </button>
                         </div>
@@ -140,10 +145,10 @@
                     <div>
                         <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍰 爆卡救援區 (難以計算熱量時)</h3>
                         <div class="grid grid-cols-2 gap-2">
-                            <button onclick="quickAdd('高級餐廳/大餐', 1000, 30)" class="tap-btn cat-purple rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
+                            <button onclick="quickAdd('高級餐廳/大餐', 1000, 30)" data-name="高級餐廳/大餐" data-cat="purple" class="food-btn rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
                                 <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">大餐(高估)</div>
                             </button>
-                            <button onclick="quickAdd('甜點/蛋糕/午茶', 450, 5)" class="tap-btn cat-purple rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
+                            <button onclick="quickAdd('甜點/蛋糕/午茶', 450, 5)" data-name="甜點/蛋糕/午茶" data-cat="purple" class="food-btn rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
                                 <div class="text-xl mb-1">🍰</div><div class="text-[9px] font-bold">甜點(高估)</div>
                             </button>
                         </div>
@@ -217,17 +222,18 @@
                 </div>
                 
                 <h3 class="text-[10px] font-black text-gray-500 mb-2">🔥 過去 7 天熱量趨勢 (大卡)</h3>
-                <div id="chart-cal-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative px-2 flex items-end border border-[#F0EBE1]"></div>
+                <div id="chart-cal-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-4">🥩 過去 7 天蛋白趨勢 (g)</h3>
-                <div id="chart-pro-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative px-2 flex items-end border border-[#F0EBE1]"></div>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">🥩 過去 7 天蛋白趨勢 (g)</h3>
+                <div id="chart-pro-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-4">🏃‍♀️ 過去 7 天運動時間 (24小時制)</h3>
-                <div id="chart-ex-time-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative px-2 flex items-end border border-[#F0EBE1]"></div>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">🏃‍♀️ 過去 7 天運動時間 (24小時制)</h3>
+                <div id="chart-ex-time-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-4">🩸 過去 7 天生理期狀態</h3>
-                <div id="chart-period-7" class="w-full h-16 bg-[#FAF8F5] rounded-xl mb-1 relative px-2 flex items-end border border-[#F0EBE1]"></div>
-                <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-1 font-bold" id="chart-dates-labels"></div>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">🩸 過去 7 天生理期狀態 (0=無, 1=有)</h3>
+                <div id="chart-period-7" class="w-full h-20 bg-[#FAF8F5] rounded-xl mb-1 relative overflow-hidden border border-[#F0EBE1]"></div>
+                
+                <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-4 font-bold" id="chart-dates-labels"></div>
             </div>
         </div>
     </div>
@@ -314,46 +320,86 @@
             document.getElementById('check-exercise').checked = data.exercise;
             document.getElementById('input-exercise-time').value = data.exerciseTime;
             document.getElementById('check-period').checked = data.period;
+            
             let target = (data.exercise && !data.period) ? 1400 : 1300;
             document.getElementById('target-cal').innerText = target;
+            
             const totalCal = Math.round((data.records || []).reduce((s, r) => s + r.cal, 0));
             const totalPro = Math.round((data.records || []).reduce((s, r) => s + r.pro, 0) * 10) / 10;
             document.getElementById('total-calories').innerText = totalCal;
             document.getElementById('total-protein').innerText = totalPro;
             document.getElementById('total-calories').className = totalCal > target ? 'text-3xl font-black text-red-400' : 'text-3xl font-black text-[#E8B490]';
+            
+            // 渲染清單
             document.getElementById('food-list').innerHTML = data.records.map(r => `
                 <li class="flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#F0EBE1] text-xs">
                     <div><b>${r.name}</b><br><small class="text-gray-400">${r.cal} kcal / ${r.pro}g</small></div>
                     <button onclick="deleteRecord(${r.id})" class="text-gray-300 px-2 font-bold hover:text-red-400 transition-colors">✕</button>
                 </li>`).join('') || '<li class="text-center text-gray-300 text-[10px] py-2">點擊圖示紀錄喵～</li>';
             
+            // 任務防線
             document.getElementById('t1').checked = data.tasks?.t1 || false;
             document.getElementById('t2').checked = data.tasks?.t2 || false;
             document.getElementById('t3').checked = data.tasks?.t3 || false;
             document.getElementById('t4').checked = data.tasks?.t4 || false;
+
+            // ===== 智能按鈕狀態更新 =====
+            const addedNames = (data.records || []).map(r => r.name);
+            document.querySelectorAll('.food-btn').forEach(btn => {
+                if(addedNames.includes(btn.getAttribute('data-name'))) {
+                    btn.classList.add('is-active');
+                } else {
+                    btn.classList.remove('is-active');
+                }
+            });
         }
 
-        function drawLineChart(id, dataArray, maxVal, color, isStep = false) {
+        // 帶有標尺的 SVG 繪圖函數
+        function drawLineChart(id, dataArray, maxVal, color, yLabels, isStep = false) {
             const container = document.getElementById(id);
             if (!container) return;
-            const p = 10, w = container.clientWidth - (p * 2), h = container.clientHeight - (p * 2);
-            const step = w / (dataArray.length - 1);
+            
+            // 設定邊距，左側留 25px 給數字標尺
+            const pTop = 15, pBottom = 15, pRight = 10, pLeft = 25; 
+            const w = container.clientWidth;
+            const h = container.clientHeight;
+            const drawW = w - pLeft - pRight;
+            const drawH = h - pTop - pBottom;
+            const step = drawW / (dataArray.length - 1);
+
+            // 繪製背景格線與 Y 軸數字
+            let gridHTML = '';
+            yLabels.forEach(val => {
+                const y = pTop + drawH - (val / maxVal * drawH);
+                gridHTML += `<line x1="${pLeft}" y1="${y}" x2="${w-pRight}" y2="${y}" stroke="#F0EBE1" stroke-dasharray="2,2" />`;
+                gridHTML += `<text x="2" y="${y}" font-size="8" fill="#9CA3AF" font-weight="bold" alignment-baseline="middle">${val}</text>`;
+            });
+
+            // 繪製數據連線
             const pts = dataArray.map((v, i) => {
-                const y = p + h - (Math.min(v, maxVal) / maxVal * h);
-                return `${p + (i * step)},${y}`;
+                const y = pTop + drawH - (Math.min(v, maxVal) / maxVal * drawH);
+                return `${pLeft + (i * step)},${y}`;
             }).join(' ');
+
+            // 繪製數據圓點
             const circles = dataArray.map((v, i) => {
-                if(v === 0 && !isStep) return '';
-                const y = p + h - (Math.min(v, maxVal) / maxVal * h);
-                return `<circle cx="${p + (i * step)}" cy="${y}" r="3" fill="${color}" stroke="#fff" />`;
+                if(v === 0 && !isStep) return ''; // 非階梯圖隱藏 0 的點
+                const y = pTop + drawH - (Math.min(v, maxVal) / maxVal * drawH);
+                return `<circle cx="${pLeft + (i * step)}" cy="${y}" r="3" fill="${color}" stroke="#fff" stroke-width="1.5" />`;
             }).join('');
-            container.innerHTML = `<svg width="${container.clientWidth}" height="${container.clientHeight}" class="overflow-visible"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />${circles}</svg>`;
+
+            container.innerHTML = `<svg width="${w}" height="${h}" class="overflow-visible">
+                ${gridHTML}
+                <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
+                ${circles}
+            </svg>`;
         }
 
         function renderStats() {
             const baseDate = new Date(statsDatePicker.value);
             const days7 = [];
             for(let i=6; i>=0; i--) { const d = new Date(baseDate); d.setDate(d.getDate() - i); days7.push(d.toISOString().split('T')[0]); }
+            
             const cal7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.cal, 0));
             const pro7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.pro, 0));
             const exTime7 = days7.map(d => {
@@ -362,12 +408,16 @@
                 return hh + (mm/60);
             });
             const period7 = days7.map(d => db[d]?.period ? 1 : 0);
+            
             document.getElementById('chart-dates-labels').innerHTML = days7.map(d => `<span>${d.slice(5).replace('-','/')}</span>`).join('');
-            drawLineChart('chart-cal-7', cal7, 2000, '#E8B490');
-            drawLineChart('chart-pro-7', pro7, 120, '#B8C5B0');
-            drawLineChart('chart-ex-time-7', exTime7, 24, '#818CF8');
-            drawLineChart('chart-period-7', period7, 1, '#FCA5A5', true);
+            
+            // 呼叫繪圖，並傳入要標示的 Y 軸數值陣列
+            drawLineChart('chart-cal-7', cal7, 2000, '#E8B490', [0, 1000, 2000]);
+            drawLineChart('chart-pro-7', pro7, 120, '#B8C5B0', [0, 60, 120]);
+            drawLineChart('chart-ex-time-7', exTime7, 24, '#818CF8', [0, 12, 24]);
+            drawLineChart('chart-period-7', period7, 1, '#FCA5A5', [0, 1], true);
         }
+        
         loadDateData();
     </script>
 </body>
