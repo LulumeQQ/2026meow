@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>橘白貓日誌 🐾 AI 協作版</title>
+    <title>日常貓日誌 🐾 AI 直連版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'cat-bg': '#FCFBF9',       /* 極淡牛奶底色 */
-                        'cat-main': '#E5A97C',     /* 溫暖橘白貓色 */
-                        'cat-green': '#A7B49E',    /* 鼠尾草綠 */
-                        'cat-text': '#5A4F44',     /* 深棕色文字 */
+                        'cat-bg': '#FAF9F7',       /* 極淡燕麥底色 */
+                        'cat-main': '#E8B490',     /* 柔和橘貓色 */
+                        'cat-green': '#B8C5B0',    /* 莫蘭迪綠 */
+                        'cat-text': '#6B5E54',     /* 文青棕色 */
                         'cat-card': '#FFFFFF',
-                        'cat-border': '#F0EBE1'    /* 柔和邊線 */
+                        'cat-border': '#F2EEE7'    /* 溫潤邊線 */
                     }
                 }
             }
@@ -23,23 +23,23 @@
     </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
-        body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; background-color: #FCFBF9; }
+        body { font-family: 'Noto Sans TC', sans-serif; color: #6B5E54; background-color: #FAF9F7; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .active-tab { color: #E5A97C; border-bottom: 3px solid #E5A97C; }
-        input[type="date"] { color: #5A4F44; font-weight: bold; background: transparent; }
-        .task-checkbox:checked + label { text-decoration: line-through; color: #A7B49E; }
+        .active-tab { color: #E8B490; border-bottom: 3px solid #E8B490; }
+        input[type="date"] { color: #6B5E54; font-weight: bold; background: transparent; }
+        .task-checkbox:checked + label { text-decoration: line-through; color: #B8C5B0; }
     </style>
 </head>
 <body class="min-h-screen flex justify-center py-6 px-4">
 
     <div class="max-w-md w-full space-y-4 pb-24">
         
-        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6 text-center">
+        <div class="bg-cat-card rounded-[2.5rem] shadow-sm border border-cat-border p-6 text-center">
             <div class="flex justify-between items-center mb-4">
                 <span class="text-3xl">🐈</span>
-                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs focus:outline-none cursor-pointer bg-cat-bg px-3 py-1 rounded-full">
+                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs focus:outline-none cursor-pointer bg-cat-bg px-4 py-1.5 rounded-full">
             </div>
             <h1 class="text-lg font-bold tracking-widest text-cat-text mb-4">日常貓日誌</h1>
             
@@ -49,47 +49,48 @@
             </div>
         </div>
 
-        <div class="flex border-b border-cat-border bg-cat-card rounded-t-[2rem] px-4 pt-2">
-            <button id="tab-log" onclick="switchTab('log')" class="flex-1 py-3 text-sm font-bold active-tab transition-all">AI 協作紀錄</button>
-            <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-3 text-sm font-bold text-gray-400 transition-all">數據趨勢</button>
+        <div class="flex border-b border-cat-border bg-cat-card rounded-t-[2rem] px-4 pt-1">
+            <button id="tab-log" onclick="switchTab('log')" class="flex-1 py-3 text-sm font-bold active-tab transition-all">AI 快速分析</button>
+            <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-3 text-sm font-bold text-gray-400 transition-all">趨勢圖表</button>
         </div>
 
         <div id="content-log" class="tab-content active space-y-4">
             
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold flex items-center gap-2 mb-3 text-sm text-cat-main">📸 步驟一：讓 Gemini 幫你算</h2>
-                <p class="text-[10px] text-gray-400 mb-3">吃飯前拍張照，點擊下方按鈕複製專屬指令，貼給 AI 導師分析。</p>
-                <button onclick="copyPrompt()" class="w-full bg-[#FFF5EE] text-cat-main py-3.5 rounded-xl text-sm font-bold border border-[#FFE4D6] hover:bg-[#FFE4D6] transition-colors flex justify-center items-center gap-2">
-                    <span>📋 一鍵複製給 Gemini</span>
+                <h2 class="font-bold flex items-center gap-2 mb-3 text-sm text-cat-main">📸 讓 Gemini 幫你算</h2>
+                <p class="text-[10px] text-gray-400 mb-4 leading-relaxed">點擊後將自動開啟 Gemini 並填好指令，您只需貼上照片即可得到精確數據喵！</p>
+                
+                <button onclick="copyAndOpenGemini()" class="w-full bg-[#FFF9F5] text-cat-main py-4 rounded-2xl text-sm font-bold border border-[#FBE3D5] hover:bg-[#FBE3D5] transition-all flex justify-center items-center gap-2 shadow-sm">
+                    <span>✨ 直接開啟 Gemini 分析</span>
                 </button>
             </div>
 
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-cat-green">✍️ 步驟二：填入 AI 數據</h2>
+                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-cat-green">✍️ 填入 AI 給您的數據</h2>
                 
-                <form id="food-form" class="space-y-3 mb-6 bg-cat-bg p-4 rounded-2xl border border-cat-border">
-                    <input type="text" id="food-name" required placeholder="這餐吃了什麼？ (如: 午餐便當)" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main">
+                <form id="food-form" class="space-y-3 mb-6 bg-cat-bg p-4 rounded-2xl">
+                    <input type="text" id="food-name" required placeholder="這餐吃了什麼？" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main">
                     <div class="grid grid-cols-2 gap-3">
                         <div class="relative">
-                            <input type="number" id="food-calories" required placeholder="AI 說幾大卡?" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main">
-                            <span class="absolute right-3 top-3 text-[10px] text-gray-400">kcal</span>
+                            <input type="number" id="food-calories" required placeholder="熱量" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none">
+                            <span class="absolute right-3 top-3 text-[10px] text-gray-300">kcal</span>
                         </div>
                         <div class="relative">
-                            <input type="number" id="food-protein" required placeholder="AI 說多少蛋白?" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none focus:border-cat-main">
-                            <span class="absolute right-3 top-3 text-[10px] text-gray-400">g</span>
+                            <input type="number" id="food-protein" required placeholder="蛋白" class="w-full bg-white border border-cat-border rounded-xl p-3 text-sm focus:outline-none">
+                            <span class="absolute right-3 top-3 text-[10px] text-gray-300">g</span>
                         </div>
                     </div>
-                    <button type="submit" class="w-full bg-cat-text text-white py-3 rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors mt-2 shadow-md">儲存紀錄</button>
+                    <button type="submit" class="w-full bg-cat-text text-white py-3 rounded-xl text-sm font-bold hover:bg-black transition-colors">儲存紀錄</button>
                 </form>
 
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="text-center">
+                <div class="grid grid-cols-2 gap-3 text-center mb-4">
+                    <div>
                         <div class="text-2xl font-bold text-cat-main" id="total-calories">0</div>
-                        <p class="text-[10px] text-gray-400 uppercase">大卡 (目標 <span id="target-cal">1400</span>)</p>
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">今天已攝取 (目標 <span id="target-cal">1400</span>)</p>
                     </div>
-                    <div class="text-center border-l border-cat-border">
+                    <div class="border-l border-cat-border">
                         <div class="text-2xl font-bold text-cat-green" id="total-protein">0</div>
-                        <p class="text-[10px] text-gray-400 uppercase">蛋白 (目標 100g)</p>
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">總蛋白質 (目標 100g)</p>
                     </div>
                 </div>
 
@@ -98,78 +99,76 @@
 
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度 (21:00 前喝足 80%)</h2>
-                    <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-cat-main">重置</button>
+                    <h2 class="font-bold text-sm">💧 水分進度</h2>
+                    <button onclick="resetWater()" class="text-[10px] text-gray-300">重置</button>
                 </div>
                 <div class="flex items-end gap-2 mb-3">
                     <span class="text-3xl font-bold text-[#8DB4CB]" id="water-display">0</span>
                     <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="addWater(250)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2 rounded-xl text-xs font-bold">+ 250</button>
-                    <button onclick="addWater(500)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2 rounded-xl text-xs font-bold">+ 500</button>
+                    <button onclick="addWater(250)" class="flex-1 bg-blue-50 text-blue-400 py-2.5 rounded-xl text-xs font-bold border border-blue-100">+ 250</button>
+                    <button onclick="addWater(500)" class="flex-1 bg-blue-50 text-blue-400 py-2.5 rounded-xl text-xs font-bold border border-blue-100">+ 500</button>
                 </div>
             </div>
 
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6" id="routine-module">
-                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm">🌙 夜間防護線</h2>
+                <h2 class="font-bold text-sm mb-4">🌙 夜間防護線</h2>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
                         <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                        <label for="t1" class="text-xs font-medium cursor-pointer">21:00 開始：growwithjo (30-45分)</label>
+                        <label for="t1" class="text-xs font-medium">21:00 開始：growwithjo 運動</label>
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                        <label for="t2" class="text-xs font-medium cursor-pointer">22:00 前完成：核心 5 分 + 收操 10 分</label>
+                        <label for="t2" class="text-xs font-medium">22:00 完成核心與收操</label>
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                        <label for="t3" class="text-xs font-medium cursor-pointer">22:30 數位斷網 (停止滑手機)</label>
+                        <label for="t3" class="text-xs font-medium">22:30 數位斷網</label>
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
-                        <label for="t4" class="text-xs font-medium cursor-pointer">23:30 準時就寢</label>
+                        <label for="t4" class="text-xs font-medium">23:30 準時入睡</label>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="content-stats" class="tab-content space-y-4">
-            <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold text-sm mb-6 text-cat-text">📈 7日熱量趨勢 (Kcal)</h2>
-                <div id="chart-cal-container" class="w-full h-40 bg-cat-bg rounded-xl relative flex items-end justify-between px-4 pb-6"></div>
-                <div class="flex justify-between text-[9px] text-gray-400 mt-2 px-1" id="chart-dates-cal"></div>
-            </div>
-            <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
-                <h2 class="font-bold text-sm mb-6 text-cat-text">🌿 7日蛋白質達成率 (g)</h2>
-                <div id="chart-pro-container" class="w-full h-40 bg-cat-bg rounded-xl relative flex items-end justify-between px-4 pb-6"></div>
-                <div class="flex justify-between text-[9px] text-gray-400 mt-2 px-1" id="chart-dates-pro"></div>
-                <p class="text-[9px] text-center text-gray-400 mt-4">※ 虛線為每日 100g 建議目標</p>
+            <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6 text-center">
+                <h2 class="font-bold text-sm mb-6">7日熱量與蛋白質趨勢</h2>
+                <div id="chart-cal-container" class="w-full h-40 bg-cat-bg rounded-xl mb-6 relative px-4 flex items-end"></div>
+                <div id="chart-pro-container" class="w-full h-40 bg-cat-bg rounded-xl relative px-4 flex items-end"></div>
+                <div class="flex justify-between text-[8px] text-gray-400 mt-4 px-2" id="chart-dates"></div>
             </div>
         </div>
-
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cat_v6_db')) || {};
+        let db = JSON.parse(localStorage.getItem('cat_v7_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
 
-        // 動態生成帶有您數據的 AI 提問詞
-        function copyPrompt() {
+        // 核心連動功能：一鍵複製並開啟 Gemini
+        function copyAndOpenGemini() {
             const currentData = db[datePicker.value];
             const targetCal = currentData.mode === 'weekday' ? '1400 大卡' : '1300 大卡';
             
-            const prompt = `這是我今天的飲食照片。我是身高 155、體重 70 的 41 歲女性，目前卡在停滯期。我的目標是 ${targetCal}，蛋白質目標 100g。
-請幫我：
-1. 估算照片中食物的總熱量與蛋白質。
-2. 依據我的狀況，給出一句具體的飲食優化建議喵。`;
+            // 構建帶有您身體數據與目標的精準指令
+            const prompt = `這是我今天的飲食照片。我是身高 155、體重 70 的 41 歲女性，目前卡在停滯期。我的目標是 ${targetCal}，蛋白質目標 100g。\n請幫我：\n1. 估算照片中食物的總熱量與蛋白質。\n2. 依據我的狀況，給出一句具體的飲食優化建議喵。`;
 
+            // 1. 複製到剪貼簿 (備份使用)
             navigator.clipboard.writeText(prompt).then(() => {
-                alert('🐾 提問詞已複製！請將它與照片一起貼給 Gemini 吧！');
+                // 2. 開啟 Gemini 網頁介面並帶入查詢參數
+                const encodedPrompt = encodeURIComponent(prompt);
+                const geminiUrl = `https://gemini.google.com/app?q=${encodedPrompt}`;
+                
+                // 在新分頁開啟
+                window.open(geminiUrl, '_blank');
             }).catch(err => {
                 console.error('複製失敗', err);
-                alert('瀏覽器阻擋了複製功能，請手動輸入提問喵。');
+                alert('開啟失敗，請手動將提問詞貼給 Gemini 喵。');
             });
         }
 
@@ -194,23 +193,22 @@
         }
 
         function setModeUI(mode) {
-            const btnWeekday = document.getElementById('mode-weekday');
-            const btnRest = document.getElementById('mode-rest');
-            
+            const btnW = document.getElementById('mode-weekday');
+            const btnR = document.getElementById('mode-rest');
             if (mode === 'weekday') {
-                btnWeekday.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-cat-main transition-all";
-                btnRest.className = "flex-1 py-2 rounded-full text-gray-400 font-medium transition-all";
+                btnW.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-cat-main transition-all";
+                btnR.className = "flex-1 py-2 rounded-full text-gray-400 font-medium transition-all";
                 document.getElementById('routine-module').style.display = 'block';
                 document.getElementById('target-cal').innerText = '1400';
             } else {
-                btnRest.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-cat-main transition-all";
-                btnWeekday.className = "flex-1 py-2 rounded-full text-gray-400 font-medium transition-all";
+                btnR.className = "flex-1 py-2 rounded-full bg-white shadow-sm font-bold text-cat-main transition-all";
+                btnW.className = "flex-1 py-2 rounded-full text-gray-400 font-medium transition-all";
                 document.getElementById('routine-module').style.display = 'none';
                 document.getElementById('target-cal').innerText = '1300';
             }
         }
 
-        function save() { localStorage.setItem('cat_v6_db', JSON.stringify(db)); }
+        function save() { localStorage.setItem('cat_v7_db', JSON.stringify(db)); }
 
         document.getElementById('food-form').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -218,7 +216,6 @@
             const name = document.getElementById('food-name').value;
             const cal = parseFloat(document.getElementById('food-calories').value) || 0;
             const pro = parseFloat(document.getElementById('food-protein').value) || 0;
-            
             db[date].records.push({ id: Date.now(), name, cal, pro });
             save();
             document.getElementById('food-form').reset();
@@ -233,15 +230,9 @@
 
         function addWater(ml) { db[datePicker.value].water = Math.min((db[datePicker.value].water || 0) + ml, 2000); save(); updateUI(); }
         function resetWater() { db[datePicker.value].water = 0; save(); updateUI(); }
-
         function saveTasks() {
-            const date = datePicker.value;
-            db[date].tasks = {
-                t1: document.getElementById('t1').checked,
-                t2: document.getElementById('t2').checked,
-                t3: document.getElementById('t3').checked,
-                t4: document.getElementById('t4').checked
-            };
+            const d = datePicker.value;
+            db[d].tasks = { t1: document.getElementById('t1').checked, t2: document.getElementById('t2').checked, t3: document.getElementById('t3').checked, t4: document.getElementById('t4').checked };
             save();
         }
 
@@ -256,26 +247,19 @@
         function updateUI() {
             const data = db[datePicker.value];
             document.getElementById('water-display').innerText = data.water || 0;
-            
             const totalCal = Math.round((data.records || []).reduce((s, r) => s + r.cal, 0));
             const totalPro = Math.round((data.records || []).reduce((s, r) => s + r.pro, 0) * 10) / 10;
-            const target = data.mode === 'weekday' ? 1400 : 1300;
-
             document.getElementById('total-calories').innerText = totalCal;
             document.getElementById('total-protein').innerText = totalPro;
+            const target = data.mode === 'weekday' ? 1400 : 1300;
             document.getElementById('total-calories').className = totalCal > target ? 'text-2xl font-bold text-red-400' : 'text-2xl font-bold text-cat-main';
-
             const list = document.getElementById('food-list');
             list.innerHTML = (data.records || []).map(r => `
                 <li class="flex justify-between items-center bg-white p-3 rounded-xl border border-cat-border mb-2 shadow-sm">
-                    <div class="flex flex-col">
-                        <span class="text-sm font-bold text-cat-text">${r.name}</span>
-                        <span class="text-[10px] text-gray-400 mt-0.5">${r.cal} kcal / ${r.pro}g 蛋白</span>
-                    </div>
-                    <button onclick="deleteRecord(${r.id})" class="text-cat-border hover:text-red-300 text-lg">✕</button>
+                    <div class="flex flex-col text-left"><span class="text-sm font-bold text-cat-text">${r.name}</span><span class="text-[9px] text-gray-400">${r.cal} kcal / ${r.pro}g 蛋白</span></div>
+                    <button onclick="deleteRecord(${r.id})" class="text-gray-300">✕</button>
                 </li>
-            `).join('') || '<li class="text-center text-gray-300 text-[10px] py-6">等待 AI 數據輸入喵～</li>';
-
+            `).join('') || '<li class="text-center text-gray-300 text-[10px] py-4">等待 AI 分析結果...</li>';
             document.getElementById('t1').checked = data.tasks?.t1 || false;
             document.getElementById('t2').checked = data.tasks?.t2 || false;
             document.getElementById('t3').checked = data.tasks?.t3 || false;
@@ -283,32 +267,20 @@
         }
 
         function renderCharts() {
-            const last7Days = [];
-            for(let i=6; i>=0; i--) {
-                const d = new Date(new Date().setDate(new Date().getDate() - i));
-                last7Days.push(d.toISOString().split('T')[0]);
-            }
-            const calData = last7Days.map(date => (db[date]?.records || []).reduce((s,r) => s+r.cal, 0));
-            const proData = last7Days.map(date => (db[date]?.records || []).reduce((s,r) => s+r.pro, 0));
-            const datesHTML = last7Days.map(d => `<span>${d.slice(5).replace('-','/')}</span>`).join('');
-            
-            document.getElementById('chart-dates-cal').innerHTML = datesHTML;
-            document.getElementById('chart-dates-pro').innerHTML = datesHTML;
-            drawSVGLine('chart-cal-container', calData, 2000, '#E5A97C');
-            drawSVGLine('chart-pro-container', proData, 120, '#A7B49E', true);
+            const days = [];
+            for(let i=6; i>=0; i--) { const d = new Date(new Date().setDate(new Date().getDate() - i)); days.push(d.toISOString().split('T')[0]); }
+            const calData = days.map(d => (db[d]?.records || []).reduce((s,r) => s+r.cal, 0));
+            const proData = days.map(d => (db[d]?.records || []).reduce((s,r) => s+r.pro, 0));
+            document.getElementById('chart-dates').innerHTML = days.map(d => `<span>${d.slice(5).replace('-','/')}</span>`).join('');
+            drawChart('chart-cal-container', calData, 2000, '#E8B490');
+            drawChart('chart-pro-container', proData, 120, '#B8C5B0');
         }
 
-        function drawSVGLine(containerId, data, maxVal, color, drawGoal = false) {
-            const container = document.getElementById(containerId);
+        function drawChart(id, data, max, color) {
+            const container = document.getElementById(id);
             const w = container.clientWidth - 32; const h = 120; const step = w / 6;
-            let points = data.map((val, i) => `${i * step},${h - (Math.min(val, maxVal) / maxVal * h)}`).join(' ');
-            let goalLine = drawGoal ? `<line x1="0" y1="${h - (100/maxVal*h)}" x2="${w}" y2="${h - (100/maxVal*h)}" stroke="#EAE5DF" stroke-dasharray="4" />` : '';
-            
-            container.innerHTML = `<svg width="${w}" height="${h}" class="overflow-visible">
-                ${goalLine}
-                <polyline points="${points}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                ${data.map((val, i) => `<circle cx="${i * step}" cy="${h - (Math.min(val, maxVal) / maxVal * h)}" r="4" fill="${color}" stroke="#fff" stroke-width="2" />`).join('')}
-            </svg>`;
+            let pts = data.map((v, i) => `${i * step},${h - (Math.min(v, max) / max * h)}`).join(' ');
+            container.innerHTML = `<svg width="${w}" height="${h}" class="overflow-visible"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />${data.map((v, i) => `<circle cx="${i * step}" cy="${h - (Math.min(v, max) / max * h)}" r="4" fill="${color}" stroke="#fff" stroke-width="2" />`).join('')}</svg>`;
         }
 
         loadDateData();
