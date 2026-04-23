@@ -160,7 +160,7 @@
         // ==========================================
         // ⚠️ 請在這裡貼上您從 Google AI Studio 申請的 API 金鑰
         // ==========================================
-        const API_KEY = "AIzaSyDLca_2wBzv3wTlkzlVFr5CEBJykdhyLhs";
+        const API_KEY = "";
 
         let db = JSON.parse(localStorage.getItem('cat_v13_db')) || {};
         const datePicker = document.getElementById('current-date');
@@ -174,7 +174,7 @@
                 return;
             }
 
-            if (API_KEY === "AIzaSyDLca_2wBzv3wTlkzlVFr5CEBJykdhyLhs") {
+            if (API_KEY === "") {
                 alert("請先用文字編輯器打開 HTML，在第 280 行填入您的 Google API 金鑰才能使用無限查詢功能喔！");
                 return;
             }
