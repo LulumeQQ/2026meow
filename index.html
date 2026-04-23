@@ -2,714 +2,221 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>日常貓日誌 🐾 極簡手動版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日常貓日誌 🐾 211餐盤版</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'cat-bg': '#FAF9F7',       
+                        'cat-main': '#E8B490',     
+                        'cat-green': '#B8C5B0',    
+                        'cat-text': '#6B5E54',     
+                        'cat-card': '#FFFFFF',
+                        'cat-border': '#F2EEE7'    
+                    }
+                }
+            }
+        }
+    </script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; color: #6B5E54; background-color: #FAF9F7; }
-        /* iOS Safari focus 輸入框時避免自動放大 */
-        input, select, textarea { font-size: 16px !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .active-tab { color: #E8B490; border-bottom: 2px solid #E8B490; }
-        #famart-modal { background: rgba(0,0,0,0.4); }
+        .task-checkbox:checked + label { text-decoration: line-through; color: #B8C5B0; }
+        
+        /* 211 按鈕點擊後的狀態 */
+        .btn-veg.active { background-color: #e6f2e6; border-color: #B8C5B0; color: #5c8a5c; }
+        .btn-pro.active { background-color: #fff0e6; border-color: #E8B490; color: #d97736; }
+        .btn-car.active { background-color: #fdf5e6; border-color: #f0d5a8; color: #c49a45; }
     </style>
 </head>
 <body class="min-h-screen flex justify-center py-6 px-4">
+
     <div class="max-w-md w-full space-y-4 pb-12">
         
-        <div class="bg-white rounded-3xl shadow-sm border border-orange-50 p-6 text-center"> 
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-2xl">🐈</span>
-                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs bg-gray-50 px-3 py-1 rounded-full">
+        <div class="bg-cat-card rounded-[2.5rem] shadow-sm border border-cat-border p-6 text-center">
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-3xl">🐈</span>
+                <input type="date" id="current-date" onchange="loadDateData()" class="border-none text-xs focus:outline-none cursor-pointer bg-cat-bg px-4 py-1.5 rounded-full font-bold">
             </div>
-            <h1 class="text-md font-bold tracking-widest text-gray-500">日常紀錄</h1>
+            <h1 class="text-lg font-bold tracking-widest text-cat-text mb-2">日常貓日誌</h1>
+            <p class="text-[10px] text-gray-400">放下數字焦慮，專注在餐盤的視覺比例喵！</p>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-sm border border-orange-50 p-6">
-            <h2 class="font-bold text-sm text-orange-300 mb-4 flex items-center gap-2">🍽️ 飲食記錄</h2>
-            <form id="food-form" class="space-y-3">
-                
-                <div class="relative">
-                    <input type="text" id="food-name" required placeholder="吃了什麼？(點擊右側搜尋營養)" class="w-full bg-gray-50 border-none rounded-xl p-3 pr-20 text-sm focus:ring-1 focus:ring-orange-200">
-                    <button type="button" onclick="searchFood()" id="search-btn" class="absolute right-16 top-2 p-1 text-gray-400 hover:text-orange-400 transition-colors" title="搜尋營養成分 (OpenFoodFacts)">
-                        🔍
-                    </button>
-                    <button type="button" onclick="searchFatSecret()" id="fs-btn" class="absolute right-9 top-2 p-1 text-gray-400 hover:text-blue-500 transition-colors" title="搜尋 FatSecret 中文食品庫">
-                        🍲
-                    </button>
-                    <button type="button" onclick="searchFamilyMart()" id="famart-btn" class="absolute right-2 top-2 p-1 text-gray-400 hover:text-green-500 transition-colors" title="搜尋全家商品">
-                        🏪
-                    </button>
-                </div>
+        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold flex items-center gap-2 text-sm text-cat-text">🍽️ 211 餐盤打卡</h2>
+                <div class="text-[9px] text-gray-400 bg-cat-bg px-2 py-1 rounded-md">蔬菜半盤 / 蛋白質1拳 / 碳水1拳</div>
+            </div>
 
-                <div class="flex gap-2">
-                    <button type="button" onclick="openFatSecretApp()" class="flex-1 bg-blue-50 hover:bg-blue-100 text-blue-600 text-xs font-medium rounded-xl py-2 transition-colors">
-                        📱 開 FatSecret App
-                    </button>
-                    <button type="button" onclick="openFsPaste()" class="flex-1 bg-purple-50 hover:bg-purple-100 text-purple-600 text-xs font-medium rounded-xl py-2 transition-colors">
-                        📋 貼上 App 資料
-                    </button>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="relative">
-                        <input type="number" id="food-amount" value="1" step="any" min="0" placeholder="份量" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
-                        <span class="absolute right-3 top-3 text-[10px] text-gray-300">份量</span>
-                    </div>
-                    <select id="food-unit" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
-                        <option value="份">份</option>
-                        <option value="克">克 (g)</option>
-                        <option value="毫升">毫升 (ml)</option>
-                        <option value="杯">杯</option>
-                        <option value="個">個</option>
-                        <option value="片">片</option>
-                        <option value="包">包</option>
-                    </select>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="relative">
-                        <input type="number" id="food-calories" required placeholder="熱量" step="any" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
-                        <span class="absolute right-3 top-3 text-[10px] text-gray-300">kcal</span>
-                    </div>
-                    <div class="relative">
-                        <input type="number" id="food-protein" required placeholder="蛋白" step="any" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
-                        <span class="absolute right-3 top-3 text-[10px] text-gray-300">g</span>
+            <div class="space-y-4">
+                <div class="bg-cat-bg p-4 rounded-2xl border border-cat-border/50">
+                    <h3 class="text-xs font-bold mb-3 text-gray-500">☀️ 早餐</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="toggleMeal('breakfast', 'veg')" id="breakfast-veg" class="btn-veg py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥦 蔬菜 (1/2)</button>
+                        <button onclick="toggleMeal('breakfast', 'pro')" id="breakfast-pro" class="btn-pro py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥩 蛋白 (1/4)</button>
+                        <button onclick="toggleMeal('breakfast', 'car')" id="breakfast-car" class="btn-car py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🍠 碳水 (1/4)</button>
                     </div>
                 </div>
-                <p id="food-base-hint" class="text-[10px] text-gray-400 text-center -mt-1">請輸入份量與單位，熱量/蛋白為「總量」。使用搜尋可自動填入。</p>
-                <button type="submit" class="w-full bg-orange-100 text-orange-400 py-3 rounded-xl text-sm font-bold hover:bg-orange-200 transition-colors">儲存紀錄</button>
-            </form>
 
-            <div class="grid grid-cols-2 gap-3 text-center mt-6 py-4 border-t border-gray-50">
-                <div>
-                    <div class="text-xl font-bold text-orange-400" id="total-calories">0</div>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold">已攝取 (目標 1400)</p>
+                <div class="bg-cat-bg p-4 rounded-2xl border border-cat-border/50">
+                    <h3 class="text-xs font-bold mb-3 text-gray-500">🌞 午餐</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="toggleMeal('lunch', 'veg')" id="lunch-veg" class="btn-veg py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥦 蔬菜 (1/2)</button>
+                        <button onclick="toggleMeal('lunch', 'pro')" id="lunch-pro" class="btn-pro py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥩 蛋白 (1/4)</button>
+                        <button onclick="toggleMeal('lunch', 'car')" id="lunch-car" class="btn-car py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🍠 碳水 (1/4)</button>
+                    </div>
                 </div>
-                <div class="border-l border-gray-50">
-                    <div class="text-xl font-bold text-green-400" id="total-protein">0</div>
-                    <p class="text-[9px] text-gray-400 uppercase font-bold">蛋白質 (目標 100g)</p>
-                </div>
-            </div>
-            <ul id="food-list" class="space-y-2 max-h-40 overflow-y-auto mt-4"></ul>
-        </div>
 
-        <div class="bg-white rounded-3xl shadow-sm border border-orange-50 p-6">
-            <div class="flex justify-between items-center mb-4 text-sm font-bold text-blue-300">
-                <span>💧 水分進度</span>
-                <span id="water-display">0 ml</span>
-            </div>
-            <div class="flex gap-2">
-                <button onclick="addWater(250)" class="flex-1 bg-blue-50 text-blue-400 py-2 rounded-xl text-xs font-bold">+ 250</button>
-                <button onclick="addWater(500)" class="flex-1 bg-blue-50 text-blue-400 py-2 rounded-xl text-xs font-bold">+ 500</button>
+                <div class="bg-cat-bg p-4 rounded-2xl border border-cat-border/50">
+                    <h3 class="text-xs font-bold mb-3 text-gray-500">🌙 晚餐</h3>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="toggleMeal('dinner', 'veg')" id="dinner-veg" class="btn-veg py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥦 蔬菜 (1/2)</button>
+                        <button onclick="toggleMeal('dinner', 'pro')" id="dinner-pro" class="btn-pro py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🥩 蛋白 (1/4)</button>
+                        <button onclick="toggleMeal('dinner', 'car')" id="dinner-car" class="btn-car py-3 rounded-xl text-xs font-bold border border-gray-200 bg-white text-gray-400 transition-colors">🍠 碳水 (1/4)</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-    </div>
-
-    <!-- 全家商品搜尋 Modal -->
-    <div id="famart-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this)closeFamilyMart()">
-        <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex items-center gap-2">
-                <span class="text-lg">🏪</span>
-                <input type="text" id="famart-search" placeholder="搜尋全家商品名稱..." class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-green-200">
-                <button type="button" onclick="closeFamilyMart()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
+        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
+                <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-red-400">重置</button>
             </div>
-            <div id="famart-status" class="text-center text-xs text-gray-400 py-2"></div>
-            <ul id="famart-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
-        </div>
-    </div>
-
-    <!-- FatSecret 搜尋 Modal -->
-    <div id="fs-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this)closeFatSecret()">
-        <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex flex-col gap-2">
-                <div class="flex items-center gap-2">
-                    <span class="text-lg">🍲</span>
-                    <input type="text" id="fs-search" placeholder="食品名稱（可輸入繁體）" class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-blue-200">
-                    <button type="button" onclick="fsDoSearch()" class="text-blue-400 text-xs px-2 font-bold">搜尋</button>
-                    <button type="button" onclick="closeFatSecret()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
-                </div>
-                <input type="text" id="fs-brand-filter" placeholder="🏷️ 品牌過濾（例：Myprotein、ON）" class="w-full bg-gray-50 border-none rounded-xl p-2 text-xs focus:ring-1 focus:ring-blue-200">
+            <div class="flex items-end gap-2 mb-3">
+                <span class="text-3xl font-bold text-[#8DB4CB]" id="water-display">0</span>
+                <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
             </div>
-            <div id="fs-status" class="text-center text-xs text-gray-400 py-2">輸入關鍵字按「搜尋」或 Enter</div>
-            <ul id="fs-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
-        </div>
-    </div>
-
-    <!-- FatSecret App 貼上資料 Modal -->
-    <div id="fs-paste-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this)closeFsPaste()">
-        <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex items-center gap-2">
-                <span class="text-lg">📋</span>
-                <span class="flex-1 text-sm font-bold">貼上 FatSecret App 資料</span>
-                <button type="button" onclick="closeFsPaste()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
+            <div class="flex gap-2 mb-4">
+                <button onclick="addWater(250)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2.5 rounded-xl text-xs font-bold border border-[#E1EDF4]">+ 250</button>
+                <button onclick="addWater(500)" class="flex-1 bg-[#F0F6FA] text-[#7A9BB0] py-2.5 rounded-xl text-xs font-bold border border-[#E1EDF4]">+ 500</button>
             </div>
-            <div class="p-4 space-y-3 overflow-y-auto">
-                <div class="text-[11px] text-gray-500 leading-relaxed bg-purple-50 rounded-xl p-3">
-                    在 FatSecret App 中找到食物 → 長按或選取營養資訊文字 → 複製 → 回來這裡貼上。<br>
-                    自動辨識：<b>卡路里 / 蛋白質 / 份量</b>
-                </div>
-                <textarea id="fs-paste-text" rows="6" placeholder="範例：&#10;鸡胸肉 - Myprotein&#10;每100克&#10;卡路里 164 千卡&#10;蛋白质 30.76 克" class="w-full bg-gray-50 border border-gray-200 rounded-xl p-3 text-sm focus:ring-1 focus:ring-purple-300 focus:border-purple-300"></textarea>
-                <div class="flex gap-2">
-                    <button type="button" onclick="fsPasteFromClipboard()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium rounded-xl py-2">📥 從剪貼簿讀取</button>
-                    <button type="button" onclick="fsParsePaste()" class="flex-1 bg-purple-500 hover:bg-purple-600 text-white text-xs font-bold rounded-xl py-2">✓ 解析並帶入</button>
-                </div>
-                <div id="fs-paste-status" class="text-center text-xs text-gray-400"></div>
+            <div class="w-full bg-gray-100 rounded-full h-1.5">
+                <div id="water-bar" class="bg-[#8DB4CB] h-1.5 rounded-full transition-all duration-500" style="width: 0%"></div>
             </div>
         </div>
+
+        <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
+            <h2 class="font-bold flex items-center gap-2 mb-4 text-sm">🌙 夜間作息防線</h2>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="t1" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
+                    <label for="t1" class="text-xs font-medium cursor-pointer w-full">21:00 開始：growwithjo</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="t2" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
+                    <label for="t2" class="text-xs font-medium cursor-pointer w-full">22:00 完成核心與收操</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="t3" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
+                    <label for="t3" class="text-xs font-medium cursor-pointer w-full">22:30 數位斷網</label>
+                </div>
+                <div class="flex items-center gap-3">
+                    <input type="checkbox" id="t4" onchange="saveTasks()" class="task-checkbox w-4 h-4 accent-cat-green">
+                    <label for="t4" class="text-xs font-medium cursor-pointer w-full">23:30 準時入睡</label>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cat_minimal_db')) || {};
+        // 資料庫結構更新為 211 紀錄
+        let db = JSON.parse(localStorage.getItem('cat_v211_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
 
-        // ===== 份量×單位計算 =====
-        // perUnit = { cal, protein }：每 1 個單位（例如 1 克、或 1 份）的熱量與蛋白質
-        let perUnit = { cal: 0, protein: 0 };
-        let suppressRecalc = false; // 避免手動改 cal/protein 時遭遡迴
-
-        function applyFromPerUnit() {
-            const amt = parseFloat(document.getElementById('food-amount').value) || 0;
-            suppressRecalc = true;
-            document.getElementById('food-calories').value = Math.round(perUnit.cal * amt * 10) / 10;
-            document.getElementById('food-protein').value = Math.round(perUnit.protein * amt * 10) / 10;
-            suppressRecalc = false;
-        }
-
-        function setSearchResult({ name, perUnitCal, perUnitProtein, defaultAmount, unit }) {
-            if (name != null) document.getElementById('food-name').value = name;
-            if (unit) document.getElementById('food-unit').value = unit;
-            document.getElementById('food-amount').value = defaultAmount;
-            perUnit = { cal: perUnitCal || 0, protein: perUnitProtein || 0 };
-            applyFromPerUnit();
-        }
-
-        // 份量改變→ 重算總量
-        document.getElementById('food-amount').addEventListener('input', applyFromPerUnit);
-        // 使用者手動修改熱量/蛋白 → 更新 perUnit 基準（以目前份量為基準）
-        ['food-calories', 'food-protein'].forEach(id => {
-            document.getElementById(id).addEventListener('input', () => {
-                if (suppressRecalc) return;
-                const amt = parseFloat(document.getElementById('food-amount').value) || 0;
-                if (amt <= 0) return;
-                const cal = parseFloat(document.getElementById('food-calories').value) || 0;
-                const pro = parseFloat(document.getElementById('food-protein').value) || 0;
-                perUnit = { cal: cal / amt, protein: pro / amt };
-            });
-        });
-
         function initDayData(date) {
-            if (!db[date]) { db[date] = { water: 0, records: [] }; }
+            if (!db[date]) { 
+                db[date] = { 
+                    water: 0, 
+                    meals: {
+                        breakfast: { veg: false, pro: false, car: false },
+                        lunch: { veg: false, pro: false, car: false },
+                        dinner: { veg: false, pro: false, car: false }
+                    },
+                    tasks: { t1: false, t2: false, t3: false, t4: false } 
+                }; 
+            }
             return db[date];
         }
 
-        function loadDateData() { updateUI(); }
-        function save() { localStorage.setItem('cat_minimal_db', JSON.stringify(db)); }
-
-        async function searchFood() {
-            const foodName = document.getElementById('food-name').value.trim();
-            if (!foodName) {
-                alert('請先輸入食物名稱喔！');
-                return;
-            }
-
-            const btn = document.getElementById('search-btn');
-            const originalText = btn.innerText;
-            btn.innerText = '⏳';
-
-            try {
-                const response = await fetch(`https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(foodName)}&search_simple=1&action=process&json=1&page_size=1`);
-                const data = await response.json();
-
-                if (data.products && data.products.length > 0) {
-                    const product = data.products[0];
-                    const nutriments = product.nutriments;
-                    
-                    const calories = nutriments['energy-kcal_100g'] || nutriments['energy-kcal'] || 0;
-                    const protein = nutriments['proteins_100g'] || nutriments['proteins'] || 0;
-
-                    setSearchResult({
-                        name: product.product_name || foodName,
-                        perUnitCal: calories,
-                        perUnitProtein: protein,
-                        defaultAmount: 100,
-                        unit: '克'
-                    });
-                    
-                    console.log(`找到：${product.product_name || foodName} (每 100g)`);
-                } else {
-                    alert('資料庫找不到這個食物的數值，請手動輸入喔！');
-                }
-            } catch (error) {
-                console.error("搜尋發生錯誤", error);
-                alert('搜尋失敗，請手動輸入數值。');
-            } finally {
-                btn.innerText = '🔍';
-            }
+        function loadDateData() {
+            initDayData(datePicker.value);
+            updateUI();
         }
 
-        // ===== 全家便利商店 商品查詢 =====
-        const FAMART_BASE = 'https://foodsafety.family.com.tw/Web_FFD_2022/ws/';
-        // 透過 CORS Proxy（瀏覽器直接呼叫全家 API 會被 CORS 擋下）
-        const CORS_PROXY = 'https://corsproxy.io/?url=';
-        let famartProducts = null; // 扁平化後的商品索引
-        let famartLoading = false;
+        function save() { localStorage.setItem('cat_v211_db', JSON.stringify(db)); }
 
-        async function famartPost(endpoint, body) {
-            const url = CORS_PROXY + encodeURIComponent(FAMART_BASE + endpoint);
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body || {})
-            });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
-            return res.json();
-        }
-
-        async function loadFamartProducts(force = false) {
-            if (famartProducts && !force) return famartProducts;
-            const cached = localStorage.getItem('famart_products_v1');
-            if (cached && !force) {
-                try {
-                    const obj = JSON.parse(cached);
-                    // 24 小時內有效
-                    if (Date.now() - obj.ts < 86400000) {
-                        famartProducts = obj.list;
-                        return famartProducts;
-                    }
-                } catch (e) {}
-            }
-            const data = await famartPost('QueryFsProductListByFilter', { KEYWORD: '', MEMBER: 'N' });
-            if (data.RESULT_CODE !== '00') throw new Error(data.RESULT_DESC || '取得失敗');
-            const flat = [];
-            (data.LIST || []).forEach(cat => {
-                (cat.ITEM || []).forEach(it => {
-                    flat.push({
-                        cmno: it.CMNO,
-                        name: it.PRODNAME,
-                        note: it.NOTE || '',
-                        category: cat.CATEGORY_NAME
-                    });
-                });
-            });
-            famartProducts = flat;
-            localStorage.setItem('famart_products_v1', JSON.stringify({ ts: Date.now(), list: flat }));
-            return flat;
-        }
-
-        function openFamilyMart() {
-            document.getElementById('famart-modal').classList.remove('hidden');
-            document.getElementById('famart-modal').classList.add('flex');
-            const input = document.getElementById('famart-search');
-            input.value = document.getElementById('food-name').value || '';
-            setTimeout(() => input.focus(), 50);
-            renderFamartList();
-        }
-
-        function closeFamilyMart() {
-            document.getElementById('famart-modal').classList.add('hidden');
-            document.getElementById('famart-modal').classList.remove('flex');
-        }
-
-        async function searchFamilyMart() {
-            openFamilyMart();
-            if (famartProducts) return;
-            const status = document.getElementById('famart-status');
-            if (famartLoading) return;
-            famartLoading = true;
-            status.innerText = '⏳ 載入全家商品中（首次需數秒）...';
-            try {
-                await loadFamartProducts();
-                status.innerText = `共 ${famartProducts.length} 項商品（資料快取 24 小時）`;
-                renderFamartList();
-            } catch (e) {
-                console.error(e);
-                status.innerText = '❌ 載入失敗：' + e.message;
-            } finally {
-                famartLoading = false;
-            }
-        }
-
-        function renderFamartList() {
-            const list = document.getElementById('famart-list');
-            if (!famartProducts) { list.innerHTML = ''; return; }
-            const kw = document.getElementById('famart-search').value.trim().toLowerCase();
-            let items = famartProducts;
-            if (kw) items = items.filter(p => p.name.toLowerCase().includes(kw));
-            items = items.slice(0, 200);
-            if (!items.length) { list.innerHTML = '<li class="text-center text-gray-400 text-xs py-4">沒有相符的商品</li>'; return; }
-            list.innerHTML = items.map(p => `
-                <li>
-                    <button type="button" onclick="pickFamart('${p.cmno}')" class="w-full text-left bg-gray-50 hover:bg-green-50 rounded-xl p-3 transition-colors">
-                        <div class="font-bold text-xs">${p.name}</div>
-                        <div class="text-[10px] text-gray-400 mt-1">${p.category} · ${p.note}</div>
-                    </button>
-                </li>
-            `).join('');
-        }
-
-        document.addEventListener('input', (e) => {
-            if (e.target && e.target.id === 'famart-search') renderFamartList();
-        });
-
-        // ===== 簡轉繁（OpenCC）=====
-        let s2tConverter = (s) => s;
-        let t2sConverter = (s) => s;
-        function initOpenCC() {
-            try {
-                if (window.OpenCC) {
-                    s2tConverter = OpenCC.Converter({ from: 'cn', to: 'tw' });
-                    t2sConverter = OpenCC.Converter({ from: 'tw', to: 'cn' });
-                    return true;
-                }
-            } catch (e) { console.warn('OpenCC 初始化失敗', e); }
-            return false;
-        }
-        initOpenCC();
-        // 若 CDN 載入延遲，多試幾次
-        if (!window.OpenCC) {
-            let tries = 0;
-            const t = setInterval(() => {
-                if (initOpenCC() || ++tries > 20) clearInterval(t);
-            }, 200);
-        }
-        const toTW = (s) => { try { return s2tConverter(s || ''); } catch (e) { return s || ''; } };
-        const toCN = (s) => { try { return t2sConverter(s || ''); } catch (e) { return s || ''; } };
-
-        // ESC 關閉 modal
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeFamilyMart();
-                closeFatSecret();
-                closeFsPaste();
-            }
-        });
-
-        // ===== FatSecret 搜尋 =====
-        function openFatSecret() {
-            const m = document.getElementById('fs-modal');
-            m.classList.remove('hidden');
-            m.classList.add('flex');
-            const input = document.getElementById('fs-search');
-            input.value = document.getElementById('food-name').value || '';
-            setTimeout(() => input.focus(), 50);
-        }
-        function closeFatSecret() {
-            const m = document.getElementById('fs-modal');
-            m.classList.add('hidden');
-            m.classList.remove('flex');
-        }
-        function searchFatSecret() {
-            openFatSecret();
-            if (document.getElementById('fs-search').value.trim()) fsDoSearch();
-        }
-
-        // ===== 開啟 FatSecret App（深連結，3 秒後 fallback 到行動版網頁）=====
-        function openFatSecretApp() {
-            const kwRaw = (document.getElementById('food-name').value || '').trim();
-            const kw = kwRaw ? toCN(kwRaw) : '';
-            // FatSecret App 公開的 URL Scheme（iOS/Android 均支援，搜尋 deep link 不保證有效，所以同時備好網頁 fallback）
-            const appUrl = kw ? `fatsecret://search?q=${encodeURIComponent(kw)}` : 'fatsecret://';
-            const webUrl = kw
-                ? `https://m.fatsecret.cn/热量营养/search?q=${encodeURIComponent(kw)}`
-                : 'https://m.fatsecret.cn/';
-            // 嘗試開 App
-            const start = Date.now();
-            const fallback = setTimeout(() => {
-                // 如果使用者沒切走（仍在頁面）→ 開行動版網頁
-                if (Date.now() - start < 3500 && !document.hidden) {
-                    window.open(webUrl, '_blank');
-                }
-            }, 1500);
-            // 監測 visibilitychange：成功開 App 會切走，取消 fallback
-            const onHide = () => { if (document.hidden) { clearTimeout(fallback); document.removeEventListener('visibilitychange', onHide); } };
-            document.addEventListener('visibilitychange', onHide);
-            // 用 location.href 觸發 scheme（比 iframe 在 iOS 上更可靠）
-            window.location.href = appUrl;
-        }
-
-        // ===== 貼上 App 資料 Modal =====
-        function openFsPaste() {
-            const m = document.getElementById('fs-paste-modal');
-            m.classList.remove('hidden'); m.classList.add('flex');
-            const ta = document.getElementById('fs-paste-text');
-            // 預設帶入目前食物名稱方便看
-            const name = (document.getElementById('food-name').value || '').trim();
-            if (name && !ta.value) ta.value = name + '\n';
-            setTimeout(() => ta.focus(), 50);
-            document.getElementById('fs-paste-status').innerText = '';
-        }
-        function closeFsPaste() {
-            const m = document.getElementById('fs-paste-modal');
-            m.classList.add('hidden'); m.classList.remove('flex');
-        }
-        async function fsPasteFromClipboard() {
-            try {
-                const text = await navigator.clipboard.readText();
-                document.getElementById('fs-paste-text').value = text;
-                document.getElementById('fs-paste-status').innerText = '✓ 已貼上，按「解析並帶入」';
-            } catch (e) {
-                document.getElementById('fs-paste-status').innerText = '⚠️ 無法讀剪貼簿，請手動貼上';
-            }
-        }
-        function fsParsePaste() {
-            const raw = document.getElementById('fs-paste-text').value || '';
-            const status = document.getElementById('fs-paste-status');
-            // 統一成簡體比較好抓 + 全形數字轉半形
-            const text = toCN(raw)
-                .replace(/[，]/g, ',')
-                .replace(/[：]/g, ':')
-                .replace(/\u3000/g, ' ');
-            // 抓卡路里：「卡路里 164 千卡」「热量 164 大卡」「164 kcal」
-            const calM = text.match(/(?:卡路里|热量|能量)\s*[:：]?\s*([\d.]+)\s*(?:千卡|大卡|kcal)/i)
-                      || text.match(/([\d.]+)\s*(?:千卡|大卡|kcal)/i);
-            // 抓蛋白質：「蛋白质 30.76 克」「蛋白 30g」
-            const proM = text.match(/蛋白[质質]?\s*[:：]?\s*([\d.]+)\s*(?:克|g)/i);
-            if (!calM || !proM) {
-                status.innerText = '❌ 找不到熱量或蛋白質，請確認文字格式';
-                return;
-            }
-            // 抓份量：「每 100 克」「每 1 份」「每份」「每100g」
-            const servM = text.match(/每\s*([\d.]+)\s*(克|g|毫升|ml)/i)
-                       || text.match(/每\s*([\d.]+)\s*份/);
-            let unit = '份', amount = 1;
-            if (servM) {
-                const u = (servM[2] || '').toLowerCase();
-                if (u === '克' || u === 'g') { unit = '克'; amount = parseFloat(servM[1]); }
-                else if (u === '毫升' || u === 'ml') { unit = '毫升'; amount = parseFloat(servM[1]); }
-                else { unit = '份'; amount = parseFloat(servM[1]); }
-            } else if (/每份/.test(text)) {
-                unit = '份'; amount = 1;
-            }
-            // 名稱：取第一行非空白
-            const firstLine = (raw.split(/\r?\n/).find(l => l.trim()) || '').trim();
-            const cal = parseFloat(calM[1]);
-            const protein = parseFloat(proM[1]);
-            setSearchResult({
-                name: firstLine ? toTW(firstLine) : null,
-                perUnitCal: cal / amount,
-                perUnitProtein: protein / amount,
-                defaultAmount: amount,
-                unit: unit
-            });
-            status.innerText = `✓ 已帶入：${cal} kcal / ${protein} g（每 ${amount} ${unit}）`;
-            setTimeout(closeFsPaste, 800);
-        }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.target && e.target.id === 'fs-search' && e.key === 'Enter') {
-                e.preventDefault(); fsDoSearch();
-            }
-        });
-        // 品牌過濾即時更新
-        document.addEventListener('input', (e) => {
-            if (e.target && e.target.id === 'fs-brand-filter') {
-                if (window.__fsItems) renderFsList();
-            }
-        });
-
-        async function fsDoSearch() {
-            const kwRaw = document.getElementById('fs-search').value.trim();
-            const status = document.getElementById('fs-status');
-            const list = document.getElementById('fs-list');
-            if (!kwRaw) { status.innerText = '請輸入關鍵字'; return; }
-            const kw = toCN(kwRaw); // 轉為簡體才能搜到資料
-            status.innerText = `⏳ 搜尋中：${kw}`;
-            list.innerHTML = '';
-            const target = 'https://www.fatsecret.cn/热量营养/search?q=' + encodeURIComponent(kw);
-            // 多個 CORS proxy 依序嘗試，某些連不到 fatsecret.cn 就換下一個
-            const proxies = [
-                'https://api.codetabs.com/v1/proxy/?quest=' + encodeURIComponent(target),
-                'https://corsproxy.io/?url=' + encodeURIComponent(target),
-                'https://api.allorigins.win/raw?url=' + encodeURIComponent(target)
-            ];
-            let html = null, lastErr = null;
-            for (const p of proxies) {
-                try {
-                    const res = await fetch(p);
-                    if (!res.ok) { lastErr = 'HTTP ' + res.status; continue; }
-                    const text = await res.text();
-                    if (text && text.length > 1000 && text.includes('prominent')) { html = text; break; }
-                    lastErr = '回應內容異常';
-                } catch (e) { lastErr = e.message; }
-            }
-            if (!html) { status.innerText = '❌ 搜尋失敗：' + (lastErr || '所有 proxy 都不可用'); return; }
-            const items = parseFatSecretHtml(html);
-            if (!items.length) { status.innerText = '找不到結果'; return; }
-            // 暫存到 modal，供品牌過濾即時用
-            window.__fsItems = items;
-            renderFsList();
-        }
-
-        function renderFsList() {
-            const items = window.__fsItems || [];
-            const list = document.getElementById('fs-list');
-            const status = document.getElementById('fs-status');
-            const brandKw = (document.getElementById('fs-brand-filter').value || '').trim().toLowerCase();
-            const filtered = brandKw
-                ? items.filter(it => (it.brand || '').toLowerCase().includes(brandKw)
-                                  || toTW(it.brand || '').toLowerCase().includes(brandKw)
-                                  || toCN(brandKw).split('').every(ch => (it.brand || '').toLowerCase().includes(ch.toLowerCase())))
-                : items;
-            // 收集所有出現過的品牌供提示
-            const allBrands = [...new Set(items.map(i => i.brand).filter(Boolean))];
-            status.innerHTML = `找到 ${items.length} 筆${brandKw ? `，過濾後 ${filtered.length} 筆` : ''}`
-                + (allBrands.length ? `<div class="text-[10px] text-gray-400 mt-1">品牌：${allBrands.slice(0, 8).map(toTW).join('、')}${allBrands.length > 8 ? '…' : ''}</div>` : '');
-            list.innerHTML = filtered.map((it) => {
-                const idx = items.indexOf(it);
-                const brandTw = it.brand ? toTW(it.brand) : '';
-                return `
-                    <li>
-                        <button type="button" data-fs-idx="${idx}" class="fs-pick w-full text-left bg-gray-50 hover:bg-blue-50 rounded-xl p-3 transition-colors">
-                            <div class="flex items-center gap-1 flex-wrap">
-                                <span class="font-bold text-xs">${toTW(it.name)}</span>
-                                ${brandTw ? `<span class="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">${brandTw}</span>` : ''}
-                            </div>
-                            <div class="text-[10px] text-gray-500 mt-1">${toTW(it.serving)} · 熱量 ${it.cal} kcal · 蛋白質 ${it.protein} g</div>
-                        </button>
-                    </li>
-                `;
-            }).join('');
-            list.querySelectorAll('.fs-pick').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const it = items[+btn.dataset.fsIdx];
-                    const sv = it.serving || '';
-                    let unit = '份', defaultAmount = 1;
-                    const gM = sv.match(/每\s*([\d.]+)\s*克/);
-                    const mlM = sv.match(/每\s*([\d.]+)\s*毫升/);
-                    if (gM) { unit = '克'; defaultAmount = parseFloat(gM[1]); }
-                    else if (mlM) { unit = '毫升'; defaultAmount = parseFloat(mlM[1]); }
-                    const brandTw = it.brand ? toTW(it.brand) : '';
-                    const displayName = brandTw ? `${toTW(it.name)} - ${brandTw}` : toTW(it.name);
-                    setSearchResult({
-                        name: displayName,
-                        perUnitCal: it.cal / defaultAmount,
-                        perUnitProtein: it.protein / defaultAmount,
-                        defaultAmount: defaultAmount,
-                        unit: unit
-                    });
-                    closeFatSecret();
-                });
-            });
-        }
-
-        function parseFatSecretHtml(html) {
-            const results = [];
-            const doc = new DOMParser().parseFromString(html, 'text/html');
-            // 結果結構：<a class="prominent">名稱</a>&nbsp;<a class="brand">(品牌)</a><div class="smallText greyText greyLink">每100克 - 卡路里:164千卡 | 脂肪:... | 碳水物:... | 蛋白质:30.76克 ...</div>
-            const anchors = doc.querySelectorAll('a.prominent');
-            anchors.forEach(a => {
-                const name = a.textContent.trim();
-                if (!name) return;
-                // 同一 td/parent 內的 .smallText
-                const wrap = a.closest('td') || a.parentElement;
-                if (!wrap) return;
-                const small = wrap.querySelector('.smallText');
-                const text = (small ? small.textContent : '').replace(/\s+/g, ' ').trim();
-                const calM = text.match(/卡路里\s*[:：]\s*([\d.]+)\s*千卡/);
-                const proM = text.match(/蛋白质\s*[:：]\s*([\d.]+)\s*克/);
-                const servM = text.match(/^(每[^-|]+?)\s*-\s*卡路里/);
-                // 品牌：在名稱旁的 a.brand，文字包含括號 例：(Myprotein )
-                const brandA = wrap.querySelector('a.brand');
-                let brand = '';
-                if (brandA) {
-                    brand = brandA.textContent.trim().replace(/^\(|\)$/g, '').trim();
-                }
-                if (calM && proM) {
-                    results.push({
-                        name,
-                        brand,
-                        cal: parseFloat(calM[1]),
-                        protein: parseFloat(proM[1]),
-                        serving: servM ? servM[1].trim() : '每份'
-                    });
-                }
-            });
-            return results;
-        }
-
-        async function pickFamart(cmno) {
-            const status = document.getElementById('famart-status');
-            status.innerText = '⏳ 取得營養資訊中...';
-            try {
-                const data = await famartPost('QueryFsProductByItem', { CMNO: cmno });
-                if (data.RESULT_CODE !== '00' || !data.LIST || !data.LIST.length) {
-                    throw new Error(data.RESULT_DESC || '查無資料');
-                }
-                const item = data.LIST[0];
-                const nut = (item.NUTRIENTS && item.NUTRIENTS[0]) || {};
-                // 全家的 NUTRIENTS 是「每份」的數值，包裝可能含數份
-                const calMatch = (item.NOTE || '').match(/熱量\s*([\d.]+)\s*大卡/);
-                const portionMatch = (item.NOTE || '').match(/含\s*([\d.]+)\s*份/);
-                const calPer = calMatch ? parseFloat(calMatch[1]) : 0;
-                const proteinPer = nut.PROTEIN != null ? parseFloat(nut.PROTEIN) : 0;
-                const portions = portionMatch ? parseFloat(portionMatch[1]) : 1;
-                setSearchResult({
-                    name: item.PRODNAME,
-                    perUnitCal: calPer,         // 每 1 份
-                    perUnitProtein: proteinPer, // 每 1 份
-                    defaultAmount: portions,    // 預設填「本包裝含 N 份」
-                    unit: '份'
-                });
-                closeFamilyMart();
-            } catch (e) {
-                console.error(e);
-                status.innerText = '❌ 取得失敗：' + e.message;
-            }
-        }
-
-        document.getElementById('food-form').addEventListener('submit', (e) => {
-            e.preventDefault();
+        // 211 打卡邏輯
+        function toggleMeal(mealType, category) {
             const date = datePicker.value;
-            const name = document.getElementById('food-name').value;
-            const amt = parseFloat(document.getElementById('food-amount').value) || 0;
-            const unit = document.getElementById('food-unit').value;
-            const cal = parseFloat(document.getElementById('food-calories').value) || 0;
-            const pro = parseFloat(document.getElementById('food-protein').value) || 0;
-            const displayName = amt && unit ? `${name} (${amt}${unit})` : name;
-            initDayData(date).records.push({ id: Date.now(), name: displayName, cal, pro });
-            save();
-            document.getElementById('food-form').reset();
-            document.getElementById('food-amount').value = 1;
-            document.getElementById('food-unit').value = '份';
-            perUnit = { cal: 0, protein: 0 };
-            updateUI();
-        });
-
-        function deleteRecord(id) {
-            db[datePicker.value].records = db[datePicker.value].records.filter(r => r.id !== id);
+            db[date].meals[mealType][category] = !db[date].meals[mealType][category];
             save();
             updateUI();
         }
 
+        // 水分邏輯
         function addWater(ml) {
-            const data = initDayData(datePicker.value);
-            data.water = Math.min(data.water + ml, 3000);
+            const date = datePicker.value;
+            db[date].water = Math.min((db[date].water || 0) + ml, 2000);
             save();
             updateUI();
         }
 
-        function resetWater() { db[datePicker.value].water = 0; save(); updateUI(); }
-
-        function updateUI() {
-            const data = initDayData(datePicker.value);
-            document.getElementById('water-display').innerText = `${data.water} ml`;
-            const totalCal = Math.round(data.records.reduce((s, r) => s + r.cal, 0));
-            const totalPro = Math.round(data.records.reduce((s, r) => s + r.pro, 0) * 10) / 10;
-            document.getElementById('total-calories').innerText = totalCal;
-            document.getElementById('total-protein').innerText = totalPro;
-            const list = document.getElementById('food-list');
-            list.innerHTML = data.records.map(r => `
-                <li class="flex justify-between items-center bg-gray-50 p-3 rounded-xl text-xs">
-                    <div><b>${r.name}</b> <span class="text-gray-400 ml-2">${r.cal}kcal / ${r.pro}g</span></div>
-                    <button onclick="deleteRecord(${r.id})" class="text-gray-300">✕</button>
-                </li>
-            `).join('');
+        function resetWater() {
+            db[datePicker.value].water = 0;
+            save();
+            updateUI();
         }
+
+        // 任務邏輯
+        function saveTasks() {
+            const date = datePicker.value;
+            db[date].tasks = {
+                t1: document.getElementById('t1').checked,
+                t2: document.getElementById('t2').checked,
+                t3: document.getElementById('t3').checked,
+                t4: document.getElementById('t4').checked
+            };
+            save();
+        }
+
+        // 介面更新
+        function updateUI() {
+            const data = db[datePicker.value];
+            
+            // 更新水分
+            document.getElementById('water-display').innerText = data.water || 0;
+            document.getElementById('water-bar').style.width = `${((data.water || 0) / 2000) * 100}%`;
+
+            // 更新 211 按鈕狀態
+            const meals = ['breakfast', 'lunch', 'dinner'];
+            const categories = ['veg', 'pro', 'car'];
+            
+            meals.forEach(meal => {
+                categories.forEach(cat => {
+                    const btn = document.getElementById(`${meal}-${cat}`);
+                    if (data.meals[meal][cat]) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+            });
+
+            // 更新任務勾選
+            document.getElementById('t1').checked = data.tasks?.t1 || false;
+            document.getElementById('t2').checked = data.tasks?.t2 || false;
+            document.getElementById('t3').checked = data.tasks?.t3 || false;
+            document.getElementById('t4').checked = data.tasks?.t4 || false;
+        }
+
+        // 啟動
         loadDateData();
     </script>
 </body>
