@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 綜合曲線版</title>
+    <title>日常貓日誌 🐾 緊湊精煉版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; color: #5A4F44; background-color: #FAF8F5; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         
-        /* 智能按鈕狀態：預設白色，透過 JS 添加 is-active 改變顏色 */
+        /* 智能按鈕狀態 */
         .food-btn { background-color: #FFFFFF; border: 1px solid #F0EBE1; color: #6B5E54; transition: all 0.2s ease; }
         .food-btn:active { transform: scale(0.95); box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); }
         
@@ -71,117 +71,91 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-5">
-                <div class="space-y-5">
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-4">
+                <div class="space-y-4">
                     
                     <div>
-                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">☕ 核心飲品與早餐</h3>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" data-name="滿配豆漿粉飲" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍵</div><div class="text-[9px] font-bold">滿配(400cc)</div>
+                        <h3 class="text-[9px] text-gray-400 font-bold mb-2 uppercase tracking-tighter">☕ 核心飲品與早餐</h3>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button onclick="quickAdd('滿配豆漿粉飲', 290, 39.6)" data-name="滿配豆漿粉飲" data-cat="orange" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍵</div><div class="text-[8.5px] font-bold">滿配</div>
                             </button>
-                            <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" data-name="減半豆漿粉飲" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">💧</div><div class="text-[9px] font-bold">半配(+水)</div>
+                            <button onclick="quickAdd('減半豆漿粉飲', 225, 32.8)" data-name="減半豆漿粉飲" data-cat="orange" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">💧</div><div class="text-[8.5px] font-bold">半配</div>
                             </button>
-                            <button onclick="quickAdd('茶葉蛋', 75, 7)" data-name="茶葉蛋" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥚</div><div class="text-[9px] font-bold">茶葉蛋</div>
+                            <button onclick="quickAdd('茶葉蛋', 75, 7)" data-name="茶葉蛋" data-cat="orange" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🥚</div><div class="text-[8.5px] font-bold">茶蛋</div>
                             </button>
-                            
-                            <button onclick="quickAdd('中式飯糰', 450, 12)" data-name="中式飯糰" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🌯</div><div class="text-[9px] font-bold">中式飯糰</div>
+                            <button onclick="quickAdd('中式飯糰', 450, 12)" data-name="中式飯糰" data-cat="orange" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🌯</div><div class="text-[8.5px] font-bold">中式飯糰</div>
                             </button>
-                            <button onclick="quickAdd('全家飯糰', 190, 5)" data-name="全家飯糰" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍙</div><div class="text-[9px] font-bold">超商飯糰</div>
+                            <button onclick="quickAdd('全家飯糰', 190, 5)" data-name="全家飯糰" data-cat="orange" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍙</div><div class="text-[8.5px] font-bold">超商飯糰</div>
                             </button>
-                            <button onclick="quickAdd('豬肉蛋堡', 400, 15)" data-name="豬肉蛋堡" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍔</div><div class="text-[9px] font-bold">豬肉蛋堡</div>
-                            </button>
-                            
-                            <button onclick="quickAdd('三明治', 300, 12)" data-name="三明治" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥪</div><div class="text-[9px] font-bold">三明治</div>
-                            </button>
-                            <button onclick="quickAdd('小包子', 300, 12)" data-name="小包子" data-cat="orange" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥯</div><div class="text-[9px] font-bold">小包子</div>
+                            <button onclick="quickAdd('豬肉蛋堡', 400, 15)" data-name="豬肉蛋堡" data-cat="orange" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍔</div><div class="text-[8.5px] font-bold">豬肉蛋堡</div>
                             </button>
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍳 自煮備餐區 (午/晚)</h3>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" data-name="Costco雞胸(150g)" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">Costco雞胸</div>
+                        <h3 class="text-[9px] text-gray-400 font-bold mb-2 uppercase tracking-tighter">🍳 自煮備餐 (午/晚)</h3>
+                        <div class="grid grid-cols-3 gap-1.5">
+                            <button onclick="quickAdd('Costco雞胸(150g)', 250, 46)" data-name="Costco雞胸(150g)" data-cat="green" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🥩</div><div class="text-[8.5px] font-bold">雞胸肉</div>
                             </button>
-                            <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" data-name="鱸魚湯/烤雞腿" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🐟</div><div class="text-[9px] font-bold">魚/雞腿肉</div>
+                            <button onclick="quickAdd('鱸魚湯/烤雞腿', 150, 18)" data-name="鱸魚湯/烤雞腿" data-cat="green" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🐟</div><div class="text-[8.5px] font-bold">魚/腿肉</div>
                             </button>
-                            <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" data-name="蝦仁蛋/豆干肉絲" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍤</div><div class="text-[9px] font-bold">蝦蛋/豆干肉</div>
+                            <button onclick="quickAdd('蝦仁蛋/豆干肉絲', 200, 20)" data-name="蝦仁蛋/豆干肉絲" data-cat="green" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍤</div><div class="text-[8.5px] font-bold">蝦/豆干</div>
                             </button>
-                            <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" data-name="半碗飯/地瓜/南瓜" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍠</div><div class="text-[9px] font-bold">飯/瓜類</div>
+                            <button onclick="quickAdd('半碗飯/地瓜/南瓜', 140, 2)" data-name="半碗飯/地瓜/南瓜" data-cat="green" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍚</div><div class="text-[8.5px] font-bold">飯/瓜類</div>
                             </button>
-                            <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" data-name="炒青菜/花椰菜米" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🥦</div><div class="text-[9px] font-bold">青菜/花菜米</div>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div>
-                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">🚨 外食實戰區</h3>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="quickAdd('健康餐盒', 450, 25)" data-name="健康餐盒" data-cat="green" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍱</div><div class="text-[9px] font-bold">健康餐盒</div>
-                            </button>
-                            <button onclick="quickAdd('外食麵食', 700, 25)" data-name="外食麵食" data-cat="red" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍜</div><div class="text-[9px] font-bold">外食麵食</div>
-                            </button>
-                            <button onclick="quickAdd('一般便當', 700, 25)" data-name="一般便當" data-cat="red" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">🍛</div><div class="text-[9px] font-bold">一般便當</div>
-                            </button>
-                            <button onclick="quickAdd('雞排炒飯/排餐', 850, 30)" data-name="雞排炒飯/排餐" data-cat="red" class="food-btn rounded-2xl p-2 text-center shadow-sm">
-                                <div class="text-xl mb-1">💥</div><div class="text-[9px] font-bold">炒飯/排餐</div>
+                            <button onclick="quickAdd('炒青菜/花椰菜米', 60, 2)" data-name="炒青菜/花椰菜米" data-cat="green" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🥦</div><div class="text-[8.5px] font-bold">青菜</div>
                             </button>
                         </div>
                     </div>
 
                     <div>
-                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">🍰 爆卡救援區 (難以計算熱量時)</h3>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="quickAdd('高級餐廳/大餐', 1000, 30)" data-name="高級餐廳/大餐" data-cat="purple" class="food-btn rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
-                                <div class="text-xl mb-1">🥩</div><div class="text-[9px] font-bold">大餐(高估)</div>
+                        <h3 class="text-[9px] text-gray-400 font-bold mb-2 uppercase tracking-tighter">🚨 外食與大餐</h3>
+                        <div class="grid grid-cols-2 gap-1.5">
+                            <button onclick="quickAdd('健康餐盒', 450, 25)" data-name="健康餐盒" data-cat="green" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍱</div><div class="text-[8.5px] font-bold">健康餐盒</div>
                             </button>
-                            <button onclick="quickAdd('甜點/蛋糕/午茶', 450, 5)" data-name="甜點/蛋糕/午茶" data-cat="purple" class="food-btn rounded-2xl p-2 text-center border-dashed border-2 shadow-sm">
-                                <div class="text-xl mb-1">🍰</div><div class="text-[9px] font-bold">甜點(高估)</div>
+                            <button onclick="quickAdd('外食麵食', 700, 25)" data-name="外食麵食" data-cat="red" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍜</div><div class="text-[8.5px] font-bold">外食麵食</div>
+                            </button>
+                            <button onclick="quickAdd('一般便當', 700, 25)" data-name="一般便當" data-cat="red" class="food-btn rounded-xl p-1.5 text-center shadow-sm">
+                                <div class="text-lg">🍛</div><div class="text-[8.5px] font-bold">一般便當</div>
+                            </button>
+                            <button onclick="quickAdd('高級餐廳/大餐', 1000, 30)" data-name="高級餐廳/大餐" data-cat="purple" class="food-btn rounded-xl p-1.5 text-center border-dashed border-2 shadow-sm">
+                                <div class="text-lg">🥩</div><div class="text-[8.5px] font-bold">爆卡大餐</div>
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="mt-4 bg-[#FAF8F5] p-3 rounded-2xl border border-[#F0EBE1]">
-                        <h3 class="text-[10px] text-gray-400 font-bold mb-2">✏️ 手動微調輸入</h3>
                         <div class="flex flex-col gap-2">
-                            <input type="text" id="manual-name" placeholder="輸入其他食物名稱..." class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-[#E8B490]">
+                            <input type="text" id="manual-name" placeholder="其他食物..." class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none">
                             <div class="flex gap-2">
-                                <div class="relative flex-1">
-                                    <input type="number" id="manual-cal" placeholder="熱量" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
-                                    <span class="absolute right-3 top-2 text-[10px] text-gray-400">大卡</span>
-                                </div>
-                                <div class="relative flex-1">
-                                    <input type="number" id="manual-pro" placeholder="蛋白" class="w-full bg-white border border-[#F0EBE1] rounded-xl px-3 py-2 text-xs focus:outline-none">
-                                    <span class="absolute right-3 top-2 text-[10px] text-gray-400">g</span>
-                                </div>
-                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 py-2 text-xs font-bold shadow-sm active:bg-[#d9a27e] transition-colors">加入</button>
+                                <input type="number" id="manual-cal" placeholder="Kcal" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none">
+                                <input type="number" id="manual-pro" placeholder="Pro" class="flex-1 bg-white border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none">
+                                <button onclick="manualAdd()" class="bg-[#E8B490] text-white rounded-xl px-4 text-xs font-bold active:bg-[#d9a27e]">加入</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ul id="food-list" class="mt-4 space-y-2 max-h-32 overflow-y-auto no-scrollbar border-t border-[#F0EBE1] pt-4"></ul>
+                
+                <ul id="food-list" class="mt-4 space-y-2 max-h-[260px] overflow-y-auto no-scrollbar border-t border-[#F0EBE1] pt-4"></ul>
             </div>
             
             <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="font-bold flex items-center gap-2 text-sm">💧 水分進度</h2>
-                    <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-red-400 transition-colors">重置</button>
+                    <button onclick="resetWater()" class="text-[10px] text-gray-400 hover:text-red-400">重置</button>
                 </div>
                 <div class="flex items-end gap-2 mb-3">
                     <span class="text-3xl font-black text-[#8DB4CB]" id="water-display">0</span>
@@ -202,22 +176,17 @@
                     <input type="date" id="stats-date" onchange="renderStats()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
                 </div>
                 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2">🔥 過去 7 天熱量趨勢 (大卡)</h3>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 uppercase tracking-widest">🔥 KCAL 7D Trend</h3>
                 <div id="chart-cal-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">🥩 過去 7 天蛋白趨勢 (g)</h3>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6 uppercase tracking-widest">🥩 PRO(g) 7D Trend</h3>
                 <div id="chart-pro-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
                 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6">💧 過去 7 天水分進度 (ml)</h3>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6 uppercase tracking-widest">💧 WATER 7D Trend</h3>
                 <div id="chart-water-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
                 <div class="mt-6 border-t border-[#F0EBE1] pt-4">
-                    <h3 class="text-[10px] font-black text-gray-500 mb-1">🔥運動(時) / 🩸生理期 / 🍪零食 綜合狀態</h3>
-                    <div class="flex gap-3 mb-2">
-                        <span class="text-[8px] font-bold text-[#818CF8]">➖ 運動時間(0-24)</span>
-                        <span class="text-[8px] font-bold text-red-400">● 生理期</span>
-                        <span class="text-[8px] font-bold text-[#FBBF24]">● 零食</span>
-                    </div>
+                    <h3 class="text-[10px] font-black text-gray-500 mb-1 uppercase tracking-widest">綜合狀態 (運動/生理/零食)</h3>
                     <div id="chart-combined-7" class="w-full h-28 bg-[#FAF8F5] rounded-xl mb-1 relative overflow-hidden border border-[#F0EBE1]"></div>
                 </div>
                 
@@ -245,7 +214,6 @@
 
         function initDayData(date) {
             if (!db[date]) db[date] = { water: 0, records: [], exercise: false, exerciseTime: '', period: false, snack: false };
-            if (db[date].snack === undefined) db[date].snack = false;
             return db[date];
         }
 
@@ -312,131 +280,70 @@
             document.getElementById('food-list').innerHTML = data.records.map(r => `
                 <li class="flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#F0EBE1] text-xs">
                     <div><b>${r.name}</b><br><small class="text-gray-400">${r.cal} kcal / ${r.pro}g</small></div>
-                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 px-2 font-bold hover:text-red-400 transition-colors">✕</button>
+                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 px-2 font-bold hover:text-red-400">✕</button>
                 </li>`).join('') || '<li class="text-center text-gray-300 text-[10px] py-2">點擊圖示紀錄喵～</li>';
             
-            // ===== 智能按鈕狀態更新 =====
             const addedNames = (data.records || []).map(r => r.name);
             document.querySelectorAll('.food-btn').forEach(btn => {
-                if(addedNames.includes(btn.getAttribute('data-name'))) {
-                    btn.classList.add('is-active');
-                } else {
-                    btn.classList.remove('is-active');
-                }
+                if(addedNames.includes(btn.getAttribute('data-name'))) btn.classList.add('is-active');
+                else btn.classList.remove('is-active');
             });
         }
 
         function drawLineChart(id, dataArray, maxVal, color, yLabels) {
             const container = document.getElementById(id);
             if (!container) return;
-            
-            const pTop = 15, pBottom = 15, pRight = 10, pLeft = 25; 
-            const w = container.clientWidth;
-            const h = container.clientHeight;
-            const drawW = w - pLeft - pRight;
-            const drawH = h - pTop - pBottom;
-            const step = drawW / (dataArray.length - 1);
-
-            let gridHTML = '';
-            yLabels.forEach(val => {
-                const y = pTop + drawH - (val / maxVal * drawH);
-                gridHTML += `<line x1="${pLeft}" y1="${y}" x2="${w-pRight}" y2="${y}" stroke="#F0EBE1" stroke-dasharray="2,2" />`;
-                gridHTML += `<text x="2" y="${y}" font-size="8" fill="#9CA3AF" font-weight="bold" alignment-baseline="middle">${val}</text>`;
+            const pT=15, pB=15, pR=10, pL=25, w=container.clientWidth, h=container.clientHeight;
+            const dW=w-pL-pR, dH=h-pT-pB, step=dW/(dataArray.length-1);
+            let grid=''; yLabels.forEach(v => {
+                const y=pT+dH-(v/maxVal*dH);
+                grid+=`<line x1="${pL}" y1="${y}" x2="${w-pR}" y2="${y}" stroke="#F0EBE1" stroke-dasharray="2,2"/><text x="2" y="${y}" font-size="8" fill="#9CA3AF" font-weight="bold" alignment-baseline="middle">${v}</text>`;
             });
-
-            const pts = dataArray.map((v, i) => {
-                const y = pTop + drawH - (Math.min(v, maxVal) / maxVal * drawH);
-                return `${pLeft + (i * step)},${y}`;
-            }).join(' ');
-
-            const circles = dataArray.map((v, i) => {
-                const y = pTop + drawH - (Math.min(v, maxVal) / maxVal * drawH);
-                return `<circle cx="${pLeft + (i * step)}" cy="${y}" r="3" fill="${color}" stroke="#fff" stroke-width="1.5" />`;
-            }).join('');
-
-            container.innerHTML = `<svg width="${w}" height="${h}" class="overflow-visible svg-draw">
-                ${gridHTML}
-                <polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />
-                ${circles}
-            </svg>`;
+            const pts=dataArray.map((v,i)=>`${pL+(i*step)},${pT+dH-(Math.min(v,maxVal)/maxVal*dH)}`).join(' ');
+            const circ=dataArray.map((v,i)=>`<circle cx="${pL+(i*step)}" cy="${pT+dH-(Math.min(v,maxVal)/maxVal*dH)}" r="3" fill="${color}" stroke="#fff" stroke-width="1.5"/>`).join('');
+            container.innerHTML=`<svg width="${w}" height="${h}" class="overflow-visible">${grid}<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${circ}</svg>`;
         }
 
         function drawMultiLineChart(id, datasets, yLabels) {
             const container = document.getElementById(id);
             if (!container) return;
-            
-            const pTop = 20, pBottom = 15, pRight = 10, pLeft = 25; 
-            const w = container.clientWidth;
-            const h = container.clientHeight;
-            const drawW = w - pLeft - pRight;
-            const drawH = h - pTop - pBottom;
-            const step = drawW / (datasets[0].data.length - 1);
-
-            let gridHTML = '';
-            yLabels.forEach(val => {
-                const y = pTop + drawH - (val / 24 * drawH); 
-                gridHTML += `<line x1="${pLeft}" y1="${y}" x2="${w-pRight}" y2="${y}" stroke="#F0EBE1" stroke-dasharray="2,2" />`;
-                gridHTML += `<text x="2" y="${y}" font-size="8" fill="#9CA3AF" font-weight="bold" alignment-baseline="middle">${val}</text>`;
+            const pT=20, pB=15, pR=10, pL=25, w=container.clientWidth, h=container.clientHeight;
+            const dW=w-pL-pR, dH=h-pT-pB, step=dW/(datasets[0].data.length-1);
+            let grid=''; yLabels.forEach(v => {
+                const y=pT+dH-(v/24*dH);
+                grid+=`<line x1="${pL}" y1="${y}" x2="${w-pR}" y2="${y}" stroke="#F0EBE1" stroke-dasharray="2,2"/><text x="2" y="${y}" font-size="8" fill="#9CA3AF" font-weight="bold" alignment-baseline="middle">${v}</text>`;
             });
-
-            let contentHTML = '';
-            datasets.forEach(ds => {
-                const offset = ds.offsetY || 0;
-                
-                const pts = ds.data.map((v, i) => {
-                    const y = pTop + drawH - (Math.min(v, ds.max) / ds.max * drawH) + offset;
-                    return `${pLeft + (i * step)},${y}`;
-                }).join(' ');
-
-                const circles = ds.data.map((v, i) => {
-                    if(v === 0 && ds.isBoolean) return ''; 
-                    const y = pTop + drawH - (Math.min(v, ds.max) / ds.max * drawH) + offset;
-                    return `<circle cx="${pLeft + (i * step)}" cy="${y}" r="${ds.isBoolean ? 4 : 3}" fill="${ds.color}" stroke="#fff" stroke-width="1.5" />`;
+            let content=''; datasets.forEach(ds => {
+                const off=ds.offsetY||0;
+                const pts=ds.data.map((v,i)=>`${pL+(i*step)},${pT+dH-(Math.min(v,ds.max)/ds.max*dH)+off}`).join(' ');
+                const circ=ds.data.map((v,i)=>{
+                    if(v===0 && ds.isBoolean) return '';
+                    return `<circle cx="${pL+(i*step)}" cy="${pT+dH-(Math.min(v,ds.max)/ds.max*dH)+off}" r="${ds.isBoolean?4:3}" fill="${ds.color}" stroke="#fff" stroke-width="1.5"/>`;
                 }).join('');
-
-                if(!ds.isBoolean) {
-                    contentHTML += `<polyline points="${pts}" fill="none" stroke="${ds.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" />`;
-                }
-                contentHTML += circles;
+                if(!ds.isBoolean) content+=`<polyline points="${pts}" fill="none" stroke="${ds.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+                content+=circ;
             });
-
-            container.innerHTML = `<svg width="${w}" height="${h}" class="overflow-visible svg-draw">
-                ${gridHTML}
-                ${contentHTML}
-            </svg>`;
+            container.innerHTML=`<svg width="${w}" height="${h}" class="overflow-visible">${grid}${content}</svg>`;
         }
 
         function renderStats() {
-            const baseDate = new Date(statsDatePicker.value);
-            const days7 = [];
-            for(let i=6; i>=0; i--) { const d = new Date(baseDate); d.setDate(d.getDate() - i); days7.push(d.toISOString().split('T')[0]); }
-            
-            const cal7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.cal, 0));
-            const pro7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.pro, 0));
-            const water7 = days7.map(d => db[d]?.water || 0);
-            
-            const exTime7 = days7.map(d => {
-                if(!db[d]?.exercise || !db[d]?.exerciseTime) return 0;
-                const [hh, mm] = db[d].exerciseTime.split(':').map(Number);
-                return hh + (mm/60);
-            });
-            const period7 = days7.map(d => db[d]?.period ? 24 : 0); 
-            const snack7 = days7.map(d => db[d]?.snack ? 24 : 0); 
-            
-            document.getElementById('chart-dates-labels').innerHTML = days7.map(d => `<span>${d.slice(5).replace('-','/')}</span>`).join('');
-            
-            drawLineChart('chart-cal-7', cal7, 2000, '#E8B490', [0, 1000, 2000]);
-            drawLineChart('chart-pro-7', pro7, 120, '#B8C5B0', [0, 60, 120]);
-            drawLineChart('chart-water-7', water7, 2000, '#8DB4CB', [0, 1000, 2000]);
-            
-            // 綜合繪圖：加入 offsetY 參數解決重疊
+            const base=new Date(statsDatePicker.value); const days7=[];
+            for(let i=6; i>=0; i--) { const d=new Date(base); d.setDate(d.getDate()-i); days7.push(d.toISOString().split('T')[0]); }
+            const c7=days7.map(d=>(db[d]?.records||[]).reduce((s,r)=>s+r.cal,0));
+            const p7=days7.map(d=>(db[d]?.records||[]).reduce((s,r)=>s+r.pro,0));
+            const w7=days7.map(d=>db[d]?.water||0);
+            const et7=days7.map(d=>{if(!db[d]?.exercise||!db[d]?.exerciseTime)return 0;const[hh,mm]=db[d].exerciseTime.split(':').map(Number);return hh+(mm/60);});
+            const pd7=days7.map(d=>db[d]?.period?24:0); const sn7=days7.map(d=>db[d]?.snack?24:0);
+            document.getElementById('chart-dates-labels').innerHTML=days7.map(d=>`<span>${d.slice(5).replace('-','/')}</span>`).join('');
+            drawLineChart('chart-cal-7', c7, 2000, '#E8B490', [0, 1000, 2000]);
+            drawLineChart('chart-pro-7', p7, 120, '#B8C5B0', [0, 60, 120]);
+            drawLineChart('chart-water-7', w7, 2000, '#8DB4CB', [0, 1000, 2000]);
             drawMultiLineChart('chart-combined-7', [
-                { data: exTime7, max: 24, color: '#818CF8', isBoolean: false, offsetY: 0 },
-                { data: period7, max: 24, color: '#FCA5A5', isBoolean: true, offsetY: -5 }, 
-                { data: snack7, max: 24, color: '#FBBF24', isBoolean: true, offsetY: 5 }   
+                {data:et7, max:24, color:'#818CF8', isBoolean:false, offsetY:0},
+                {data:pd7, max:24, color:'#FCA5A5', isBoolean:true, offsetY:-5},
+                {data:sn7, max:24, color:'#FBBF24', isBoolean:true, offsetY:5}
             ], [0, 12, 24]);
         }
-        
         loadDateData();
     </script>
 </body>
