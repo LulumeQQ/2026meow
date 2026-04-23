@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 AI 直連版</title>
+    <title>日常貓日誌 🐾 複製與開啟版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        'cat-bg': '#FAF9F7',       /* 極淡燕麥底色 */
-                        'cat-main': '#E8B490',     /* 柔和橘貓色 */
-                        'cat-green': '#B8C5B0',    /* 莫蘭迪綠 */
-                        'cat-text': '#6B5E54',     /* 文青棕色 */
+                        'cat-bg': '#FAF9F7',       
+                        'cat-main': '#E8B490',     
+                        'cat-green': '#B8C5B0',    
+                        'cat-text': '#6B5E54',     
                         'cat-card': '#FFFFFF',
-                        'cat-border': '#F2EEE7'    /* 溫潤邊線 */
+                        'cat-border': '#F2EEE7'    
                     }
                 }
             }
@@ -58,10 +58,10 @@
             
             <div class="bg-cat-card rounded-[2rem] shadow-sm border border-cat-border p-6">
                 <h2 class="font-bold flex items-center gap-2 mb-3 text-sm text-cat-main">📸 讓 Gemini 幫你算</h2>
-                <p class="text-[10px] text-gray-400 mb-4 leading-relaxed">點擊後將自動開啟 Gemini 並填好指令，您只需貼上照片即可得到精確數據喵！</p>
+                <p class="text-[10px] text-gray-400 mb-4 leading-relaxed">點擊後將自動複製提問詞，並喚醒開啟 Gemini App，請直接貼上並附上照片喵！</p>
                 
                 <button onclick="copyAndOpenGemini()" class="w-full bg-[#FFF9F5] text-cat-main py-4 rounded-2xl text-sm font-bold border border-[#FBE3D5] hover:bg-[#FBE3D5] transition-all flex justify-center items-center gap-2 shadow-sm">
-                    <span>✨ 直接開啟 Gemini 分析</span>
+                    <span>✨ 複製指令並開啟 Gemini App</span>
                 </button>
             </div>
 
@@ -146,30 +146,50 @@
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cat_v7_db')) || {};
+        let db = JSON.parse(localStorage.getItem('cat_v9_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
 
-        // 核心連動功能：一鍵複製並開啟 Gemini
+        // 核心連動功能：先複製指令，再透過 Universal Link 開啟 Gemini App
         function copyAndOpenGemini() {
             const currentData = db[datePicker.value];
             const targetCal = currentData.mode === 'weekday' ? '1400 大卡' : '1300 大卡';
             
-            // 構建帶有您身體數據與目標的精準指令
             const prompt = `這是我今天的飲食照片。我是身高 155、體重 70 的 41 歲女性，目前卡在停滯期。我的目標是 ${targetCal}，蛋白質目標 100g。\n請幫我：\n1. 估算照片中食物的總熱量與蛋白質。\n2. 依據我的狀況，給出一句具體的飲食優化建議喵。`;
 
-            // 1. 複製到剪貼簿 (備份使用)
-            navigator.clipboard.writeText(prompt).then(() => {
-                // 2. 開啟 Gemini 網頁介面並帶入查詢參數
-                const encodedPrompt = encodeURIComponent(prompt);
-                const geminiUrl = `https://gemini.google.com/app?q=${encodedPrompt}`;
-                
-                // 在新分頁開啟
-                window.open(geminiUrl, '_blank');
-            }).catch(err => {
-                console.error('複製失敗', err);
-                alert('開啟失敗，請手動將提問詞貼給 Gemini 喵。');
-            });
+            // 優先嘗試使用現代 Clipboard API
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(prompt).then(() => {
+                    openGeminiApp();
+                }).catch(err => {
+                    fallbackCopyAndOpen(prompt);
+                });
+            } else {
+                fallbackCopyAndOpen(prompt);
+            }
+        }
+
+        // 執行跳轉至 Gemini App
+        function openGeminiApp() {
+            // 提供不帶複雜參數的乾淨網址，確保作業系統能正確識別並喚醒原生 App
+            window.open('https://gemini.google.com/', '_blank');
+        }
+
+        // 手機端備用複製方案
+        function fallbackCopyAndOpen(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed"; 
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                openGeminiApp();
+            } catch (err) {
+                alert('複製失敗，可能需要您手動框選複製喵。');
+            }
+            document.body.removeChild(textArea);
         }
 
         function initDayData(date) {
@@ -208,7 +228,7 @@
             }
         }
 
-        function save() { localStorage.setItem('cat_v7_db', JSON.stringify(db)); }
+        function save() { localStorage.setItem('cat_v9_db', JSON.stringify(db)); }
 
         document.getElementById('food-form').addEventListener('submit', (e) => {
             e.preventDefault();
