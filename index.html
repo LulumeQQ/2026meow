@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 iPhone 強制複製版</title>
+    <title>日常貓日誌 🐾 極簡指令版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -146,15 +146,13 @@
     </div>
 
     <script>
-        let db = JSON.parse(localStorage.getItem('cat_v10_db')) || {};
+        let db = JSON.parse(localStorage.getItem('cat_v11_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
 
         // --- iPhone 專用：同步解決複製與跳轉衝突 ---
         function copyAndOpenGemini() {
-            const currentData = db[datePicker.value];
-            const targetCal = currentData.mode === 'weekday' ? '1400 大卡' : '1300 大卡';
-            const prompt = `這是我今天的飲食照片。我是身高 155、體重 70 的 41 歲女性，目前卡在停滯期。我的目標是 ${targetCal}，蛋白質目標 100g。\n請幫我：\n1. 估算照片中食物的總熱量與蛋白質。\n2. 依據我的狀況，給出一句具體的飲食優化建議喵。`;
+            const prompt = `1. 估算照片中食物的總熱量與蛋白質\n2. 複製查到的食物名稱`;
 
             // 步驟一：建立一個實體的文字框，並在畫面上維持隱形
             const textArea = document.createElement("textarea");
@@ -220,7 +218,7 @@
             }
         }
 
-        function save() { localStorage.setItem('cat_v10_db', JSON.stringify(db)); }
+        function save() { localStorage.setItem('cat_v11_db', JSON.stringify(db)); }
 
         document.getElementById('food-form').addEventListener('submit', (e) => {
             e.preventDefault();
