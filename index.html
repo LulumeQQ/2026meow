@@ -2,13 +2,15 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>日常貓日誌 🐾 極簡手動版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
         body { font-family: 'Noto Sans TC', sans-serif; color: #6B5E54; background-color: #FAF9F7; }
+        /* iOS Safari focus 輸入框時避免自動放大 */
+        input, select, textarea { font-size: 16px !important; }
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .active-tab { color: #E8B490; border-bottom: 2px solid #E8B490; }
         #famart-modal { background: rgba(0,0,0,0.4); }
@@ -26,7 +28,7 @@
         </div>
 
         <div class="bg-white rounded-3xl shadow-sm border border-orange-50 p-6">
-            <h2 class="font-bold text-sm text-orange-300 mb-4 flex items-center gap-2">🍽️ 飲食錄入</h2>
+            <h2 class="font-bold text-sm text-orange-300 mb-4 flex items-center gap-2">🍽️ 飲食記錄</h2>
             <form id="food-form" class="space-y-3">
                 
                 <div class="relative">
@@ -44,6 +46,22 @@
 
                 <div class="grid grid-cols-2 gap-3">
                     <div class="relative">
+                        <input type="number" id="food-amount" value="1" step="any" min="0" placeholder="份量" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
+                        <span class="absolute right-3 top-3 text-[10px] text-gray-300">份量</span>
+                    </div>
+                    <select id="food-unit" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
+                        <option value="份">份</option>
+                        <option value="克">克 (g)</option>
+                        <option value="毫升">毫升 (ml)</option>
+                        <option value="杯">杯</option>
+                        <option value="個">個</option>
+                        <option value="片">片</option>
+                        <option value="包">包</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="relative">
                         <input type="number" id="food-calories" required placeholder="熱量" step="any" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
                         <span class="absolute right-3 top-3 text-[10px] text-gray-300">kcal</span>
                     </div>
@@ -52,6 +70,7 @@
                         <span class="absolute right-3 top-3 text-[10px] text-gray-300">g</span>
                     </div>
                 </div>
+                <p id="food-base-hint" class="text-[10px] text-gray-400 text-center -mt-1">請輸入份量與單位，熱量/蛋白為「總量」。使用搜尋可自動填入。</p>
                 <button type="submit" class="w-full bg-orange-100 text-orange-400 py-3 rounded-xl text-sm font-bold hover:bg-orange-200 transition-colors">儲存紀錄</button>
             </form>
 
@@ -97,11 +116,14 @@
     <!-- FatSecret 搜尋 Modal -->
     <div id="fs-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" style="background:rgba(0,0,0,0.4)" onclick="if(event.target===this)closeFatSecret()">
         <div class="bg-white rounded-3xl shadow-lg w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
-            <div class="p-4 border-b border-gray-100 flex items-center gap-2">
-                <span class="text-lg">🍲</span>
-                <input type="text" id="fs-search" placeholder="搜尋食品名稱（可輸入繁體）" class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-blue-200">
-                <button type="button" onclick="fsDoSearch()" class="text-blue-400 text-xs px-2 font-bold">搜尋</button>
-                <button type="button" onclick="closeFatSecret()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
+            <div class="p-4 border-b border-gray-100 flex flex-col gap-2">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🍲</span>
+                    <input type="text" id="fs-search" placeholder="食品名稱（可輸入繁體）" class="flex-1 bg-gray-50 border-none rounded-xl p-2 text-sm focus:ring-1 focus:ring-blue-200">
+                    <button type="button" onclick="fsDoSearch()" class="text-blue-400 text-xs px-2 font-bold">搜尋</button>
+                    <button type="button" onclick="closeFatSecret()" aria-label="關閉" class="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 hover:bg-red-100 text-gray-500 hover:text-red-500 text-base font-bold transition-colors">✕</button>
+                </div>
+                <input type="text" id="fs-brand-filter" placeholder="🏷️ 品牌過濾（例：Myprotein、ON）" class="w-full bg-gray-50 border-none rounded-xl p-2 text-xs focus:ring-1 focus:ring-blue-200">
             </div>
             <div id="fs-status" class="text-center text-xs text-gray-400 py-2">輸入關鍵字按「搜尋」或 Enter</div>
             <ul id="fs-list" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm"></ul>
@@ -112,6 +134,41 @@
         let db = JSON.parse(localStorage.getItem('cat_minimal_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
+
+        // ===== 份量×單位計算 =====
+        // perUnit = { cal, protein }：每 1 個單位（例如 1 克、或 1 份）的熱量與蛋白質
+        let perUnit = { cal: 0, protein: 0 };
+        let suppressRecalc = false; // 避免手動改 cal/protein 時遭遡迴
+
+        function applyFromPerUnit() {
+            const amt = parseFloat(document.getElementById('food-amount').value) || 0;
+            suppressRecalc = true;
+            document.getElementById('food-calories').value = Math.round(perUnit.cal * amt * 10) / 10;
+            document.getElementById('food-protein').value = Math.round(perUnit.protein * amt * 10) / 10;
+            suppressRecalc = false;
+        }
+
+        function setSearchResult({ name, perUnitCal, perUnitProtein, defaultAmount, unit }) {
+            if (name != null) document.getElementById('food-name').value = name;
+            if (unit) document.getElementById('food-unit').value = unit;
+            document.getElementById('food-amount').value = defaultAmount;
+            perUnit = { cal: perUnitCal || 0, protein: perUnitProtein || 0 };
+            applyFromPerUnit();
+        }
+
+        // 份量改變→ 重算總量
+        document.getElementById('food-amount').addEventListener('input', applyFromPerUnit);
+        // 使用者手動修改熱量/蛋白 → 更新 perUnit 基準（以目前份量為基準）
+        ['food-calories', 'food-protein'].forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                if (suppressRecalc) return;
+                const amt = parseFloat(document.getElementById('food-amount').value) || 0;
+                if (amt <= 0) return;
+                const cal = parseFloat(document.getElementById('food-calories').value) || 0;
+                const pro = parseFloat(document.getElementById('food-protein').value) || 0;
+                perUnit = { cal: cal / amt, protein: pro / amt };
+            });
+        });
 
         function initDayData(date) {
             if (!db[date]) { db[date] = { water: 0, records: [] }; }
@@ -143,8 +200,13 @@
                     const calories = nutriments['energy-kcal_100g'] || nutriments['energy-kcal'] || 0;
                     const protein = nutriments['proteins_100g'] || nutriments['proteins'] || 0;
 
-                    document.getElementById('food-calories').value = Math.round(calories);
-                    document.getElementById('food-protein').value = Math.round(protein * 10) / 10;
+                    setSearchResult({
+                        name: product.product_name || foodName,
+                        perUnitCal: calories,
+                        perUnitProtein: protein,
+                        defaultAmount: 100,
+                        unit: '克'
+                    });
                     
                     console.log(`找到：${product.product_name || foodName} (每 100g)`);
                 } else {
@@ -317,6 +379,12 @@
                 e.preventDefault(); fsDoSearch();
             }
         });
+        // 品牌過濾即時更新
+        document.addEventListener('input', (e) => {
+            if (e.target && e.target.id === 'fs-brand-filter') {
+                if (window.__fsItems) renderFsList();
+            }
+        });
 
         async function fsDoSearch() {
             const kwRaw = document.getElementById('fs-search').value.trim();
@@ -345,36 +413,73 @@
             }
             if (!html) { status.innerText = '❌ 搜尋失敗：' + (lastErr || '所有 proxy 都不可用'); return; }
             const items = parseFatSecretHtml(html);
-                if (!items.length) { status.innerText = '找不到結果'; return; }
-                status.innerText = `找到 ${items.length} 筆結果`;
-                list.innerHTML = items.map((it, i) => `
+            if (!items.length) { status.innerText = '找不到結果'; return; }
+            // 暫存到 modal，供品牌過濾即時用
+            window.__fsItems = items;
+            renderFsList();
+        }
+
+        function renderFsList() {
+            const items = window.__fsItems || [];
+            const list = document.getElementById('fs-list');
+            const status = document.getElementById('fs-status');
+            const brandKw = (document.getElementById('fs-brand-filter').value || '').trim().toLowerCase();
+            const filtered = brandKw
+                ? items.filter(it => (it.brand || '').toLowerCase().includes(brandKw)
+                                  || toTW(it.brand || '').toLowerCase().includes(brandKw)
+                                  || toCN(brandKw).split('').every(ch => (it.brand || '').toLowerCase().includes(ch.toLowerCase())))
+                : items;
+            // 收集所有出現過的品牌供提示
+            const allBrands = [...new Set(items.map(i => i.brand).filter(Boolean))];
+            status.innerHTML = `找到 ${items.length} 筆${brandKw ? `，過濾後 ${filtered.length} 筆` : ''}`
+                + (allBrands.length ? `<div class="text-[10px] text-gray-400 mt-1">品牌：${allBrands.slice(0, 8).map(toTW).join('、')}${allBrands.length > 8 ? '…' : ''}</div>` : '');
+            list.innerHTML = filtered.map((it) => {
+                const idx = items.indexOf(it);
+                const brandTw = it.brand ? toTW(it.brand) : '';
+                return `
                     <li>
-                        <button type="button" data-fs-idx="${i}" class="fs-pick w-full text-left bg-gray-50 hover:bg-blue-50 rounded-xl p-3 transition-colors">
-                            <div class="font-bold text-xs">${toTW(it.name)}</div>
+                        <button type="button" data-fs-idx="${idx}" class="fs-pick w-full text-left bg-gray-50 hover:bg-blue-50 rounded-xl p-3 transition-colors">
+                            <div class="flex items-center gap-1 flex-wrap">
+                                <span class="font-bold text-xs">${toTW(it.name)}</span>
+                                ${brandTw ? `<span class="text-[10px] bg-blue-100 text-blue-600 px-1.5 py-0.5 rounded-full">${brandTw}</span>` : ''}
+                            </div>
                             <div class="text-[10px] text-gray-500 mt-1">${toTW(it.serving)} · 熱量 ${it.cal} kcal · 蛋白質 ${it.protein} g</div>
                         </button>
                     </li>
-                `).join('');
-                list.querySelectorAll('.fs-pick').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const it = items[+btn.dataset.fsIdx];
-                        document.getElementById('food-name').value = toTW(it.name);
-                        document.getElementById('food-calories').value = Math.round(it.cal);
-                        document.getElementById('food-protein').value = Math.round(it.protein * 10) / 10;
-                        closeFatSecret();
+                `;
+            }).join('');
+            list.querySelectorAll('.fs-pick').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const it = items[+btn.dataset.fsIdx];
+                    const sv = it.serving || '';
+                    let unit = '份', defaultAmount = 1;
+                    const gM = sv.match(/每\s*([\d.]+)\s*克/);
+                    const mlM = sv.match(/每\s*([\d.]+)\s*毫升/);
+                    if (gM) { unit = '克'; defaultAmount = parseFloat(gM[1]); }
+                    else if (mlM) { unit = '毫升'; defaultAmount = parseFloat(mlM[1]); }
+                    const brandTw = it.brand ? toTW(it.brand) : '';
+                    const displayName = brandTw ? `${toTW(it.name)} - ${brandTw}` : toTW(it.name);
+                    setSearchResult({
+                        name: displayName,
+                        perUnitCal: it.cal / defaultAmount,
+                        perUnitProtein: it.protein / defaultAmount,
+                        defaultAmount: defaultAmount,
+                        unit: unit
                     });
+                    closeFatSecret();
                 });
+            });
         }
 
         function parseFatSecretHtml(html) {
             const results = [];
             const doc = new DOMParser().parseFromString(html, 'text/html');
-            // 結果結構：<a class="prominent">名稱</a><div class="smallText greyText greyLink">每100克 - 卡路里:164千卡 | 脂肪:... | 碳水物:... | 蛋白质:30.76克 ...</div>
+            // 結果結構：<a class="prominent">名稱</a>&nbsp;<a class="brand">(品牌)</a><div class="smallText greyText greyLink">每100克 - 卡路里:164千卡 | 脂肪:... | 碳水物:... | 蛋白质:30.76克 ...</div>
             const anchors = doc.querySelectorAll('a.prominent');
             anchors.forEach(a => {
                 const name = a.textContent.trim();
                 if (!name) return;
-                // 找同一 td/parent 內的 .smallText
+                // 同一 td/parent 內的 .smallText
                 const wrap = a.closest('td') || a.parentElement;
                 if (!wrap) return;
                 const small = wrap.querySelector('.smallText');
@@ -382,9 +487,16 @@
                 const calM = text.match(/卡路里\s*[:：]\s*([\d.]+)\s*千卡/);
                 const proM = text.match(/蛋白质\s*[:：]\s*([\d.]+)\s*克/);
                 const servM = text.match(/^(每[^-|]+?)\s*-\s*卡路里/);
+                // 品牌：在名稱旁的 a.brand，文字包含括號 例：(Myprotein )
+                const brandA = wrap.querySelector('a.brand');
+                let brand = '';
+                if (brandA) {
+                    brand = brandA.textContent.trim().replace(/^\(|\)$/g, '').trim();
+                }
                 if (calM && proM) {
                     results.push({
                         name,
+                        brand,
                         cal: parseFloat(calM[1]),
                         protein: parseFloat(proM[1]),
                         serving: servM ? servM[1].trim() : '每份'
@@ -404,15 +516,19 @@
                 }
                 const item = data.LIST[0];
                 const nut = (item.NUTRIENTS && item.NUTRIENTS[0]) || {};
-                // 從 NOTE 解析每份熱量，例如「每份熱量174大卡; 每份規格105公克;(本包裝含1份);」
+                // 全家的 NUTRIENTS 是「每份」的數值，包裝可能含數份
                 const calMatch = (item.NOTE || '').match(/熱量\s*([\d.]+)\s*大卡/);
                 const portionMatch = (item.NOTE || '').match(/含\s*([\d.]+)\s*份/);
-                const cal = calMatch ? parseFloat(calMatch[1]) : 0;
-                const protein = nut.PROTEIN != null ? parseFloat(nut.PROTEIN) : 0;
+                const calPer = calMatch ? parseFloat(calMatch[1]) : 0;
+                const proteinPer = nut.PROTEIN != null ? parseFloat(nut.PROTEIN) : 0;
                 const portions = portionMatch ? parseFloat(portionMatch[1]) : 1;
-                document.getElementById('food-name').value = item.PRODNAME;
-                document.getElementById('food-calories').value = Math.round(cal * portions);
-                document.getElementById('food-protein').value = Math.round(protein * portions * 10) / 10;
+                setSearchResult({
+                    name: item.PRODNAME,
+                    perUnitCal: calPer,         // 每 1 份
+                    perUnitProtein: proteinPer, // 每 1 份
+                    defaultAmount: portions,    // 預設填「本包裝含 N 份」
+                    unit: '份'
+                });
                 closeFamilyMart();
             } catch (e) {
                 console.error(e);
@@ -424,11 +540,17 @@
             e.preventDefault();
             const date = datePicker.value;
             const name = document.getElementById('food-name').value;
+            const amt = parseFloat(document.getElementById('food-amount').value) || 0;
+            const unit = document.getElementById('food-unit').value;
             const cal = parseFloat(document.getElementById('food-calories').value) || 0;
             const pro = parseFloat(document.getElementById('food-protein').value) || 0;
-            initDayData(date).records.push({ id: Date.now(), name, cal, pro });
+            const displayName = amt && unit ? `${name} (${amt}${unit})` : name;
+            initDayData(date).records.push({ id: Date.now(), name: displayName, cal, pro });
             save();
             document.getElementById('food-form').reset();
+            document.getElementById('food-amount').value = 1;
+            document.getElementById('food-unit').value = '份';
+            perUnit = { cal: 0, protein: 0 };
             updateUI();
         });
 
