@@ -34,6 +34,15 @@
                     </button>
                 </div>
 
+                <!-- 🏪 全家便利商店本地搜尋 -->
+                <div class="relative">
+                    <input type="text" id="family-keyword" placeholder="搜尋全家商品（例：御飯糰、雞腿）" class="w-full bg-green-50 border-none rounded-xl p-3 pr-20 text-sm focus:ring-1 focus:ring-green-200">
+                    <button type="button" onclick="searchFamilyLocal()" id="family-btn" class="absolute right-2 top-2 px-2 py-1 text-xs bg-green-100 text-green-600 rounded-lg hover:bg-green-200 transition-colors">
+                        🏪 全家
+                    </button>
+                </div>
+                <ul id="family-results" class="space-y-1 max-h-44 overflow-y-auto hidden bg-green-50 rounded-xl p-2"></ul>
+
                 <div class="grid grid-cols-2 gap-3">
                     <div class="relative">
                         <input type="number" id="food-calories" required placeholder="熱量" step="any" class="w-full bg-gray-50 border-none rounded-xl p-3 text-sm">
@@ -77,6 +86,52 @@
         let db = JSON.parse(localStorage.getItem('cat_minimal_db')) || {};
         const datePicker = document.getElementById('current-date');
         datePicker.value = new Date().toISOString().split('T')[0];
+
+        // ===== 全家本地商品資料 =====
+        let familyProducts = null;
+        fetch('./family-products.json')
+            .then(r => r.json())
+            .then(data => { familyProducts = data; })
+            .catch(err => { console.warn('family-products.json 載入失敗，全家搜尋無法使用。', err); });
+
+        function searchFamilyLocal() {
+            const kw = document.getElementById('family-keyword').value.trim().toLowerCase();
+            const resultsBox = document.getElementById('family-results');
+            if (!kw) { alert('請輸入要搜尋的全家商品關鍵字'); return; }
+            if (!familyProducts) { alert('資料尚未載入，請稍後再試或確認 family-products.json 存在'); return; }
+
+            const matched = familyProducts.products
+                .filter(p => p.name.toLowerCase().includes(kw))
+                .slice(0, 30);
+
+            resultsBox.innerHTML = '';
+            if (matched.length === 0) {
+                resultsBox.classList.remove('hidden');
+                resultsBox.innerHTML = '<li class="text-xs text-gray-400 p-2">找不到符合的商品</li>';
+                return;
+            }
+
+            resultsBox.classList.remove('hidden');
+            matched.forEach(p => {
+                const li = document.createElement('li');
+                li.className = 'flex justify-between items-center bg-white p-2 rounded-lg text-xs cursor-pointer hover:bg-green-100';
+                const calStr = p.calories != null ? p.calories + ' kcal' : '';
+                const proStr = p.protein != null ? p.protein + 'g 蛋白' : '';
+                li.innerHTML = `<span><b>${p.name}</b> <span class="text-gray-400 ml-1">${[calStr, proStr].filter(Boolean).join(' · ')}</span></span><span class="text-green-500 ml-2">＋</span>`;
+                li.onclick = () => {
+                    document.getElementById('food-name').value = p.name;
+                    if (p.calories != null) document.getElementById('food-calories').value = p.calories;
+                    if (p.protein != null) document.getElementById('food-protein').value = p.protein;
+                    resultsBox.classList.add('hidden');
+                };
+                resultsBox.appendChild(li);
+            });
+        }
+
+        // 按 Enter 也能觸發搜尋
+        document.getElementById('family-keyword').addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); searchFamilyLocal(); }
+        });
 
         function initDayData(date) {
             if (!db[date]) { db[date] = { water: 0, records: [] }; }
@@ -132,6 +187,7 @@
             initDayData(date).records.push({ id: Date.now(), name, cal, pro });
             save();
             document.getElementById('food-form').reset();
+            document.getElementById('family-results').classList.add('hidden');
             updateUI();
         });
 
