@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日常貓日誌 🐾 統計升級版</title>
+    <title>日常貓日誌 🐾 曲線圖升級版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
@@ -33,8 +33,8 @@
     <div class="max-w-md w-full space-y-4 pb-12">
         
         <div class="flex bg-white rounded-full p-1 border border-[#F0EBE1] shadow-sm mb-4">
-            <button id="tab-record" onclick="switchTab('record')" class="flex-1 py-2 rounded-full font-bold text-[#E8B490] bg-[#FFF9F5] transition-all">日常紀錄</button>
-            <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-2 rounded-full font-bold text-gray-400 bg-transparent transition-all">數據統計</button>
+            <button id="tab-record" onclick="switchTab('record')" class="flex-1 py-2 rounded-full font-bold text-[#E8B490] bg-[#FFF9F5] shadow-sm transition-all">日常紀錄</button>
+            <button id="tab-stats" onclick="switchTab('stats')" class="flex-1 py-2 rounded-full font-bold text-gray-400 bg-transparent transition-all">趨勢曲線</button>
         </div>
 
         <div id="view-record" class="view-content active space-y-4">
@@ -53,6 +53,18 @@
                     <div class="bg-[#F4F7F2] p-4 rounded-3xl border border-[#E1E8DE] text-center">
                         <div class="text-3xl font-black text-[#B8C5B0]" id="total-protein">0</div>
                         <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">PRO(g) (目標 100)</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between items-center mt-4 bg-[#FAF8F5] rounded-2xl p-3 border border-[#F0EBE1]">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="check-exercise" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#E8B490]">
+                        <label for="check-exercise" class="text-xs font-bold text-[#6B5E54]">🏃 運動</label>
+                        <input type="time" id="input-exercise-time" onchange="saveDailyStatus()" class="bg-white border border-[#F0EBE1] rounded-lg px-2 py-1 text-[10px] focus:outline-none text-gray-500 font-bold ml-1">
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="check-period" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FCA5A5]">
+                        <label for="check-period" class="text-xs font-bold text-red-400">🩸 生理期</label>
                     </div>
                 </div>
             </div>
@@ -159,23 +171,6 @@
             </div>
 
             <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
-                <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🏃‍♀️ 身體與活動狀態</h2>
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <input type="checkbox" id="check-exercise" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#E8B490]">
-                            <label for="check-exercise" class="text-sm font-bold cursor-pointer text-[#6B5E54]">今日有運動</label>
-                        </div>
-                        <input type="time" id="input-exercise-time" onchange="saveDailyStatus()" class="bg-[#FAF8F5] border border-[#F0EBE1] rounded-xl px-3 py-1.5 text-xs focus:outline-none text-gray-500 font-bold">
-                    </div>
-                    <div class="flex items-center gap-3">
-                        <input type="checkbox" id="check-period" onchange="saveDailyStatus()" class="w-5 h-5 accent-[#FCA5A5]">
-                        <label for="check-period" class="text-sm font-bold cursor-pointer text-red-400">🩸 生理期 (多休息喵)</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-6">
                 <h2 class="font-bold flex items-center gap-2 mb-4 text-sm text-[#6B5E54]">🌙 夜間防護線</h2>
                 <div class="space-y-4">
                     <div class="flex items-center gap-3">
@@ -201,44 +196,35 @@
         <div id="view-stats" class="view-content space-y-4">
             
             <div class="bg-white rounded-[2.5rem] shadow-sm border border-[#F0EBE1] p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-lg font-black text-[#E8B490]">📊 區間結算</h2>
+                <div class="flex justify-between items-center mb-6 border-b border-[#F0EBE1] pb-4">
+                    <h2 class="text-lg font-black text-[#E8B490]">📊 趨勢曲線</h2>
                     <input type="date" id="stats-date" onchange="renderStats()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
                 </div>
                 
-                <h3 class="text-xs font-bold text-gray-400 mb-3 border-b border-[#F0EBE1] pb-2">當週 (以此日往前推 7 天)</h3>
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
-                        <div class="text-2xl font-black text-[#E8B490]" id="stat-week-cal">0</div>
-                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均熱量 (kcal)</p>
-                    </div>
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
-                        <div class="text-2xl font-black text-[#B8C5B0]" id="stat-week-pro">0</div>
-                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均蛋白 (g)</p>
-                    </div>
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
-                        <div class="text-lg font-black text-[#6B5E54]">🏃 <span id="stat-week-ex">0</span> 天</div>
-                    </div>
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
-                        <div class="text-lg font-black text-red-400">🩸 <span id="stat-week-period">0</span> 天</div>
-                    </div>
-                </div>
+                <h3 class="text-xs font-bold text-gray-500 mb-2">🔥 過去 7 天熱量 (大卡)</h3>
+                <div id="chart-cal-7" class="w-full h-28 bg-[#FAF8F5] rounded-2xl mb-1 relative px-3 flex items-end pt-2 border border-[#F0EBE1]"></div>
+                <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-1 font-bold" id="chart-dates-cal-7"></div>
 
-                <h3 class="text-xs font-bold text-gray-400 mb-3 border-b border-[#F0EBE1] pb-2">當月 (與此日同月份)</h3>
-                <div class="grid grid-cols-2 gap-3">
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
-                        <div class="text-2xl font-black text-[#E8B490]" id="stat-month-cal">0</div>
-                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均熱量 (kcal)</p>
+                <h3 class="text-xs font-bold text-gray-500 mb-2">🥩 過去 7 天蛋白 (g)</h3>
+                <div id="chart-pro-7" class="w-full h-28 bg-[#FAF8F5] rounded-2xl mb-1 relative px-3 flex items-end pt-2 border border-[#F0EBE1]"></div>
+                <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-1 font-bold" id="chart-dates-pro-7"></div>
+
+                <h3 class="text-xs font-bold text-gray-500 mb-2 border-t border-[#F0EBE1] pt-6">🔥 過去 30 天熱量 (大卡)</h3>
+                <div id="chart-cal-30" class="w-full h-28 bg-[#FAF8F5] rounded-2xl mb-1 relative px-3 flex items-end pt-2 border border-[#F0EBE1]"></div>
+                <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-1 font-bold" id="chart-dates-cal-30"></div>
+
+                <h3 class="text-xs font-bold text-gray-500 mb-2">🥩 過去 30 天蛋白 (g)</h3>
+                <div id="chart-pro-30" class="w-full h-28 bg-[#FAF8F5] rounded-2xl mb-1 relative px-3 flex items-end pt-2 border border-[#F0EBE1]"></div>
+                <div class="flex justify-between text-[8px] text-gray-400 mb-6 px-1 font-bold" id="chart-dates-pro-30"></div>
+
+                <div class="grid grid-cols-2 gap-3 pt-4 border-t border-[#F0EBE1]">
+                    <div class="bg-[#FAF8F5] p-3 rounded-2xl border border-[#F0EBE1] text-center">
+                        <div class="text-xl font-black text-[#6B5E54]">🏃 <span id="stat-month-ex">0</span> 天</div>
+                        <p class="text-[9px] text-gray-400 font-bold mt-1">過去 30 天有運動</p>
                     </div>
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center">
-                        <div class="text-2xl font-black text-[#B8C5B0]" id="stat-month-pro">0</div>
-                        <p class="text-[10px] text-gray-400 font-bold mt-1">日均蛋白 (g)</p>
-                    </div>
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
-                        <div class="text-lg font-black text-[#6B5E54]">🏃 <span id="stat-month-ex">0</span> 天</div>
-                    </div>
-                    <div class="bg-[#FAF8F5] p-4 rounded-3xl border border-[#F0EBE1] text-center flex flex-col justify-center">
-                        <div class="text-lg font-black text-red-400">🩸 <span id="stat-month-period">0</span> 天</div>
+                    <div class="bg-[#FAF8F5] p-3 rounded-2xl border border-[#F0EBE1] text-center">
+                        <div class="text-xl font-black text-red-400">🩸 <span id="stat-month-period">0</span> 天</div>
+                        <p class="text-[9px] text-gray-400 font-bold mt-1">過去 30 天生理期</p>
                     </div>
                 </div>
             </div>
@@ -275,7 +261,8 @@
             } else {
                 document.getElementById('view-stats').classList.add('active');
                 btnStats.className = "flex-1 py-2 rounded-full font-bold text-[#E8B490] bg-[#FFF9F5] shadow-sm transition-all";
-                renderStats();
+                // 延遲 10ms 讓畫面先 display:block，以確保 SVG 寬度能正確抓取
+                setTimeout(renderStats, 10);
             }
         }
 
@@ -291,7 +278,7 @@
                     period: false
                 }; 
             }
-            // 確保舊資料也有新屬性
+            // 補足舊資料缺少的屬性
             if(db[date].exercise === undefined) db[date].exercise = false;
             if(db[date].exerciseTime === undefined) db[date].exerciseTime = '';
             if(db[date].period === undefined) db[date].period = false;
@@ -398,60 +385,84 @@
             document.getElementById('t4').checked = data.tasks?.t4 || false;
         }
 
+        // --- 繪製 SVG 曲線圖 ---
+        function drawLineChart(id, dataArray, maxVal, color) {
+            const container = document.getElementById(id);
+            if (!container) return;
+            
+            // 預留邊距以免圓點被切掉
+            const padding = 12; 
+            const w = container.clientWidth - (padding * 2); 
+            const h = container.clientHeight - (padding * 2);
+            const step = dataArray.length > 1 ? w / (dataArray.length - 1) : w;
+
+            // 計算座標
+            const pts = dataArray.map((v, i) => {
+                const y = padding + h - (Math.min(v, maxVal) / maxVal * h);
+                return `${padding + (i * step)},${y}`;
+            }).join(' ');
+
+            const circles = dataArray.map((v, i) => {
+                const y = padding + h - (Math.min(v, maxVal) / maxVal * h);
+                return `<circle cx="${padding + (i * step)}" cy="${y}" r="3" fill="${color}" stroke="#fff" stroke-width="1.5" />`;
+            }).join('');
+
+            container.innerHTML = `<svg width="${container.clientWidth}" height="${container.clientHeight}" class="overflow-visible"><polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />${circles}</svg>`;
+        }
+
         // --- 統計分頁運算邏輯 ---
         function renderStats() {
             const baseDateStr = statsDatePicker.value;
             if(!baseDateStr) return;
             const baseDate = new Date(baseDateStr);
 
-            // 運算變數
-            let weekCalTotal = 0, weekProTotal = 0, weekExDays = 0, weekPeriodDays = 0, weekValidDays = 0;
-            let monthCalTotal = 0, monthProTotal = 0, monthExDays = 0, monthPeriodDays = 0, monthValidDays = 0;
+            const days7 = [];
+            const days30 = [];
+            
+            // 往前推 7 天與 30 天的日期陣列
+            for(let i=6; i>=0; i--) { 
+                const d = new Date(baseDate); d.setDate(d.getDate() - i);
+                days7.push(d.toISOString().split('T')[0]); 
+            }
+            for(let i=29; i>=0; i--) { 
+                const d = new Date(baseDate); d.setDate(d.getDate() - i);
+                days30.push(d.toISOString().split('T')[0]); 
+            }
 
-            const targetMonthPrefix = baseDateStr.substring(0, 7); // YYYY-MM
+            // 取得對應資料總和
+            const cal7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.cal, 0));
+            const pro7 = days7.map(d => (db[d]?.records || []).reduce((s,r) => s+r.pro, 0));
+            const cal30 = days30.map(d => (db[d]?.records || []).reduce((s,r) => s+r.cal, 0));
+            const pro30 = days30.map(d => (db[d]?.records || []).reduce((s,r) => s+r.pro, 0));
 
-            // 掃描資料庫
-            Object.keys(db).forEach(dateKey => {
-                const dayData = db[dateKey];
-                const rCal = (dayData.records || []).reduce((s, r) => s + r.cal, 0);
-                const rPro = (dayData.records || []).reduce((s, r) => s + r.pro, 0);
-                
-                // 檢查是否在當週 (過去 7 天內，含當天)
-                const dDate = new Date(dateKey);
-                const diffTime = baseDate.getTime() - dDate.getTime();
-                const diffDays = diffTime / (1000 * 3600 * 24);
-                
-                if (diffDays >= 0 && diffDays < 7) {
-                    if(dayData.records && dayData.records.length > 0) {
-                        weekCalTotal += rCal;
-                        weekProTotal += rPro;
-                        weekValidDays++;
-                    }
-                    if(dayData.exercise) weekExDays++;
-                    if(dayData.period) weekPeriodDays++;
-                }
+            // 渲染 7 天的日期標籤
+            const labels7 = days7.map(d => `<span>${d.slice(5).replace('-','/')}</span>`).join('');
+            document.getElementById('chart-dates-cal-7').innerHTML = labels7;
+            document.getElementById('chart-dates-pro-7').innerHTML = labels7;
+            
+            // 渲染 30 天的日期標籤 (只顯示頭、中、尾，以免太擠)
+            const labels30 = `
+                <span>${days30[0].slice(5).replace('-','/')}</span>
+                <span>${days30[14].slice(5).replace('-','/')}</span>
+                <span>${days30[29].slice(5).replace('-','/')}</span>
+            `;
+            document.getElementById('chart-dates-cal-30').innerHTML = labels30;
+            document.getElementById('chart-dates-pro-30').innerHTML = labels30;
 
-                // 檢查是否在當月
-                if (dateKey.startsWith(targetMonthPrefix)) {
-                    if(dayData.records && dayData.records.length > 0) {
-                        monthCalTotal += rCal;
-                        monthProTotal += rPro;
-                        monthValidDays++;
-                    }
-                    if(dayData.exercise) monthExDays++;
-                    if(dayData.period) monthPeriodDays++;
-                }
+            // 繪製曲線圖 (設定上限值以免圖表爆框)
+            drawLineChart('chart-cal-7', cal7, 2000, '#E8B490');
+            drawLineChart('chart-pro-7', pro7, 120, '#B8C5B0');
+            drawLineChart('chart-cal-30', cal30, 2000, '#E8B490');
+            drawLineChart('chart-pro-30', pro30, 120, '#B8C5B0');
+
+            // 結算過去 30 天的運動與生理期次數
+            let monthExDays = 0;
+            let monthPeriodDays = 0;
+            days30.forEach(d => {
+                if (db[d]?.exercise) monthExDays++;
+                if (db[d]?.period) monthPeriodDays++;
             });
 
-            // 渲染當週
-            document.getElementById('stat-week-cal').innerText = weekValidDays > 0 ? Math.round(weekCalTotal / weekValidDays) : 0;
-            document.getElementById('stat-week-pro').innerText = weekValidDays > 0 ? Math.round((weekProTotal / weekValidDays)*10)/10 : 0;
-            document.getElementById('stat-week-ex').innerText = weekExDays;
-            document.getElementById('stat-week-period').innerText = weekPeriodDays;
-
-            // 渲染當月
-            document.getElementById('stat-month-cal').innerText = monthValidDays > 0 ? Math.round(monthCalTotal / monthValidDays) : 0;
-            document.getElementById('stat-month-pro').innerText = monthValidDays > 0 ? Math.round((monthProTotal / monthValidDays)*10)/10 : 0;
             document.getElementById('stat-month-ex').innerText = monthExDays;
             document.getElementById('stat-month-period').innerText = monthPeriodDays;
         }
