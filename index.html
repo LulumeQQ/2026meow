@@ -83,7 +83,10 @@
                         <div id="menu-breakfast" class="flex flex-wrap gap-2 mb-3"></div>
 
                         <div class="bg-[#FAF8F5] p-2 rounded-xl border border-[#F0EBE1] text-xs space-y-1">
-                            <input type="text" id="custom-name-breakfast" placeholder="輸入食物名稱..." class="w-full bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#E8B490]">
+                            <div class="flex gap-1">
+                                <input type="text" id="custom-name-breakfast" placeholder="輸入食物名稱..." class="flex-1 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#E8B490]">
+                                <button onclick="smartLookup('breakfast')" aria-label="智能查詢熱量" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍</button>
+                            </div>
                             <div class="flex gap-1">
                                 <input type="number" id="custom-cal-breakfast" placeholder="Kcal" class="w-16 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none">
                                 <input type="number" id="custom-pro-breakfast" placeholder="Pro(g)" class="w-16 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none">
@@ -97,7 +100,10 @@
                         <div id="menu-lunchDinner" class="flex flex-wrap gap-2 mb-3"></div>
 
                         <div class="bg-[#FAF8F5] p-2 rounded-xl border border-[#F0EBE1] text-xs space-y-1">
-                            <input type="text" id="custom-name-lunchDinner" placeholder="輸入備餐食材..." class="w-full bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#B8C5B0]">
+                            <div class="flex gap-1">
+                                <input type="text" id="custom-name-lunchDinner" placeholder="輸入備餐食材..." class="flex-1 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#B8C5B0]">
+                                <button onclick="smartLookup('lunchDinner')" aria-label="智能查詢熱量" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍</button>
+                            </div>
                             <div class="flex gap-1">
                                 <input type="number" id="custom-cal-lunchDinner" placeholder="Kcal" class="w-16 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none">
                                 <input type="number" id="custom-pro-lunchDinner" placeholder="Pro(g)" class="w-16 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none">
@@ -111,7 +117,10 @@
                         <div id="menu-eatingOut" class="flex flex-wrap gap-2 mb-3"></div>
 
                         <div class="bg-[#FAF8F5] p-2 rounded-xl border border-[#F0EBE1] text-xs space-y-1">
-                            <input type="text" id="custom-name-eatingOut" placeholder="輸入外食名稱..." class="w-full bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FCA5A5]">
+                            <div class="flex gap-1">
+                                <input type="text" id="custom-name-eatingOut" placeholder="輸入外食名稱..." class="flex-1 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FCA5A5]">
+                                <button onclick="smartLookup('eatingOut')" aria-label="智能查詢熱量" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍</button>
+                            </div>
                             <div class="flex gap-1">
                                 <input type="number" id="custom-cal-eatingOut" placeholder="Kcal" class="w-16 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none">
                                 <input type="number" id="custom-pro-eatingOut" placeholder="Pro(g)" class="w-16 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none">
@@ -146,6 +155,15 @@
                     📥 匯入 JSON
                     <input type="file" accept="application/json" onchange="importData(event)" class="hidden" aria-label="選擇要匯入的 JSON 檔">
                 </label>
+            </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-4">
+                <label class="text-[10px] text-gray-400 font-bold tracking-widest">🔍 智能查詢代理網址 (Cloudflare Worker)</label>
+                <div class="flex gap-1 mt-1">
+                    <input type="url" id="proxy-url" placeholder="https://meow-proxy.xxx.workers.dev" class="flex-1 bg-[#FAF8F5] border border-[#F0EBE1] rounded-lg px-2 py-1.5 text-xs focus:outline-none">
+                    <button onclick="saveProxyUrl()" class="bg-[#8DB4CB] text-white px-3 py-1.5 rounded-lg text-xs font-bold active:scale-95">儲存</button>
+                </div>
+                <p class="text-[9px] text-gray-400 mt-1">留空則關閉 🔍 查詢功能。只儲存在這台裝置。</p>
             </div>
 
         </div>
@@ -662,6 +680,52 @@
             ], [0, 12, 24]);
         }
         
+        // ======= 智能查詢(透過 Cloudflare Worker 代理 Gemini) =======
+        const DEFAULT_PROXY_URL = 'https://meow-proxy.travel26.workers.dev';
+        let proxyUrl = localStorage.getItem('cat_pos_proxy_url');
+        if (proxyUrl === null) proxyUrl = DEFAULT_PROXY_URL;
+
+        function saveProxyUrl() {
+            const v = document.getElementById('proxy-url').value.trim();
+            if (v && !/^https?:\/\//i.test(v)) { alert('請輸入完整網址 (https://...)'); return; }
+            proxyUrl = v;
+            if (v) localStorage.setItem('cat_pos_proxy_url', v);
+            else localStorage.removeItem('cat_pos_proxy_url');
+            alert(v ? '已儲存查詢網址喵～' : '已關閉智能查詢');
+        }
+
+        async function smartLookup(catId) {
+            const nameEl = document.getElementById(`custom-name-${catId}`);
+            const calEl  = document.getElementById(`custom-cal-${catId}`);
+            const proEl  = document.getElementById(`custom-pro-${catId}`);
+            const name = nameEl.value.trim();
+            if (!name) { alert('請先輸入食物名稱'); return; }
+            if (!proxyUrl) { alert('尚未設定查詢網址,請到下方「智能查詢代理網址」填入 Cloudflare Worker URL'); return; }
+
+            const oldCalPh = calEl.placeholder;
+            const oldProPh = proEl.placeholder;
+            calEl.placeholder = '查詢中...'; proEl.placeholder = '...';
+            calEl.disabled = true; proEl.disabled = true;
+
+            try {
+                const r = await fetch(proxyUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ foodName: name })
+                });
+                const data = await r.json();
+                if (!r.ok) throw new Error(data.error || ('HTTP ' + r.status));
+                if (data.cal) calEl.value = data.cal;
+                if (data.pro) proEl.value = data.pro;
+                if (!data.cal && !data.pro) alert('查無資料,請手動填入');
+            } catch (e) {
+                alert('查詢失敗:' + (e.message || e));
+            } finally {
+                calEl.placeholder = oldCalPh; proEl.placeholder = oldProPh;
+                calEl.disabled = false; proEl.disabled = false;
+            }
+        }
+
         // 視窗縮放時重繪圖表 (僅在統計分頁可見時)
         let resizeTimer;
         window.addEventListener('resize', () => {
@@ -674,6 +738,7 @@
         // 啟動渲染
         initDayData(datePicker.value);
         renderMenu();
+        document.getElementById('proxy-url').value = proxyUrl || '';
     </script>
 </body>
 </html>
