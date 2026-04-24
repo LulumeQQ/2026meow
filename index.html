@@ -85,7 +85,7 @@
                         <div class="bg-[#FAF8F5] p-2 rounded-xl border border-[#F0EBE1] text-xs">
                             <div class="flex gap-1 mb-1">
                                 <input type="text" id="custom-name-breakfast" placeholder="輸入食物名稱..." class="flex-1 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#E8B490]">
-                                <button onclick="askGemini('breakfast')" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍 搜尋</button>
+                                <button onclick="askGemini('breakfast')" aria-label="搜尋早餐熱量" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍 搜尋</button>
                             </div>
                             <div id="gemini-reply-breakfast" class="hidden bg-[#F0F6FA] text-[#5A4F44] p-2 rounded-lg mb-1 text-[10px] leading-relaxed border border-[#E1EDF4]"></div>
                             <div class="flex gap-1">
@@ -103,7 +103,7 @@
                         <div class="bg-[#FAF8F5] p-2 rounded-xl border border-[#F0EBE1] text-xs">
                             <div class="flex gap-1 mb-1">
                                 <input type="text" id="custom-name-lunchDinner" placeholder="輸入備餐食材..." class="flex-1 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#B8C5B0]">
-                                <button onclick="askGemini('lunchDinner')" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍 搜尋</button>
+                                <button onclick="askGemini('lunchDinner')" aria-label="搜尋備餐熱量" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍 搜尋</button>
                             </div>
                             <div id="gemini-reply-lunchDinner" class="hidden bg-[#F0F6FA] text-[#5A4F44] p-2 rounded-lg mb-1 text-[10px] leading-relaxed border border-[#E1EDF4]"></div>
                             <div class="flex gap-1">
@@ -121,7 +121,7 @@
                         <div class="bg-[#FAF8F5] p-2 rounded-xl border border-[#F0EBE1] text-xs">
                             <div class="flex gap-1 mb-1">
                                 <input type="text" id="custom-name-eatingOut" placeholder="輸入外食名稱..." class="flex-1 bg-white border border-[#F0EBE1] rounded-lg px-2 py-1.5 focus:outline-none focus:border-[#FCA5A5]">
-                                <button onclick="askGemini('eatingOut')" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍 搜尋</button>
+                                <button onclick="askGemini('eatingOut')" aria-label="搜尋外食熱量" class="bg-[#8DB4CB] text-white px-2 py-1.5 rounded-lg shadow-sm font-bold active:scale-95">🔍 搜尋</button>
                             </div>
                             <div id="gemini-reply-eatingOut" class="hidden bg-[#F0F6FA] text-[#5A4F44] p-2 rounded-lg mb-1 text-[10px] leading-relaxed border border-[#E1EDF4]"></div>
                             <div class="flex gap-1">
@@ -147,9 +147,17 @@
                     <span class="text-xs text-gray-400 mb-1">/ 2000 ml</span>
                 </div>
                 <div class="flex gap-2">
-                    <button onclick="addWater(250)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 250</button>
-                    <button onclick="addWater(500)" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 500</button>
+                    <button onclick="addWater(250)" aria-label="增加 250 毫升水" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 250</button>
+                    <button onclick="addWater(500)" aria-label="增加 500 毫升水" class="tap-btn flex-1 bg-[#F0F6FA] border-none text-[#7A9BB0] py-3 rounded-xl text-xs font-bold active:bg-[#E1EDF4]">+ 500</button>
                 </div>
+            </div>
+
+            <div class="bg-white rounded-[2rem] shadow-sm border border-[#F0EBE1] p-4 flex gap-2">
+                <button onclick="exportData()" aria-label="匯出資料為 JSON" class="tap-btn flex-1 bg-[#FFF9F5] border border-[#FBE3D5] text-[#E8B490] py-2 rounded-xl text-xs font-bold active:scale-95">📤 匯出 JSON</button>
+                <label class="tap-btn flex-1 bg-[#F4F7F2] border border-[#E1E8DE] text-[#6e8a5c] py-2 rounded-xl text-xs font-bold active:scale-95 text-center cursor-pointer">
+                    📥 匯入 JSON
+                    <input type="file" accept="application/json" onchange="importData(event)" class="hidden" aria-label="選擇要匯入的 JSON 檔">
+                </label>
             </div>
 
         </div>
@@ -194,6 +202,11 @@
         datePicker.value = todayStr;
         statsDatePicker.value = todayStr;
 
+        // 安全跳脫,防止使用者輸入造成 XSS
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
         // ======= 預設菜單與客製化菜單邏輯 =======
         const defaultMenu = {
             breakfast: [
@@ -218,26 +231,41 @@
         // 讀取使用者手動增加的自訂按鈕
         let customMenu = JSON.parse(localStorage.getItem('cat_pos_custom_btns')) || { breakfast: [], lunchDinner: [], eatingOut: [] };
 
-        // 渲染按鈕畫面 (採用輕量 Tag 設計)
+        // 渲染按鈕畫面 (採用輕量 Tag 設計) - 使用 DOM API 避免 XSS
         function renderMenu() {
             ['breakfast', 'lunchDinner', 'eatingOut'].forEach(catId => {
                 const container = document.getElementById(`menu-${catId}`);
-                let html = '';
+                container.innerHTML = '';
                 const items = [...defaultMenu[catId], ...(customMenu[catId] || [])];
-                
+
                 if (items.length === 0) {
-                    html = `<span class="text-[10px] text-gray-300 italic">尚無選項，請由下方新增</span>`;
-                } else {
-                    items.forEach(item => {
-                        html += `
-                        <button onclick="quickAdd('${item.fullName}', ${item.cal}, ${item.pro})" data-name="${item.fullName}" data-cat="${item.cat}" class="food-btn flex items-center justify-start gap-1 rounded-full px-2.5 py-1 shadow-sm text-xs border border-[#F0EBE1]">
-                            <span>${item.icon}</span><span class="font-bold text-[10px]">${item.name}</span>
-                        </button>`;
-                    });
+                    const span = document.createElement('span');
+                    span.className = 'text-[10px] text-gray-300 italic';
+                    span.textContent = '尚無選項，請由下方新增';
+                    container.appendChild(span);
+                    return;
                 }
-                container.innerHTML = html;
+
+                items.forEach(item => {
+                    const btn = document.createElement('button');
+                    btn.className = 'food-btn flex items-center justify-start gap-1 rounded-full px-2.5 py-1 shadow-sm text-xs border border-[#F0EBE1]';
+                    btn.dataset.name = item.fullName;
+                    btn.dataset.cat = item.cat;
+                    btn.setAttribute('aria-label', `加入 ${item.fullName}`);
+
+                    const iconSpan = document.createElement('span');
+                    iconSpan.textContent = item.icon;
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'font-bold text-[10px]';
+                    nameSpan.textContent = item.name;
+
+                    btn.appendChild(iconSpan);
+                    btn.appendChild(nameSpan);
+                    btn.addEventListener('click', () => quickAdd(item.fullName, Number(item.cal) || 0, Number(item.pro) || 0));
+                    container.appendChild(btn);
+                });
             });
-            updateUI(); // 確保重新渲染後，會掛上對應的顏色狀態
+            updateUI();
         }
 
         // ======= 核心互動邏輯 =======
@@ -264,6 +292,7 @@
 
         function saveDailyStatus() {
             const d = datePicker.value;
+            initDayData(d);
             db[d].exercise = document.getElementById('check-exercise').checked;
             db[d].exerciseTime = document.getElementById('input-exercise-time').value;
             db[d].period = document.getElementById('check-period').checked;
@@ -273,17 +302,64 @@
 
         function quickAdd(name, cal, pro) {
             const date = datePicker.value;
+            initDayData(date);
             db[date].records.push({ id: Date.now(), name, cal, pro });
             save(); updateUI();
         }
 
         function deleteRecord(id) {
-            db[datePicker.value].records = db[datePicker.value].records.filter(r => r.id !== id);
+            const d = datePicker.value;
+            initDayData(d);
+            db[d].records = db[d].records.filter(r => r.id !== id);
             save(); updateUI();
         }
 
-        function addWater(ml) { db[datePicker.value].water = Math.min((db[datePicker.value].water || 0) + ml, 3000); save(); updateUI(); }
-        function resetWater() { db[datePicker.value].water = 0; save(); updateUI(); }
+        function addWater(ml) { const d=datePicker.value; initDayData(d); db[d].water = Math.min((db[d].water || 0) + ml, 3000); save(); updateUI(); }
+        function resetWater() { const d=datePicker.value; initDayData(d); db[d].water = 0; save(); updateUI(); }
+
+        // ======= 資料匯出 / 匯入 =======
+        function exportData() {
+            const payload = { version: 1, exportedAt: new Date().toISOString(), db, customMenu };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `cat-log-${todayStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = () => {
+                try {
+                    const obj = JSON.parse(reader.result);
+                    if (!obj || typeof obj !== 'object') throw new Error('格式錯誤');
+                    if (!confirm('確定要覆蓋目前所有資料嗎?')) return;
+                    if (obj.db && typeof obj.db === 'object') db = obj.db;
+                    if (obj.customMenu && typeof obj.customMenu === 'object') {
+                        customMenu = {
+                            breakfast: Array.isArray(obj.customMenu.breakfast) ? obj.customMenu.breakfast : [],
+                            lunchDinner: Array.isArray(obj.customMenu.lunchDinner) ? obj.customMenu.lunchDinner : [],
+                            eatingOut: Array.isArray(obj.customMenu.eatingOut) ? obj.customMenu.eatingOut : []
+                        };
+                    }
+                    localStorage.setItem('cat_pos_custom_db', JSON.stringify(db));
+                    localStorage.setItem('cat_pos_custom_btns', JSON.stringify(customMenu));
+                    initDayData(datePicker.value);
+                    renderMenu();
+                    alert('匯入成功喵!');
+                } catch (err) {
+                    alert('匯入失敗:' + err.message);
+                }
+            };
+            reader.readAsText(file);
+            e.target.value = '';
+        }
 
         // ======= 模擬 Gemini 查詢與新增客製按鈕 =======
         function askGemini(catId) {
@@ -333,35 +409,61 @@
 
         // ======= UI 更新邏輯 =======
         function updateUI() {
-            const data = db[datePicker.value];
-            document.getElementById('water-display').innerText = data.water;
-            document.getElementById('check-exercise').checked = data.exercise;
-            document.getElementById('input-exercise-time').value = data.exerciseTime;
-            document.getElementById('check-period').checked = data.period;
-            document.getElementById('check-snack').checked = data.snack;
-            
+            const data = initDayData(datePicker.value);
+            document.getElementById('water-display').innerText = data.water || 0;
+            document.getElementById('check-exercise').checked = !!data.exercise;
+            document.getElementById('input-exercise-time').value = data.exerciseTime || '';
+            document.getElementById('check-period').checked = !!data.period;
+            document.getElementById('check-snack').checked = !!data.snack;
+
             let target = (data.exercise && !data.period) ? 1400 : 1300;
             document.getElementById('target-cal').innerText = target;
-            
-            const totalCal = Math.round((data.records || []).reduce((s, r) => s + r.cal, 0));
-            const totalPro = Math.round((data.records || []).reduce((s, r) => s + r.pro, 0) * 10) / 10;
+
+            const totalCal = Math.round((data.records || []).reduce((s, r) => s + (Number(r.cal) || 0), 0));
+            const totalPro = Math.round((data.records || []).reduce((s, r) => s + (Number(r.pro) || 0), 0) * 10) / 10;
             document.getElementById('total-calories').innerText = totalCal;
             document.getElementById('total-protein').innerText = totalPro;
             document.getElementById('total-calories').className = totalCal > target ? 'text-3xl font-black text-red-400' : 'text-3xl font-black text-[#E8B490]';
-            
-            // 渲染清單
-            document.getElementById('food-list').innerHTML = data.records.map(r => `
-                <li class="flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#F0EBE1] text-xs">
-                    <div><b class="text-[11px]">${r.name}</b><br><small class="text-gray-400 text-[9px]">${r.cal} kcal / ${r.pro}g</small></div>
-                    <button onclick="deleteRecord(${r.id})" class="text-gray-300 px-2 font-bold hover:text-red-400">✕</button>
-                </li>`).join('') || '<li class="text-center text-gray-300 text-[10px] py-2">點擊上方標籤紀錄喵～</li>';
-            
+
+            // 渲染清單 - 用 DOM API 避免 XSS
+            const list = document.getElementById('food-list');
+            list.innerHTML = '';
+            if (!data.records || data.records.length === 0) {
+                const li = document.createElement('li');
+                li.className = 'text-center text-gray-300 text-[10px] py-2';
+                li.textContent = '點擊上方標籤紀錄喵～';
+                list.appendChild(li);
+            } else {
+                data.records.forEach(r => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center bg-[#FAF8F5] p-3 rounded-xl border border-[#F0EBE1] text-xs';
+                    const div = document.createElement('div');
+                    const b = document.createElement('b');
+                    b.className = 'text-[11px]';
+                    b.textContent = r.name;
+                    const small = document.createElement('small');
+                    small.className = 'text-gray-400 text-[9px]';
+                    small.textContent = `${r.cal} kcal / ${r.pro}g`;
+                    div.appendChild(b);
+                    div.appendChild(document.createElement('br'));
+                    div.appendChild(small);
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'text-gray-300 px-2 font-bold hover:text-red-400';
+                    delBtn.textContent = '✕';
+                    delBtn.setAttribute('aria-label', `刪除 ${r.name}`);
+                    delBtn.addEventListener('click', () => deleteRecord(r.id));
+                    li.appendChild(div);
+                    li.appendChild(delBtn);
+                    list.appendChild(li);
+                });
+            }
+
             // 強制重置所有按鈕狀態，再依據本日紀錄上色 (解決換日期 Bug)
             const addedNames = (data.records || []).map(r => r.name);
             document.querySelectorAll('.food-btn').forEach(btn => {
-                btn.classList.remove('is-active'); // 先全部洗掉
-                if(addedNames.includes(btn.getAttribute('data-name'))) {
-                    btn.classList.add('is-active'); // 有吃到的才亮燈
+                btn.classList.remove('is-active');
+                if (addedNames.includes(btn.getAttribute('data-name'))) {
+                    btn.classList.add('is-active');
                 }
             });
         }
@@ -422,7 +524,17 @@
             ], [0, 12, 24]);
         }
         
+        // 視窗縮放時重繪圖表 (僅在統計分頁可見時)
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                if (document.getElementById('view-stats').classList.contains('active')) renderStats();
+            }, 150);
+        });
+
         // 啟動渲染
+        initDayData(datePicker.value);
         renderMenu();
     </script>
 </body>
