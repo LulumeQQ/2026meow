@@ -685,6 +685,24 @@
         let proxyUrl = localStorage.getItem('cat_pos_proxy_url');
         if (proxyUrl === null) proxyUrl = DEFAULT_PROXY_URL;
 
+        // 本機快取:同一裝置查過的食物直接回,不打 API
+        const FOOD_CACHE_KEY = 'cat_pos_food_cache';
+        function loadFoodCache() {
+            try { return JSON.parse(localStorage.getItem(FOOD_CACHE_KEY)) || {}; } catch { return {}; }
+        }
+        function saveFoodCache(c) {
+            try { localStorage.setItem(FOOD_CACHE_KEY, JSON.stringify(c)); } catch {}
+        }
+        function foodCacheGet(name) {
+            const c = loadFoodCache();
+            return c[name.toLowerCase()] || null;
+        }
+        function foodCacheSet(name, cal, pro) {
+            const c = loadFoodCache();
+            c[name.toLowerCase()] = { cal, pro, t: Date.now() };
+            saveFoodCache(c);
+        }
+
         function saveProxyUrl() {
             const v = document.getElementById('proxy-url').value.trim();
             if (v && !/^https?:\/\//i.test(v)) { alert('請輸入完整網址 (https://...)'); return; }
@@ -700,6 +718,15 @@
             const proEl  = document.getElementById(`custom-pro-${catId}`);
             const name = nameEl.value.trim();
             if (!name) { alert('請先輸入食物名稱'); return; }
+
+            // 1) 本機快取命中:即時填入,完全不打 API
+            const hit = foodCacheGet(name);
+            if (hit) {
+                if (hit.cal) calEl.value = hit.cal;
+                if (hit.pro) proEl.value = hit.pro;
+                return;
+            }
+
             if (!proxyUrl) { alert('尚未設定查詢網址,請到下方「智能查詢代理網址」填入 Cloudflare Worker URL'); return; }
 
             const oldCalPh = calEl.placeholder;
@@ -721,6 +748,7 @@
                 }
                 if (data.cal) calEl.value = data.cal;
                 if (data.pro) proEl.value = data.pro;
+                if (data.cal || data.pro) foodCacheSet(name, data.cal || 0, data.pro || 0);
                 if (!data.cal && !data.pro) alert('查無資料,請手動填入');
             } catch (e) {
                 alert('查詢失敗:' + (e.message || e));
