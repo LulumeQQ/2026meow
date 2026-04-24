@@ -50,11 +50,11 @@
                 <div class="grid grid-cols-2 gap-4 mt-2">
                     <div class="bg-[#FFF9F5] p-4 rounded-3xl border border-[#FBE3D5] text-center">
                         <div class="text-3xl font-black text-[#E8B490]" id="total-calories">0</div>
-                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">KCAL (目標 <span id="target-cal">1300</span>)</p>
+                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">熱量 (大卡・目標 <span id="target-cal">1300</span>)</p>
                     </div>
                     <div class="bg-[#F4F7F2] p-4 rounded-3xl border border-[#E1E8DE] text-center">
                         <div class="text-3xl font-black text-[#B8C5B0]" id="total-protein">0</div>
-                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">PRO(g) (目標 100)</p>
+                        <p class="text-[10px] text-gray-400 font-bold tracking-widest mt-1">蛋白質 (公克・目標 100)</p>
                     </div>
                 </div>
 
@@ -157,17 +157,17 @@
                     <input type="date" id="stats-date" onchange="renderStats()" class="border-none text-xs font-bold text-gray-500 bg-[#FAF8F5] px-4 py-2 rounded-full focus:outline-none">
                 </div>
                 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 uppercase tracking-widest">🔥 KCAL 7D Trend</h3>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 tracking-widest">🔥 熱量趨勢 (近 7 日)</h3>
                 <div id="chart-cal-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6 uppercase tracking-widest">🥩 PRO(g) 7D Trend</h3>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6 tracking-widest">🥩 蛋白質趨勢 (近 7 日・公克)</h3>
                 <div id="chart-pro-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
                 
-                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6 uppercase tracking-widest">💧 WATER 7D Trend</h3>
+                <h3 class="text-[10px] font-black text-gray-500 mb-2 mt-6 tracking-widest">💧 水分趨勢 (近 7 日・毫升)</h3>
                 <div id="chart-water-7" class="w-full h-24 bg-[#FAF8F5] rounded-xl mb-2 relative overflow-hidden border border-[#F0EBE1]"></div>
 
                 <div class="mt-6 border-t border-[#F0EBE1] pt-4">
-                    <h3 class="text-[10px] font-black text-gray-500 mb-1 uppercase tracking-widest">綜合狀態 (運動/生理/零食)</h3>
+                    <h3 class="text-[10px] font-black text-gray-500 mb-1 tracking-widest">綜合狀態 (運動/生理/零食)</h3>
                     <div class="flex gap-3 mb-2">
                         <span class="text-[8px] font-bold text-[#818CF8]">➖ 運動時間</span>
                         <span class="text-[8px] font-bold text-red-400">● 生理期</span>
